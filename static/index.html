@@ -1,251 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TimmyApp Music Hub 💜</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Featured Playlist</title>
+  <style>
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: #111;
+      background-color: #fafafa;
+      text-align: left;
+      padding: 30px;
+    }
 
-    <style>
-        /* fallback styles to guarantee the glow even if style.css doesn't load */
-        body {
-            margin: 0;
-            padding: 0;
-            background: radial-gradient(circle at 20% 20%, #2a0038 0%, #000010 70%);
-            min-height: 100vh;
-            color: #fff;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", Roboto, sans-serif;
-            position: relative;
-            overflow-x: hidden;
-        }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
 
-        .bubble-layer {
-            z-index: 1;
-            pointer-events: none;
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-        }
+    p {
+      margin-top: 0;
+      margin-bottom: 2rem;
+      color: #444;
+    }
 
-        .orb {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,0,200,0.7) 0%, rgba(0,0,0,0) 70%);
-            box-shadow:
-                0 0 15px rgba(255,0,200,0.8),
-                0 0 40px rgba(255,0,200,0.4);
-            filter: blur(1px);
-            opacity: 0.8;
-            animation: floaty 8s ease-in-out infinite;
-        }
+    .playlist {
+      margin-bottom: 2.5rem;
+    }
 
-        .orb.blue {
-            background: radial-gradient(circle at 30% 30%, rgba(0,150,255,0.7) 0%, rgba(0,0,0,0) 70%);
-            box-shadow:
-                0 0 15px rgba(0,150,255,0.8),
-                0 0 40px rgba(0,150,255,0.4);
-        }
+    .playlist a {
+      font-weight: bold;
+      font-size: 1.6rem;
+      color: #c700ff;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+    }
 
-        .orb.orange {
-            background: radial-gradient(circle at 30% 30%, rgba(255,180,0,0.7) 0%, rgba(0,0,0,0) 70%);
-            box-shadow:
-                0 0 15px rgba(255,180,0,0.8),
-                0 0 40px rgba(255,180,0,0.4);
-        }
+    .playlist a:hover {
+      color: #ff00aa;
+      text-shadow: 0 0 10px #ff66ff, 0 0 20px #ff33ff;
+    }
 
-        @keyframes floaty {
-            0%   { transform: translateY(0px) translateX(0px) scale(1); }
-            50%  { transform: translateY(-15px) translateX(5px) scale(1.05); }
-            100% { transform: translateY(0px) translateX(0px) scale(1); }
-        }
-
-        .page-shell {
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 1.25rem;
-            box-sizing: border-box;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .header-block {
-            color: #fff;
-            font-weight: 600;
-            line-height: 1.2;
-            text-shadow: 0 0 20px rgba(255,0,255,0.6), 0 0 40px rgba(255,0,255,0.3);
-        }
-
-        .header-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 .5rem 0;
-            background: linear-gradient(90deg, #ff00ff 0%, #ffffff 40%, #ff00ff 80%);
-            -webkit-background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 30px rgba(255,0,255,0.7), 0 0 60px rgba(255,0,255,0.4);
-        }
-
-        .header-desc {
-            font-size: 1rem;
-            font-weight: 400;
-            color: rgba(255,255,255,0.9);
-            margin: 0 0 1rem 0;
-        }
-
-        .section-headline {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(255,0,255,0.6), 0 0 50px rgba(255,0,255,0.3);
-            margin: 0 0 .4rem 0;
-        }
-
-        .section-sub {
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0 0 1.25rem 0;
-            color: rgba(255,170,255,0.8);
-            text-shadow: 0 0 15px rgba(255,0,200,0.7), 0 0 40px rgba(255,0,200,0.25);
-        }
-
-        /* clickable card */
-        .track-card-link {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-            background: radial-gradient(circle at 10% 10%, rgba(20,0,30,0.9) 0%, rgba(30,0,40,0.6) 60%);
-            border-radius: 1rem;
-            border: 1px solid rgba(255,0,255,0.4);
-            box-shadow:
-                0 0 20px rgba(255,0,255,0.6),
-                0 0 80px rgba(255,0,255,0.3),
-                0 40px 80px rgba(0,0,0,0.8);
-            padding: 1.25rem 1rem 1rem 1rem;
-            margin-bottom: 1.25rem;
-            position: relative;
-        }
-
-        .track-card-link:active {
-            transform: scale(0.98);
-            box-shadow:
-                0 0 15px rgba(255,0,255,0.9),
-                0 0 60px rgba(255,0,255,0.5),
-                0 30px 60px rgba(0,0,0,0.8);
-        }
-
-        .track-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 .5rem 0;
-            color: #fff;
-            text-shadow:
-                0 0 10px rgba(255,255,255,0.8),
-                0 0 25px rgba(255,0,255,0.7),
-                0 0 60px rgba(255,0,255,0.4);
-        }
-
-        .track-desc {
-            font-size: 1.25rem;
-            font-weight: 500;
-            line-height: 1.4;
-            color: rgba(255,255,255,0.9);
-            text-shadow: 0 0 12px rgba(255,255,255,0.4);
-        }
-
-        .footer-note {
-            margin: 2rem 0 3rem 0;
-            font-size: .8rem;
-            line-height: 1.3rem;
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-            text-shadow: 0 0 10px rgba(255,0,255,0.4);
-        }
-    </style>
+    .desc {
+      margin-top: 0.4rem;
+      color: #333;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 <body>
+  <h1>Today’s Featured Playlist</h1>
+  <p>Hand-picked for mood & flow</p>
 
-    <!-- floating glow orbs under content -->
-    <div class="bubble-layer">
-        <div class="orb" style="left:5%; top:70%; animation-duration:7s;"></div>
-        <div class="orb blue" style="left:10%; top:85%; animation-duration:9s;"></div>
-        <div class="orb orange" style="left:20%; top:90%; animation-duration:11s;"></div>
-        <div class="orb blue" style="left:80%; top:20%; width:24px; height:24px; animation-duration:8s;"></div>
-        <div class="orb" style="left:60%; top:30%; width:28px; height:28px; animation-duration:10s;"></div>
-        <div class="orb orange" style="left:75%; top:80%; width:36px; height:36px; animation-duration:12s;"></div>
-    </div>
+  <div class="playlist">
+    <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank">Midnight Neon Cruise</a>
+    <div class="desc">dreamy synth / slow drift / safe for socials</div>
+  </div>
 
-    <!-- foreground content -->
-    <div class="page-shell">
-        <section class="header-block">
-            <h1 class="header-title">TimmyApp Music Hub 💜</h1>
-            <p class="header-desc">
-                Royalty-friendly vibe tracks for creators.<br/>
-                Use for background, reels, shorts. No strikes.
-            </p>
+  <div class="playlist">
+    <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank">Southern Heatwave</a>
+    <div class="desc">swagger beat / outlaw country trap / creator-safe</div>
+  </div>
 
-            <h2 class="section-headline">Today’s Featured Playlist</h2>
-            <div class="section-sub">Hand-picked for mood &amp; flow</div>
-        </section>
+  <div class="playlist">
+    <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank">Halo Pulse</a>
+    <div class="desc">angel pads / uplight energy / intro & outro friendly</div>
+  </div>
 
-        <!-- Midnight Neon Cruise -->
-        <a class="track-card-link"
-           href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b"
-           target="_blank" rel="noopener noreferrer">
-            <h3 class="track-title">Midnight Neon Cruise</h3>
-            <div class="track-desc">
-                dreamy synth / slow drift / safe for socials
-            </div>
-        </a>
+  <div class="playlist">
+    <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank">Purple Drive</a>
+    <div class="desc">midtempo glide / neon ride / safe for ads</div>
+  </div>
 
-        <!-- Southern Heatwave -->
-        <a class="track-card-link"
-           href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f"
-           target="_blank" rel="noopener noreferrer">
-            <h3 class="track-title">Southern Heatwave</h3>
-            <div class="track-desc">
-                swagger beat / outlaw country trap / creator-safe
-            </div>
-        </a>
-
-        <!-- Halo Pulse -->
-        <a class="track-card-link"
-           href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44"
-           target="_blank" rel="noopener noreferrer">
-            <h3 class="track-title">Halo Pulse</h3>
-            <div class="track-desc">
-                angel pads / uplight energy / intro &amp; outro friendly
-            </div>
-        </a>
-
-        <!-- Purple Drive -->
-        <a class="track-card-link"
-           href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df"
-           target="_blank" rel="noopener noreferrer">
-            <h3 class="track-title">Purple Drive</h3>
-            <div class="track-desc">
-                midtempo glide / neon ride / safe for ads
-            </div>
-        </a>
-
-        <!-- Yeti Stomp -->
-        <a class="track-card-link"
-           href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2"
-           target="_blank" rel="noopener noreferrer">
-            <h3 class="track-title">Yeti Stomp</h3>
-            <div class="track-desc">
-                heavy bass / crowd hype / walk-in energy
-            </div>
-        </a>
-
-        <div class="footer-note">
-            Tap any block. It opens in a new tab so you keep TimmyApp open.
-        </div>
-    </div>
+  <div class="playlist">
+    <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank">Yeti Stomp</a>
+    <div class="desc">heavy bass / crowd hype / walk-in music / promo safe</div>
+  </div>
 </body>
 </html>
