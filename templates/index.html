@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TimmyTime</title>
 
-    <!-- THIS LINE IS THE WHOLE FIGHT -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <!-- CORRECT REFERENCE — the key to fixing white screen -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-
-    <!-- floating neon bubble background -->
-    <div class="bubble-bg">
-        <!-- we’ll generate bubbles in CSS -->
-    </div>
+    <!-- Neon bubble background -->
+    <div class="bubble-bg"></div>
 
     <main class="content-card">
         <h1 class="hero-title">TimmyTime Audio Playground</h1>
@@ -21,47 +18,34 @@
 
         <section class="links-block">
             <h2 class="block-title">Playlists</h2>
-
-            <a class="beat-link" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener">
-                Playlist 1
-            </a>
-
-            <a class="beat-link" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener">
-                Playlist 2
-            </a>
-
-            <a class="beat-link" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener">
-                Playlist 3
-            </a>
-
-            <a class="beat-link" href="httpsuno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener">
-                Playlist 4
-            </a>
-
-            <a class="beat-link" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener">
-                Playlist 5
-            </a>
+            <a class="beat-link" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank">Playlist 1</a>
+            <a class="beat-link" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank">Playlist 2</a>
+            <a class="beat-link" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank">Playlist 3</a>
+            <a class="beat-link" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank">Playlist 4</a>
+            <a class="beat-link" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank">Playlist 5</a>
         </section>
 
         <section class="links-block">
             <h2 class="block-title">Single Track</h2>
-            <a class="beat-link" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener">
-                Feature Track
-            </a>
+            <a class="beat-link" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank">Feature Track</a>
         </section>
 
         <section class="links-block">
             <h2 class="block-title">Local Craft</h2>
-            <a class="beat-link" href="https://www.nativecrafts.us/medicine-bags-c-164.html" target="_blank" rel="noopener">
+            <a class="beat-link" href="https://www.nativecrafts.us/medicine-bags-c-164.html" target="_blank">
                 Medicine Bags / Native Craft
             </a>
         </section>
 
         <footer class="footer-line">
-            <p>Domestic abuse help: Go to the Town of Ragland website Action Center for direct contact with the mayor.</p>
+            <p>
+                Domestic abuse help: visit the 
+                <a href="https://www.townofragland.org/Default.asp?ID=33&pg=Action+Center" target="_blank">
+                    Town of Ragland Action Center
+                </a> 
+                for direct contact with the mayor.
+            </p>
         </footer>
     </main>
-
-    <!-- optional tiny script to keep bubbles animated if we ever need JS later -->
 </body>
 </html>
