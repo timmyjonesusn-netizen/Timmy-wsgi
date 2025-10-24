@@ -1,73 +1,74 @@
-/* Page base */
+/* --- Base Page --- */
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
-    background: radial-gradient(circle at 20% 20%, rgba(180,0,255,0.2) 0%, rgba(0,0,40,1) 70%);
-    color: #fff;
-    line-height: 1.4;
-    padding: 2rem 1.25rem 4rem;
+  margin: 0;
+  padding: 2rem 1.25rem 4rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  background: radial-gradient(circle at 20% 20%, rgba(180, 0, 255, 0.25) 0%, rgba(10, 0, 40, 1) 70%);
+  color: #fff;
+  line-height: 1.4;
 }
 
-/* Layout wrapper */
+/* --- Layout --- */
 .page-wrap {
-    max-width: 680px;
-    margin: 0 auto;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-/* Header text */
+/* --- Header --- */
 .headline {
-    font-size: 1.9rem;
-    font-weight: 700;
-    margin: 0 0 .4rem 0;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255,0,255,0.6);
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
+  margin-bottom: 0.3rem;
 }
 
 .subhead {
-    font-size: 0.95rem;
-    font-weight: 400;
-    color: rgba(255,255,255,0.75);
-    margin: 0 0 2rem 0;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
 }
 
-/* Playlist cards */
+/* --- Playlist Cards --- */
 .playlist-block {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,0,255,0.35);
-    border-radius: 12px;
-    padding: 1rem 1rem 1rem;
-    margin-bottom: 1.25rem;
-    box-shadow:
-        0 0 20px rgba(255,0,200,0.4),
-        0 20px 40px rgba(0,0,0,0.8);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 0, 255, 0.4);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow:
+    0 0 20px rgba(255, 0, 200, 0.4),
+    0 10px 25px rgba(0, 0, 0, 0.8);
+  transition: all 0.25s ease-in-out;
 }
 
-/* Playlist title */
+.playlist-block:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* --- Playlist Titles --- */
 .playlist-name {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin: 0 0 .4rem 0;
-    color: #fff;
-    text-shadow: 0 0 8px rgba(255,100,255,0.8),
-                 0 0 16px rgba(255,0,140,0.7);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem 0;
+  text-shadow:
+    0 0 10px rgba(255, 0, 180, 0.8),
+    0 0 25px rgba(255, 0, 255, 0.7);
 }
 
-/* Playlist description text */
+/* --- Playlist Description --- */
 .playlist-desc {
-    margin: 0;
-    font-size: 0.95rem;
-    color: rgba(255,255,255,0.8);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
 }
 
-/* Mobile polish */
+/* --- Mobile Friendly --- */
 @media (min-width: 480px) {
-    .headline {
-        font-size: 2.2rem;
-    }
-    .playlist-name {
-        font-size: 1.6rem;
-    }
-    .playlist-desc {
-        font-size: 1rem;
-    }
+  .headline {
+    font-size: 2.4rem;
+  }
+  .playlist-name {
+    font-size: 1.7rem;
+  }
 }
