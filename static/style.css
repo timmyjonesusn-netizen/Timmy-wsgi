@@ -1,4 +1,4 @@
-/* --- Page background / global --- */
+/* -------- GLOBAL PAGE BACKGROUND / TYPE -------- */
 body {
   margin: 0;
   padding: 2rem 1rem 5rem;
@@ -9,13 +9,12 @@ body {
   color: #fff;
 }
 
-/* layout wrapper */
 .page-wrap {
   max-width: 800px;
   margin: 0 auto;
 }
 
-/* --- Header text --- */
+/* -------- HEADER TEXT -------- */
 .headline {
   font-size: clamp(2rem, 2.2rem + 1vw, 2.6rem);
   font-weight: 700;
@@ -38,11 +37,11 @@ body {
     0 10px 30px rgba(0,0,0,0.8);
 }
 
-/* --- Playlist card link wrappers --- */
-.playlist-block {
+/* -------- PLAYLIST CARD (CLICKABLE AREA) -------- */
+.playlist-card {
   display: block;
-  text-decoration: none;
-  color: inherit;
+  text-decoration: none;          /* kill blue underline */
+  color: inherit;                 /* keep white text */
 
   background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.12) 0%, rgba(20,0,40,0.8) 70%);
   border-radius: 20px;
@@ -57,11 +56,11 @@ body {
 
   position: relative;
   overflow: hidden;
-  transition: all .2s ease;
+  transition: all .18s ease;
 }
 
-/* glossy edge/highlight at the top of each card */
-.playlist-block::before {
+/* glossy highlight layer */
+.playlist-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -73,32 +72,41 @@ body {
   pointer-events: none;
   mix-blend-mode: screen;
   opacity: .4;
-  transition: opacity .2s;
+  transition: opacity .18s;
 }
 
-/* hover / tap feedback */
-.playlist-block:active,
-.playlist-block:hover {
+.playlist-card:hover,
+.playlist-card:active {
   transform: translateY(-2px) scale(1.01);
   box-shadow:
     0 30px 70px rgba(0,0,0,0.95),
     0 0 50px rgba(255,0,255,0.6),
     0 0 160px rgba(255,0,255,0.45);
 }
-.playlist-block:active::before,
-.playlist-block:hover::before {
+
+.playlist-card:hover::before,
+.playlist-card:active::before {
   opacity: .6;
 }
 
-/* inside each card */
-.playlist-inner {
+/* content wrapper inside card */
+.playlist-content {
   position: relative;
   z-index: 2;
 }
 
-/* playlist title */
+/* row for title and (later we can add play button etc.) */
+.playlist-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: .75rem;
+}
+
+/* playlist title text */
 .playlist-name {
-  margin: 0 0 .75rem 0;
+  margin: 0;
   font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
   font-weight: 700;
   line-height: 1.2;
@@ -109,24 +117,22 @@ body {
     0 10px 40px rgba(0,0,0,0.9);
 }
 
-/* bubble row container */
+/* -------- BUBBLE ROW UNDER TITLE -------- */
 .bubble-row {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem .5rem;
-  row-gap: .5rem;
-  column-gap: .5rem;
+  gap: .5rem;
   max-width: 100%;
 }
 
-/* pill/bubble base */
+/* pill style */
 .bubble {
   display: inline-block;
-  font-size: .9rem;
+  font-size: .8rem;
   line-height: 1.2;
   font-weight: 500;
   color: #fff;
-  padding: .5rem .6rem .45rem;
+  padding: .45rem .6rem .4rem;
   border-radius: 999px;
   background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.18) 0%, rgba(40,0,60,0.8) 70%);
   box-shadow:
@@ -136,9 +142,9 @@ body {
   white-space: nowrap;
 }
 
-/* special bubble for “safe” tags */
+/* greenish version for “safe / cleared / approved” tags */
 .bubble-safe {
-  background: radial-gradient(circle at 0% 0%, rgba(0,255,150,0.2) 0%, rgba(0,40,30,0.8) 70%);
+  background: radial-gradient(circle at 0% 0%, rgba(0,255,150,0.22) 0%, rgba(0,40,30,0.8) 70%);
   border: 1px solid rgba(0,255,170,0.5);
   box-shadow:
     0 10px 20px rgba(0,0,0,0.8),
@@ -146,23 +152,27 @@ body {
     0 0 60px rgba(0,255,170,0.4);
 }
 
-/* spacing tweaks for bigger screens */
+/* -------- RESPONSIVE TWEAKS -------- */
 @media (min-width: 480px) {
   body {
     padding-left: 2rem;
     padding-right: 2rem;
   }
 
-  .playlist-block {
+  .playlist-card {
     padding: 2rem 1.5rem 1.5rem;
     margin-bottom: 2rem;
   }
 
-  .playlist-name {
+  .playlist-title-row {
     margin-bottom: 1rem;
   }
 
   .bubble-row {
     max-width: 90%;
+  }
+
+  .bubble {
+    font-size: .8rem;
   }
 }
