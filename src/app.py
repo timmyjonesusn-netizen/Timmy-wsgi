@@ -1,0 +1,248 @@
+from flask import Flask, Response
+from flask_cors import CORS
+import os
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/")
+def home():
+    html = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timmy Bubbles Radio</title>
+    <style>
+      :root {
+        --bg-grad-start: #b3ecff;
+        --bg-grad-end:   #d9f0ff;
+        --bubble-pink:   rgba(255, 102, 204, 0.5);
+        --bubble-purple: rgba(170, 0, 255, 0.4);
+        --bubble-orange: rgba(255, 153, 0, 0.45);
+        --bubble-shadow: rgba(0,0,0,0.35);
+        --btn-grad-start:#ff66cc;
+        --btn-grad-mid:  #ffcc66;
+        --btn-grad-end:  #66ccff;
+        --btn-border:    #ff00cc;
+        --btn-shadow:    rgba(0,0,0,0.45);
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        background: radial-gradient(circle at 20% 20%, var(--bg-grad-start) 0%, var(--bg-grad-end) 60%);
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* FLOATING BUBBLES LAYER */
+      .bubble-layer {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .bubble {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(2px);
+        box-shadow: 0 12px 24px var(--bubble-shadow);
+        animation-name: floatUp;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(100vh) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-20vh) translateX(var(--drift, 0px));
+          opacity: 0;
+        }
+      }
+
+      /* CONTENT WRAPPER ABOVE BUBBLES */
+      .content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 480px;
+        padding: 24px 16px 100px;
+        text-align: center;
+      }
+
+      .title-spacer {
+        height: 8px;
+      }
+
+      /* PLAYLIST BUTTONS */
+      .playlist-btn {
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 700;
+        font-size: clamp(1.4rem, 2vw + 1rem, 2rem);
+        text-align: center;
+        background: radial-gradient(circle at 20% 20%,
+          var(--btn-grad-start) 0%,
+          var(--btn-grad-mid) 40%,
+          var(--btn-grad-end) 100%);
+        border: 3px solid var(--btn-border);
+        border-radius: 24px;
+        padding: 18px 16px;
+        margin: 16px auto;
+        box-shadow:
+          0 16px 24px var(--btn-shadow),
+          0 0 12px rgba(255,0,255,0.6),
+          0 0 24px rgba(255,102,204,0.5);
+        text-shadow:
+          0 2px 4px rgba(0,0,0,0.7),
+          0 0 6px rgba(255,255,255,0.6);
+      }
+
+      .playlist-btn:active {
+        transform: scale(0.97);
+      }
+
+      /* SECTION LABELS */
+      .section-label {
+        font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
+        font-weight: 800;
+        color: #000;
+        text-shadow:
+          0 2px 4px rgba(255,0,255,0.4),
+          0 4px 6px rgba(0,0,0,0.6);
+        margin: 32px 0 8px;
+      }
+
+      /* FOOTER */
+      .footer {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1a001a;
+        text-shadow:
+          0 2px 4px rgba(255,255,255,0.8),
+          0 4px 6px rgba(0,0,0,0.6);
+        line-height: 1.4;
+        margin-top: 32px;
+      }
+    </style>
+    </head>
+    <body>
+
+    <!-- FLOATING BUBBLES BACKDROP -->
+    <div class="bubble-layer" id="bubbleLayer"></div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="title-spacer"></div>
+
+      <!-- PLAYLIST BUTTONS (locked, don't touch labels/order without Timmy say-so) -->
+      <a class="playlist-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">
+        Playlist 1
+      </a>
+
+      <a class="playlist-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">
+        Playlist 2
+      </a>
+
+      <a class="playlist-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">
+        Playlist 3
+      </a>
+
+      <a class="playlist-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">
+        Playlist 4
+      </a>
+
+      <a class="playlist-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
+        Playlist 5
+      </a>
+
+      <div class="section-label">Single Track</div>
+      <a class="playlist-btn" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener noreferrer">
+        Feature Track
+      </a>
+
+      <div class="footer">
+        App made by iPhone 17 Pro Max • Timmy Bubbles
+      </div>
+    </div>
+
+    <script>
+      (function makeBubbles() {
+        const layer = document.getElementById("bubbleLayer");
+        const bubbleColors = [
+          "radial-gradient(circle at 30% 30%, rgba(255,102,204,0.6) 0%, rgba(170,0,255,0.4) 60%)",
+          "radial-gradient(circle at 30% 30%, rgba(255,153,0,0.5) 0%, rgba(255,102,204,0.4) 60%)",
+          "radial-gradient(circle at 30% 30%, rgba(102,0,255,0.4) 0%, rgba(255,153,0,0.4) 60%)"
+        ];
+
+        const bubbleCount = 18;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        for (let i = 0; i < bubbleCount; i++) {
+          const b = document.createElement("div");
+          b.className = "bubble";
+
+          const size = 40 + Math.random()*60; // 40-100px
+          b.style.width = size + "px";
+          b.style.height = size + "px";
+
+          const left = Math.random() * vw;
+          b.style.left = left + "px";
+
+          const dur = 8 + Math.random()*10; // 8s-18s
+          b.style.animationDuration = dur + "s";
+
+          const delay = (-1) * Math.random()*dur;
+          b.style.animationDelay = delay + "s";
+
+          const drift = (Math.random()*80 - 40).toFixed(1) + "px";
+          b.style.setProperty("--drift", drift);
+
+          const color = bubbleColors[i % bubbleColors.length];
+          b.style.background = color;
+
+          layer.appendChild(b);
+        }
+      })();
+    </script>
+
+    </body>
+    </html>
+    """
+    return Response(html, mimetype="text/html")
+
+
+@app.route("/health")
+def health():
+    return {"ok": True}
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
