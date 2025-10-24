@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timmy WSGI App</title>
+
+  <!-- ✅ This is the correct way to link your CSS in Flask -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <h1 class="glow-title">Timmy App Online</h1>
+    <p class="sub">Black and white verified — CSS live check below.</p>
+
+    <div class="status-box">
+      <div class="status-row">
+        <span class="label">Server:</span>
+        <span class="value good">CONNECTED ✅</span>
+      </div>
+      <div class="status-row">
+        <span class="label">CSS:</span>
+        <span class="value css-check">If you see color glow → CSS OK</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>WSGI Edition — Render Deployment</p>
+      <p><small>© TimmyTime</small></p>
+    </div>
+  </div>
+</body>
+</html>
