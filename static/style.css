@@ -1,24 +1,25 @@
-/* full-screen dark base so bubbles glow */
+/* RESET + BASE */
 body {
     margin: 0;
-    background-color: #0a0016; /* deep purple/navy */
-    color: #fff;
+    padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Inter", "Roboto", sans-serif;
+    background-color: #0a0016;
+    color: #fff;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
+    position: relative;
 }
 
-/* card in the middle */
+/* MAIN CARD */
 .content-card {
     position: relative;
     z-index: 10;
     width: 90%;
     max-width: 420px;
-    background: rgba(20, 0, 40, 0.6);
+    background: rgba(20, 0, 40, 0.65);
     border: 1px solid rgba(255, 0, 200, 0.4);
     box-shadow:
         0 0 20px rgba(255, 0, 200, 0.6),
@@ -27,85 +28,74 @@ body {
     border-radius: 20px;
     padding: 24px 20px 32px;
     backdrop-filter: blur(8px);
+    text-align: center;
 }
 
-/* headings */
+/* TEXT + HEADINGS */
 .hero-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     line-height: 1.2;
     font-weight: 600;
     color: #fff;
-    text-align: center;
     text-shadow:
         0 0 8px rgba(255, 0, 221, 0.9),
         0 0 24px rgba(0, 168, 255, 0.7),
         0 0 48px rgba(255, 115, 0, 0.6);
-    margin: 0 0 6px;
+    margin-bottom: 10px;
 }
 
 .tagline {
-    font-size: 0.9rem;
-    text-align: center;
     color: #ff9cff;
-    margin: 0 0 20px;
-    font-weight: 400;
-}
-
-/* block sections */
-.links-block {
-    margin-bottom: 22px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
 }
 
 .block-title {
-    margin: 0 0 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
     color: #ffd0ff;
-    letter-spacing: 0.03em;
-    text-shadow: 0 0 8px rgba(255,0,150,0.8);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 8px rgba(255, 0, 150, 0.8);
 }
 
-/* links */
+/* LINKS */
 .beat-link {
     display: block;
     text-decoration: none;
-    font-size: 1rem;
-    font-weight: 500;
-    background: radial-gradient(circle at 20% 20%, rgba(255,0,170,0.5) 0%, rgba(0,0,0,0) 70%),
-                radial-gradient(circle at 80% 30%, rgba(0,170,255,0.4) 0%, rgba(0,0,0,0) 70%);
     color: #fff;
-    border: 1px solid rgba(255, 0, 200, 0.5);
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
+    font-weight: 500;
+    background: linear-gradient(90deg, rgba(255,0,150,0.4), rgba(0,160,255,0.3));
+    border: 1px solid rgba(255,0,200,0.5);
+    border-radius: 12px;
+    padding: 10px;
+    margin: 8px 0;
     box-shadow:
-        0 0 12px rgba(255, 0, 200, 0.7),
-        0 0 40px rgba(0, 160, 255, 0.5),
-        0 0 80px rgba(255, 120, 0, 0.5);
-    text-shadow:
-        0 0 8px rgba(255, 0, 200, 0.8),
-        0 0 18px rgba(0, 195, 255, 0.8);
+        0 0 12px rgba(255, 0, 200, 0.6),
+        0 0 40px rgba(0, 160, 255, 0.4),
+        0 0 80px rgba(255, 120, 0, 0.4);
+    transition: 0.25s;
 }
 
-.beat-link:active {
-    filter: brightness(1.2);
+.beat-link:hover {
+    filter: brightness(1.3);
     box-shadow:
         0 0 20px rgba(255, 0, 200, 1),
         0 0 60px rgba(0, 160, 255, 0.8),
         0 0 120px rgba(255, 120, 0, 0.8);
 }
 
-/* footer */
+/* FOOTER */
 .footer-line {
-    font-size: 0.7rem;
-    line-height: 1.3;
-    color: #fff;
-    opacity: 0.8;
-    text-align: center;
+    font-size: 0.75rem;
     margin-top: 24px;
+    opacity: 0.8;
 }
 
-/* BUBBLE BACKGROUND LAYER */
+.footer-line a {
+    color: #ff9cff;
+    text-decoration: underline;
+}
+
+/* BUBBLE BACKGROUND */
 .bubble-bg {
     position: absolute;
     inset: 0;
@@ -117,52 +107,40 @@ body {
     filter: blur(40px);
 }
 
-/* floating orb “bubbles” using pseudo-elements */
 .bubble-bg::before,
 .bubble-bg::after {
     content: "";
     position: absolute;
     border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: radial-gradient(circle at 30% 30%, rgba(255,0,200,0.7) 0%, rgba(0,0,50,0) 70%);
     box-shadow:
         0 0 20px rgba(255,0,200,0.9),
         0 0 60px rgba(255,120,0,0.6),
         0 0 100px rgba(0,160,255,0.6);
-    border: 2px solid rgba(255,255,255,0.4);
-    width: 140px;
-    height: 140px;
-    background: radial-gradient(circle at 30% 30%,
-        rgba(255,0,200,0.7) 0%,
-        rgba(0,0,50,0) 70%);
-    animation: floaty 8s linear infinite;
     opacity: 0.4;
+    animation: floaty 8s linear infinite;
 }
 
-/* second bubble w/ different colors */
 .bubble-bg::after {
     width: 90px;
     height: 90px;
     left: 70%;
     top: 60%;
-    background: radial-gradient(circle at 30% 30%,
-        rgba(0,160,255,0.7) 0%,
-        rgba(0,0,50,0) 70%);
-    box-shadow:
-        0 0 20px rgba(0,160,255,0.9),
-        0 0 60px rgba(255,120,0,0.6),
-        0 0 100px rgba(255,0,200,0.6);
+    background: radial-gradient(circle at 30% 30%, rgba(0,160,255,0.7) 0%, rgba(0,0,50,0) 70%);
     animation-duration: 10s;
     animation-direction: reverse;
 }
 
-/* first bubble position */
 .bubble-bg::before {
+    width: 140px;
+    height: 140px;
     left: 10%;
     top: 20%;
 }
 
-/* gentle float animation */
 @keyframes floaty {
-    0%   { transform: translateY(0px) translateX(0px) scale(1); }
-    50%  { transform: translateY(-25px) translateX(10px) scale(1.05); }
+    0% { transform: translateY(0px) translateX(0px) scale(1); }
+    50% { transform: translateY(-25px) translateX(10px) scale(1.05); }
     100% { transform: translateY(0px) translateX(0px) scale(1); }
 }
