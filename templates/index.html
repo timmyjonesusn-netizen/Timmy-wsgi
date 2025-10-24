@@ -3,45 +3,70 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Timmy Bubbles</title>
+    <title>TimmyTime</title>
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
-    <!-- Bubble canvas / glowing background lives behind everything -->
+    <!-- floating pastel bubble background -->
     <div class="bg-gradient"></div>
     <canvas id="bubbleCanvas"></canvas>
 
-    <!-- Top bar with Timmy + live visitor counter -->
-    <header class="timmy-bar">
-        <div class="timmy-left">TIMMY</div>
-        <div class="timmy-right">
-            <span class="vis-label">Visitors:</span>
-            <span class="visit-num">{{ visit_count }}</span>
+    <!-- TOP BAR: TimmyTime (left) + Visitors (right) -->
+    <header class="timmytime-bar">
+        <div class="tt-left">
+            TimmyTime
+        </div>
+        <div class="tt-right">
+            <span class="tt-vis-label">Visitors:</span>
+            <span class="tt-vis-num">{{ visit_count }}</span>
         </div>
     </header>
 
-    <!-- Main content card -->
-    <main class="main-card">
-        <h1 class="headline">Timmy’s Bubble Mixes</h1>
+    <!-- MAIN CONTENT WRAPPER so we can push it below the fixed bar -->
+    <main class="page-wrap">
 
-        <div class="playlist-grid">
-            {% for p in playlists %}
-            <a class="playlist-btn"
-               href="{{ p.url }}"
-               target="_blank"
-               rel="noopener noreferrer">
-                {{ p.label }}
+        <!-- PLAYLIST BUTTONS (these are your big rounded gradient blocks) -->
+        <section class="playlist-section">
+            <a class="big-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">
+                Playlist 1
             </a>
-            {% endfor %}
-        </div>
 
-        <p class="credit">
-            App made on iPhone 17 Pro Max • Timmy Bubbles
+            <a class="big-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">
+                Playlist 2
+            </a>
+
+            <a class="big-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">
+                Playlist 3
+            </a>
+
+            <a class="big-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">
+                Playlist 4
+            </a>
+
+            <a class="big-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
+                Playlist 5
+            </a>
+        </section>
+
+        <!-- SINGLE TRACK HEADER -->
+        <h2 class="section-title">Single Track</h2>
+
+        <!-- FEATURE TRACK BUTTON -->
+        <a class="big-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
+            Feature Track
+        </a>
+
+        <!-- CREDIT LINE -->
+        <p class="credit-line">
+            App made by iPhone 17 Pro Max • Timmy Bubbles
         </p>
+
+        <!-- (REMOVED the bottom Visitors pill because it's now in header) -->
+
     </main>
 
-    <!-- Bubble animation script -->
+    <!-- bubble animation script (keeps your upward float balloons look) -->
     <script>
     (function () {
         const canvas = document.getElementById("bubbleCanvas");
@@ -52,7 +77,6 @@
         canvas.width = w;
         canvas.height = h;
 
-        // bubbles
         const bubbles = [];
         const COUNT = 40;
 
@@ -63,26 +87,12 @@
         function makeBubble() {
             return {
                 x: rand(0, w),
-                y: rand(h * 0.5, h + 50), // start lower half
-                r: rand(6, 24),           // smaller bubbles
-                vy: rand(-0.6, -0.15),    // float UP
-                vx: rand(-0.25, 0.25),    // slight drift
-                huePick: Math.random(),   // choose purple/pink/orange
-                alpha: rand(0.4, 0.9)
+                y: rand(h * 0.5, h + 50),
+                r: rand(40, 90),           // your current bubbles look big/soft
+                vy: rand(-0.4, -0.15),     // float upward
+                vx: rand(-0.2, 0.2),       // slow side drift
+                alpha: rand(0.4, 0.8)
             };
-        }
-
-        function bubbleColor(huePick) {
-            if (huePick < 0.33) {
-                // purple
-                return { r: 140, g: 0, b: 255 };
-            } else if (huePick < 0.66) {
-                // hot pink
-                return { r: 255, g: 0, b: 204 };
-            } else {
-                // orange
-                return { r: 255, g: 102, b: 0 };
-            }
         }
 
         for (let i = 0; i < COUNT; i++) {
@@ -93,44 +103,29 @@
             ctx.clearRect(0, 0, w, h);
 
             for (let b of bubbles) {
-                // move bubble
                 b.x += b.vx;
                 b.y += b.vy;
 
-                // recycle bubble if off screen
-                if (b.y + b.r < -40 || b.x < -50 || b.x > w + 50) {
-                    const fresh = makeBubble();
-                    b.x = fresh.x;
-                    b.y = h + rand(10, 60);
-                    b.r = fresh.r;
-                    b.vy = fresh.vy;
-                    b.vx = fresh.vx;
-                    b.huePick = fresh.huePick;
-                    b.alpha = fresh.alpha;
+                // if bubble leaves the top, respawn near bottom
+                if (b.y + b.r < -40) {
+                    b.x = rand(0, w);
+                    b.y = h + rand(10, 200);
                 }
 
-                // glow color
-                const col = bubbleColor(b.huePick);
-
-                // outer glow
+                // pastel radial
                 const grad = ctx.createRadialGradient(
                     b.x, b.y, b.r * 0.2,
-                    b.x, b.y, b.r * 1.4
+                    b.x, b.y, b.r
                 );
-                grad.addColorStop(0, `rgba(${col.r},${col.g},${col.b},${b.alpha})`);
+                // soft purple/pink/orange like you’re showing now
+                grad.addColorStop(0, `rgba(255, 0, 204, ${b.alpha})`);
+                grad.addColorStop(0.5, `rgba(255, 153, 0, ${b.alpha * 0.5})`);
                 grad.addColorStop(1, "rgba(0,0,0,0)");
 
                 ctx.beginPath();
                 ctx.fillStyle = grad;
-                ctx.arc(b.x, b.y, b.r * 1.4, 0, Math.PI * 2);
-                ctx.fill();
-
-                // inner ring
-                ctx.beginPath();
-                ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${Math.min(1,b.alpha+0.2)})`;
-                ctx.lineWidth = 2;
                 ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                ctx.stroke();
+                ctx.fill();
             }
 
             requestAnimationFrame(draw);
