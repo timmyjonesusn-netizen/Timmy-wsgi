@@ -1,199 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimmyTime</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TimmyTime Audio Playground</title>
+<style>
+    /* ---------- GLOBAL RESET ---------- */
+    * {
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        margin: 0;
+        padding: 0;
+    }
 
-    <style>
-        /* RESET + BASE */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Roboto", sans-serif;
-            background-color: #0a0016;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
+    body {
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: #fff;
+        background: radial-gradient(circle at 20% 20%, #4a003a 0%, #0a0018 60%, #000010 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        position: relative;
+        overflow: hidden; /* important for bubbles */
+    }
 
-        /* MAIN CARD */
-        .content-card {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 420px;
-            background: rgba(20, 0, 40, 0.65);
-            border: 1px solid rgba(255, 0, 200, 0.4);
-            box-shadow:
-                0 0 20px rgba(255, 0, 200, 0.6),
-                0 0 60px rgba(255, 110, 0, 0.4),
-                0 0 120px rgba(0, 180, 255, 0.3);
-            border-radius: 20px;
-            padding: 24px 20px 32px;
-            backdrop-filter: blur(8px);
-            text-align: center;
-        }
+    /* ---------- FLOATING BUBBLES LAYER ---------- */
+    .bubbles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+    }
 
-        /* TEXT + HEADINGS */
-        .hero-title {
-            font-size: 1.5rem;
-            line-height: 1.2;
-            font-weight: 600;
-            color: #fff;
-            text-shadow:
-                0 0 8px rgba(255, 0, 221, 0.9),
-                0 0 24px rgba(0, 168, 255, 0.7),
-                0 0 48px rgba(255, 115, 0, 0.6);
-            margin-bottom: 10px;
-        }
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+        opacity: 0.6;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%);
+        mix-blend-mode: screen;
+        /* each bubble also gets a colored glow via box-shadow inline */
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
 
-        .tagline {
-            color: #ff9cff;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
+    /* Keyframes:
+       We send bubbles mostly upward (translateY negative),
+       but we also drift sideways in a wavy horizontal path
+       so it looks like slow float, not straight rocket.
+    */
+    @keyframes floatUpDrift {
+        0%   { transform: translate3d(var(--xStart,0px),   var(--yStart,0px),0) scale(var(--scale,1)); }
+        25%  { transform: translate3d(calc(var(--xStart,0px) + 20px), calc(var(--yStart,0px) - 60px),0) scale(var(--scale,1)); }
+        50%  { transform: translate3d(calc(var(--xStart,0px) - 15px), calc(var(--yStart,0px) - 120px),0) scale(var(--scale,1)); }
+        75%  { transform: translate3d(calc(var(--xStart,0px) + 25px), calc(var(--yStart,0px) - 180px),0) scale(var(--scale,1)); }
+        100% { transform: translate3d(var(--xEnd,0px),     calc(var(--yStart,0px) - 240px),0) scale(var(--scale,1)); }
+    }
 
-        .block-title {
-            color: #ffd0ff;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 8px rgba(255, 0, 150, 0.8);
-        }
+    /* We'll randomize custom props with inline styles per bubble */
+    .bubble.slow   { animation-duration: 18s; }
+    .bubble.med    { animation-duration: 14s; }
+    .bubble.fast   { animation-duration: 10s; }
 
-        /* LINKS */
-        .links-block {
-            margin-bottom: 22px;
-        }
+    /* ---------- CARD CONTAINER ---------- */
+    .card {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        border-radius: 20px;
+        padding: 24px 20px 32px;
+        background: radial-gradient(circle at 50% 20%, rgba(40,0,40,0.9) 0%, rgba(5,0,20,0.9) 60%, rgba(0,0,10,0.95) 100%);
+        border: 1px solid rgba(255,0,255,0.3);
+        box-shadow:
+            0 0 40px rgba(255,0,255,0.4),
+            0 0 120px rgba(0,170,255,0.2),
+            0 20px 80px rgba(0,0,0,0.8);
+        z-index: 5;
+        text-align: center;
+    }
 
-        .beat-link {
-            display: block;
-            text-decoration: none;
-            color: #fff;
-            font-weight: 500;
-            background: linear-gradient(
-                90deg,
-                rgba(255, 0, 150, 0.4),
-                rgba(0, 160, 255, 0.3)
-            );
-            border: 1px solid rgba(255,0,200,0.5);
-            border-radius: 12px;
-            padding: 10px;
-            margin: 8px 0;
-            box-shadow:
-                0 0 12px rgba(255, 0, 200, 0.6),
-                0 0 40px rgba(0, 160, 255, 0.4),
-                0 0 80px rgba(255, 120, 0, 0.4);
-            transition: 0.25s;
-        }
+    .title {
+        font-size: clamp(1.8rem, 1.2rem + 1.5vw, 2.2rem);
+        font-weight: 700;
+        line-height: 1.2;
+        color: #fff;
+        text-shadow:
+            0 0 8px rgba(255,255,255,0.9),
+            0 0 24px rgba(255,0,255,0.8),
+            0 0 48px rgba(0,128,255,0.6);
+        margin-bottom: 16px;
+    }
 
-        .beat-link:hover,
-        .beat-link:active {
-            filter: brightness(1.3);
-            box-shadow:
-                0 0 20px rgba(255, 0, 200, 1),
-                0 0 60px rgba(0, 160, 255, 0.8),
-                0 0 120px rgba(255, 120, 0, 0.8);
-        }
+    .tagline {
+        font-size: 1rem;
+        line-height: 1.4;
+        font-weight: 500;
+        color: #ffb7ff;
+        text-shadow: 0 0 8px rgba(255,0,200,0.7), 0 0 20px rgba(0,150,255,0.6);
+        margin-bottom: 28px;
+    }
 
-        /* FOOTER */
-        .footer-line {
-            font-size: 0.75rem;
-            margin-top: 24px;
-            opacity: 0.8;
-            color: #fff;
-        }
+    .section-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #ff9fff;
+        text-shadow:
+            0 0 6px rgba(255,0,200,0.8),
+            0 0 20px rgba(255,0,200,0.4),
+            0 0 40px rgba(0,128,255,0.4);
+        margin: 0 auto 12px;
+    }
 
-        .footer-line a {
-            color: #ff9cff;
-            text-decoration: underline;
-        }
+    /* ---------- BUTTON LIST ---------- */
+    .button-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        margin-bottom: 28px;
+    }
 
-        /* BUBBLE BACKGROUND */
-        .bubble-bg {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            z-index: 1;
-            background: radial-gradient(circle at 50% 50%, rgba(255,0,200,0.15) 0%, rgba(0,0,0,0) 70%),
-                        radial-gradient(circle at 20% 80%, rgba(0,160,255,0.15) 0%, rgba(0,0,0,0) 70%),
-                        radial-gradient(circle at 80% 20%, rgba(255,120,0,0.15) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(40px);
-        }
+    .playlist-button {
+        display: block;
+        width: 100%;
+        border-radius: 16px;
+        padding: 18px 16px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.2;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
 
-        .bubble-bg::before,
-        .bubble-bg::after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: radial-gradient(circle at 30% 30%, rgba(255,0,200,0.7) 0%, rgba(0,0,50,0) 70%);
-            box-shadow:
-                0 0 20px rgba(255,0,200,0.9),
-                0 0 60px rgba(255,120,0,0.6),
-                0 0 100px rgba(0,160,255,0.6);
-            opacity: 0.4;
-            animation: floaty 8s linear infinite;
-        }
+        background: linear-gradient(
+            135deg,
+            rgba(255,0,153,0.4) 0%,
+            rgba(128,0,128,0.3) 40%,
+            rgba(0,80,200,0.4) 100%
+        );
 
-        .bubble-bg::before {
-            width: 140px;
-            height: 140px;
-            left: 10%;
-            top: 20%;
-        }
+        border: 1px solid rgba(255,0,255,0.4);
+        box-shadow:
+            0 0 10px rgba(255,0,200,0.6),
+            0 0 30px rgba(255,0,200,0.4),
+            0 0 60px rgba(0,128,255,0.4);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.12s ease;
+    }
 
-        .bubble-bg::after {
-            width: 90px;
-            height: 90px;
-            left: 70%;
-            top: 60%;
-            background: radial-gradient(circle at 30% 30%, rgba(0,160,255,0.7) 0%, rgba(0,0,50,0) 70%);
-            animation-duration: 10s;
-            animation-direction: reverse;
-        }
+    /* subtle glossy streak inside button */
+    .playlist-button::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 0%,
+            rgba(255,255,255,0.35) 0%,
+            rgba(255,255,255,0) 60%);
+        mix-blend-mode: screen;
+        opacity: 0.4;
+        pointer-events: none;
+    }
 
-        @keyframes floaty {
-            0%   { transform: translateY(0px) translateX(0px) scale(1); }
-            50%  { transform: translateY(-25px) translateX(10px) scale(1.05); }
-            100% { transform: translateY(0px) translateX(0px) scale(1); }
+    /* tap / press feedback for mobile */
+    .playlist-button:active {
+        transform: scale(0.98);
+        box-shadow:
+            0 0 20px rgba(255,0,200,0.9),
+            0 0 40px rgba(255,0,200,0.6),
+            0 0 80px rgba(0,128,255,0.6);
+        filter: brightness(1.2);
+    }
+
+    /* ---------- FOOTER / SAFETY NOTE ---------- */
+    .safety {
+        font-size: 1rem;
+        line-height: 1.4;
+        color: #ffdfff;
+        text-shadow:
+            0 0 6px rgba(255,0,200,0.8),
+            0 0 20px rgba(255,0,200,0.4);
+        margin-top: 28px;
+    }
+
+    .safety a {
+        color: #e8b3ff;
+        text-decoration: underline;
+    }
+
+    .safety a:active {
+        color: #ffffff;
+    }
+
+    /* ---------- SMALL SCREEN TUNE ---------- */
+    @media (max-width: 380px) {
+        .playlist-button {
+            font-size: 1.25rem;
+            padding: 16px 14px;
         }
-    </style>
+        .section-label {
+            font-size: 1rem;
+        }
+    }
+</style>
 </head>
 <body>
 
-    <div class="bubble-bg"></div>
+<!-- FLOATING BUBBLES -->
+<div class="bubbles">
+    <!-- Pink bubbles -->
+    <div class="bubble slow" style="
+        --xStart:20px; --yStart:70vh; --xEnd:0px; --scale:0.5;
+        width:80px; height:80px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,200,255,0.9) 0%, rgba(255,0,200,0.15) 60%);
+        box-shadow:0 0 30px rgba(255,0,200,0.8),0 0 80px rgba(255,0,200,0.4);
+        animation-name: floatUpDrift;
+    "></div>
 
-    <main class="content-card">
-        <h1 class="hero-title">TimmyTime Audio Playground</h1>
-        <p class="tagline">Royalty-free vibes • Alabama soul • HUI energy</p>
+    <div class="bubble med" style="
+        --xStart:75vw; --yStart:82vh; --xEnd:70vw; --scale:0.4;
+        width:60px; height:60px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,180,255,0.9) 0%, rgba(255,0,200,0.1) 60%);
+        box-shadow:0 0 25px rgba(255,0,200,0.7),0 0 70px rgba(255,0,200,0.35);
+        animation-name: floatUpDrift;
+    "></div>
 
-        <section class="links-block">
-            <h2 class="block-title">Playlists</h2>
-            <a class="beat-link" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener">Playlist 1</a>
-            <a class="beat-link" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener">Playlist 2</a>
-            <a class="beat-link" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener">Playlist 3</a>
-            <a class="beat-link" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener">Playlist 4</a>
-            <a class="beat-link" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener">Playlist 5</a>
-        </section>
+    <div class="bubble fast" style="
+        --xStart:60vw; --yStart:65vh; --xEnd:63vw; --scale:0.3;
+        width:40px; height:40px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,180,255,0.9) 0%, rgba(255,0,200,0.1) 60%);
+        box-shadow:0 0 20px rgba(255,0,200,0.7),0 0 60px rgba(255,0,200,0.3);
+        animation-name: floatUpDrift;
+    "></div>
 
-        <section class="links-block">
-            <h2 class="block-title">Single Track</h2>
-            <a class="beat-link" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener">Feature Track</a>
-        </section>
+    <!-- Blue bubbles -->
+    <div class="bubble slow" style="
+        --xStart:15vw; --yStart:90vh; --xEnd:10vw; --scale:0.6;
+        width:90px; height:90px;
+        background: radial-gradient(circle at 30% 30%, rgba(180,220,255,0.9) 0%, rgba(0,100,255,0.15) 60%);
+        box-shadow:0 0 30px rgba(0,150,255,0.8),0 0 90px rgba(0,150,255,0.4);
+        animation-name: floatUpDrift;
+    "></div>
 
-        <footer class="footer-line">
-            Domestic abuse help: visit the
-            <a href="https://www.townofragland.org/Default.asp?ID=33&pg=Action+Center" target="_blank" rel="noopener">
-                Town of Ragland Action Center
-            </a>
-            for direct contact with the mayor.
-        </footer>
-    </main>
+    <div class="bubble med" style="
+        --xStart:80vw; --yStart:75vh; --xEnd:82vw; --scale:0.35;
+        width:50px; height:50px;
+        background: radial-gradient(circle at 30% 30%, rgba(200,230,255,0.9) 0%, rgba(0,120,255,0.1) 60%);
+        box-shadow:0 0 25px rgba(0,150,255,0.7),0 0 70px rgba(0,150,255,0.35);
+        animation-name: floatUpDrift;
+    "></div>
+
+    <!-- Orange bubbles -->
+    <div class="bubble fast" style="
+        --xStart:30vw; --yStart:88vh; --xEnd:28vw; --scale:0.45;
+        width:70px; height:70px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,230,200,0.9) 0%, rgba(255,120,0,0.15) 60%);
+        box-shadow:0 0 30px rgba(255,120,0,0.8),0 0 80px rgba(255,120,0,0.4);
+        animation-name: floatUpDrift;
+    "></div>
+
+    <div class="bubble med" style="
+        --xStart:55vw; --yStart:95vh; --xEnd:58vw; --scale:0.25;
+        width:40px; height:40px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,230,200,0.9) 0%, rgba(255,120,0,0.15) 60%);
+        box-shadow:0 0 20px rgba(255,120,0,0.8),0 0 70px rgba(255,120,0,0.35);
+        animation-name: floatUpDrift;
+    "></div>
+
+    <div class="bubble slow" style="
+        --xStart:5vw; --yStart:75vh; --xEnd:8vw; --scale:0.2;
+        width:32px; height:32px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,230,200,0.9) 0%, rgba(255,120,0,0.15) 60%);
+        box-shadow:0 0 18px rgba(255,120,0,0.8),0 0 60px rgba(255,120,0,0.35);
+        animation-name: floatUpDrift;
+    "></div>
+</div>
+
+<!-- MAIN CARD CONTENT -->
+<div class="card">
+    <div class="title">TimmyTime Audio<br/>Playground</div>
+
+    <div class="tagline">
+        Royalty-free vibes • Alabama soul • HUI energy
+    </div>
+
+    <div class="section-label">Playlists</div>
+
+    <div class="button-list">
+        <!-- Playlist 1 -->
+        <a class="playlist-button"
+           href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b"
+           target="_blank" rel="noopener noreferrer">
+            Playlist 1
+        </a>
+
+        <!-- Playlist 2 -->
+        <a class="playlist-button"
+           href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f"
+           target="_blank" rel="noopener noreferrer">
+            Playlist 2
+        </a>
+
+        <!-- Playlist 3 -->
+        <a class="playlist-button"
+           href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44"
+           target="_blank" rel="noopener noreferrer">
+            Playlist 3
+        </a>
+
+        <!-- Playlist 4 -->
+        <a class="playlist-button"
+           href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df"
+           target="_blank" rel="noopener noreferrer">
+            Playlist 4
+        </a>
+
+        <!-- Playlist 5 -->
+        <a class="playlist-button"
+           href="https://www.nativecrafts.us/medicine-bags-c-164.html"
+           target="_blank" rel="noopener noreferrer">
+            Playlist 5
+        </a>
+    </div>
+
+    <div class="section-label">Single Track</div>
+
+    <div class="button-list" style="margin-bottom:0;">
+        <a class="playlist-button"
+           href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
+           target="_blank" rel="noopener noreferrer">
+            Feature Track
+        </a>
+    </div>
+
+    <div class="safety">
+        Domestic abuse help: visit the
+        <a href="https://www.townofragland.org/Default.asp?ID=33&amp;pg=Action+Center"
+           target="_blank" rel="noopener noreferrer">
+            Town of Ragland Action Center
+        </a>
+        for direct contact with the mayor.
+    </div>
+</div>
 
 </body>
 </html>
