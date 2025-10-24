@@ -3,402 +3,86 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TimmyTime Audio Playground</title>
+<title>Timmy Bubbles Live</title>
 <style>
-    :root {
-        --bg-start: #fffecf;
-        --bg-mid: #d5ffe9;
-        --bg-end: #c4dfff;
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at bottom, #240046, #3c096c, #ff6f91);
+    overflow: hidden;
+    font-family: 'Trebuchet MS', sans-serif;
+    color: white;
+    text-align: center;
+  }
 
-        --border-neon: rgba(255,0,200,0.8);
-        --text-dark: #1a002b;
-        --text-light: #ffffff;
+  h1 {
+    margin-top: 30px;
+    text-shadow: 0 0 15px #ff9efc;
+  }
+
+  .bubble {
+    position: absolute;
+    bottom: -100px;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: rise 12s infinite ease-in;
+  }
+
+  @keyframes rise {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
     }
-
-    * {
-        box-sizing: border-box;
-        -webkit-font-smoothing: antialiased;
-        margin: 0;
-        padding: 0;
+    100% {
+      transform: translateY(-110vh) scale(1.5);
+      opacity: 0;
     }
+  }
 
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue",
-            Arial, sans-serif;
-        background: radial-gradient(circle at 20% 20%, var(--bg-start) 0%, var(--bg-mid) 40%, var(--bg-end) 100%);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        color: var(--text-dark);
-        overflow-x: hidden;
-    }
-
-    .app-shell {
-        position: relative;
-        width: 100%;
-        max-width: 480px;
-        background: linear-gradient(
-            to bottom,
-            rgba(255,255,255,0) 0%,
-            rgba(173,216,230,0.4) 60%,
-            rgba(135,206,250,0.5) 100%
-        );
-        padding: 2rem 1rem 5rem;
-        box-shadow:
-            0 30px 60px rgba(0,0,0,0.15),
-            0 0 120px rgba(255,255,255,0.4) inset;
-        overflow: hidden; /* clip bubbles leaving */
-    }
-
-    /* z-index stack:
-       bubble-layer sits at 1
-       content sits at 10
-       so bubbles drift BEHIND text/buttons */
-    .content {
-        position: relative;
-        z-index: 10;
-    }
-
-    header {
-        text-align: left;
-        margin-bottom: 1.5rem;
-        padding: 0 .5rem;
-    }
-
-    header h1 {
-        font-size: 2.2rem;
-        line-height: 1.1;
-        font-weight: 800;
-        color: #000;
-        text-shadow: 0 4px 8px rgba(0,0,0,0.4);
-        margin-bottom: 1rem;
-    }
-
-    header .tagline {
-        font-size: 1.05rem;
-        line-height: 1.35;
-        font-weight: 700;
-        color: #2a003c;
-        text-shadow: 0 2px 4px rgba(255,255,255,0.6);
-        margin-bottom: 1.5rem;
-    }
-
-    h2.section-title {
-        font-size: 1.8rem;
-        line-height: 1.2;
-        color: #1a002b;
-        font-weight: 800;
-        text-align: center;
-        text-shadow:
-            0 2px 2px rgba(255,255,255,0.9),
-            0 4px 8px rgba(0,0,0,0.3);
-        margin-bottom: 1rem;
-    }
-
-    /* PLAYLIST BUTTONS (now ~half the height) */
-    .playlist-buttons {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .music-btn {
-        background-image:
-            radial-gradient(circle at 0% 0%,
-                rgba(255,0,128,0.6) 0%,
-                rgba(255,166,0,0.4) 35%,
-                rgba(0,128,255,0.4) 100%
-            ),
-            linear-gradient(
-                90deg,
-                rgba(255,105,180,0.6) 0%,
-                rgba(255,255,255,0.15) 40%,
-                rgba(0,128,255,0.5) 100%
-            );
-        background-blend-mode: screen, normal;
-        border-radius: 20px;
-        border: 2px solid var(--border-neon);
-        box-shadow:
-            0 18px 30px rgba(0,0,0,0.4),
-            0 0 20px rgba(255,0,200,0.6),
-            0 0 60px rgba(0,153,255,0.4);
-        padding: 0.9rem 1rem;            /* was 1.5rem -> slimmer */
-        text-align: center;
-        font-size: 1.6rem;               /* was 1.9rem -> tighter */
-        line-height: 1.2;
-        font-weight: 800;
-        color: var(--text-light);
-        text-shadow:
-            0 3px 6px rgba(0,0,0,0.6),
-            0 0 6px rgba(255,255,255,0.8);
-        -webkit-user-select: none;
-        user-select: none;
-    }
-
-    /* SINGLE TRACK BLOCK */
-    .single-track {
-        position: relative;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        text-align: center;
-        color: #1a002b;
-    }
-
-    .single-track h3 {
-        font-size: 1.8rem;
-        font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 1rem;
-        color: #1a002b;
-        text-shadow:
-            0 2px 2px rgba(255,255,255,0.9),
-            0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    .feature-btn {
-        background-image:
-            radial-gradient(circle at 0% 0%,
-                rgba(255,0,128,0.6) 0%,
-                rgba(255,166,0,0.45) 35%,
-                rgba(120,120,120,0.55) 100%
-            );
-        background-blend-mode: screen;
-        border-radius: 20px;
-        border: 2px solid var(--border-neon);
-        box-shadow:
-            0 18px 30px rgba(0,0,0,0.4),
-            0 0 20px rgba(255,0,200,0.6),
-            0 0 60px rgba(255,153,0,0.4);
-        padding: 0.9rem 1rem;           /* match slimmer */
-        text-align: center;
-        font-size: 1.6rem;
-        line-height: 1.2;
-        font-weight: 800;
-        color: var(--text-light);
-        text-shadow:
-            0 3px 6px rgba(0,0,0,0.6),
-            0 0 6px rgba(255,255,255,0.8);
-        -webkit-user-select: none;
-        user-select: none;
-    }
-
-    footer {
-        text-align: center;
-        margin-top: 2rem;
-        font-size: 1rem;
-        line-height: 1.4;
-        font-weight: 700;
-        color: #1a002b;
-        text-shadow:
-            0 2px 2px rgba(255,255,255,0.9),
-            0 3px 6px rgba(0,0,0,0.2);
-        padding-bottom: 3rem;
-    }
-
-    /* BUBBLES */
-    .bubble-layer {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        z-index: 1;          /* BEHIND content */
-        pointer-events: none;
-    }
-
-    .bubble {
-        position: absolute;
-        border-radius: 50%;
-        opacity: 0.9;
-        box-shadow:
-            0 8px 16px rgba(0,0,0,0.4),
-            0 0 20px rgba(255,255,255,0.6) inset;
-        filter: blur(0px);
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-        /* we’ll assign animation-name + duration + delay inline */
-    }
-
-    /* solid neon looks */
-    .purple {
-        background: radial-gradient(circle at 30% 30%,
-            rgba(255,0,255,0.8) 0%,
-            rgba(128,0,255,0.6) 60%,
-            rgba(80,0,120,0.3) 100%);
-        box-shadow:
-            0 0 12px rgba(255,0,255,0.7),
-            0 0 30px rgba(128,0,255,0.5),
-            0 4px 12px rgba(0,0,0,0.6);
-    }
-
-    .pink {
-        background: radial-gradient(circle at 30% 30%,
-            rgba(255,105,180,0.85) 0%,
-            rgba(255,0,128,0.6) 60%,
-            rgba(120,0,60,0.3) 100%);
-        box-shadow:
-            0 0 12px rgba(255,105,180,0.7),
-            0 0 30px rgba(255,0,128,0.5),
-            0 4px 12px rgba(0,0,0,0.6);
-    }
-
-    .orange {
-        background: radial-gradient(circle at 30% 30%,
-            rgba(255,166,0,0.9) 0%,
-            rgba(255,99,0,0.6) 60%,
-            rgba(120,60,0,0.3) 100%);
-        box-shadow:
-            0 0 12px rgba(255,166,0,0.8),
-            0 0 30px rgba(255,99,0,0.5),
-            0 4px 12px rgba(0,0,0,0.6);
-    }
-
-    /* pulsing hue shift */
-    .pulse {
-        animation-name: floatUp, swaySide, pulseColor;
-    }
-
-    /* regular bubble: no hue shift, just float + sway */
-    .floatOnly {
-        animation-name: floatUp, swaySide;
-    }
-
-    /* float from below bottom to above top */
-    @keyframes floatUp {
-        0%   { transform: translateY(110vh); }
-        100% { transform: translateY(-140vh); }
-    }
-
-    /* slow wobble left-right */
-    @keyframes swaySide {
-        0%   { margin-left: -12px; }
-        50%  { margin-left: 12px;  }
-        100% { margin-left: -12px; }
-    }
-
-    /* color cycling for pulse bubbles */
-    @keyframes pulseColor {
-        0% {
-            background: radial-gradient(circle at 30% 30%,
-                rgba(255,0,255,0.8) 0%,
-                rgba(128,0,255,0.6) 60%,
-                rgba(80,0,120,0.3) 100%);
-            box-shadow:
-                0 0 12px rgba(255,0,255,0.7),
-                0 0 30px rgba(128,0,255,0.5),
-                0 4px 12px rgba(0,0,0,0.6);
-        }
-        33% {
-            background: radial-gradient(circle at 30% 30%,
-                rgba(255,105,180,0.85) 0%,
-                rgba(255,0,128,0.6) 60%,
-                rgba(120,0,60,0.3) 100%);
-            box-shadow:
-                0 0 12px rgba(255,105,180,0.7),
-                0 0 30px rgba(255,0,128,0.5),
-                0 4px 12px rgba(0,0,0,0.6);
-        }
-        66% {
-            background: radial-gradient(circle at 30% 30%,
-                rgba(255,166,0,0.9) 0%,
-                rgba(255,99,0,0.6) 60%,
-                rgba(120,60,0,0.3) 100%);
-            box-shadow:
-                0 0 12px rgba(255,166,0,0.8),
-                0 0 30px rgba(255,99,0,0.5),
-                0 4px 12px rgba(0,0,0,0.6);
-        }
-        100% {
-            background: radial-gradient(circle at 30% 30%,
-                rgba(255,0,255,0.8) 0%,
-                rgba(128,0,255,0.6) 60%,
-                rgba(80,0,120,0.3) 100%);
-            box-shadow:
-                0 0 12px rgba(255,0,255,0.7),
-                0 0 30px rgba(128,0,255,0.5),
-                0 4px 12px rgba(0,0,0,0.6);
-        }
-    }
-
-    /* size helpers */
-    .s   { width: 32px;  height: 32px;  }
-    .m   { width: 50px;  height: 50px;  }
-    .l   { width: 80px;  height: 80px;  }
-    .xl  { width: 110px; height: 110px; }
-
+  .counter {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(255, 0, 150, 0.6);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-family: monospace;
+    font-size: 14px;
+    box-shadow: 0 0 12px rgba(255,0,255,0.8);
+    z-index: 9999;
+  }
 </style>
 </head>
 <body>
-    <main class="app-shell">
-        <!-- BUBBLES -->
-        <div class="bubble-layer">
-            <!-- random-ish: each bubble gets its own left %, duration, delay -->
-            <!-- floatOnly bubbles -->
-            <div class="bubble purple s floatOnly" style="left:5%;   animation-duration:16s,5s;  animation-delay:0s,0s;"></div>
-            <div class="bubble pink m floatOnly"   style="left:18%;  animation-duration:22s,6s;  animation-delay:3s,1s;"></div>
-            <div class="bubble orange l floatOnly" style="left:31%;  animation-duration:28s,7s;  animation-delay:6s,2s;"></div>
-            <div class="bubble purple m floatOnly" style="left:46%;  animation-duration:20s,5s;  animation-delay:1s,0s;"></div>
-            <div class="bubble orange s floatOnly" style="left:62%;  animation-duration:25s,6s;  animation-delay:4s,1s;"></div>
-            <div class="bubble pink l floatOnly"   style="left:77%;  animation-duration:30s,8s;  animation-delay:7s,2s;"></div>
-            <div class="bubble purple m floatOnly" style="left:12%;  animation-duration:24s,6s;  animation-delay:9s,1s;"></div>
-            <div class="bubble pink s floatOnly"   style="left:54%;  animation-duration:18s,5s;  animation-delay:10s,0s;"></div>
-            <div class="bubble orange m floatOnly" style="left:84%;  animation-duration:26s,7s;  animation-delay:12s,2s;"></div>
-            <div class="bubble purple l floatOnly" style="left:28%;  animation-duration:32s,8s;  animation-delay:14s,2s;"></div>
-            <div class="bubble orange m floatOnly" style="left:69%;  animation-duration:19s,5s;  animation-delay:16s,0s;"></div>
-            <div class="bubble pink s floatOnly"   style="left:90%;  animation-duration:27s,6s;  animation-delay:18s,1s;"></div>
+  <h1>🌈 Timmy Bubbles App 👁️</h1>
 
-            <!-- pulsing color bubbles -->
-            <div class="bubble pulse xl" style="left:35%; animation-duration:34s,6s,10s; animation-delay:0s,0s,0s;"></div>
-            <div class="bubble pulse l"  style="left:58%; animation-duration:29s,7s,10s; animation-delay:5s,1s,2s;"></div>
-            <div class="bubble pulse m"  style="left:42%; animation-duration:31s,6s,10s; animation-delay:10s,2s,4s;"></div>
-        </div>
+  <script>
+    // create colorful pulsating bubbles
+    const colors = ['#ff00ff', '#ff6f00', '#ff0099', '#ff66ff', '#ff6600', '#ff33cc'];
+    for (let i = 0; i < 40; i++) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      const size = Math.random() * 40 + 10;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}vw`;
+      bubble.style.animationDuration = `${8 + Math.random() * 8}s`;
+      bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+      bubble.style.boxShadow = `0 0 15px ${bubble.style.background}`;
+      document.body.appendChild(bubble);
+    }
 
-        <!-- MAIN CONTENT -->
-        <div class="content">
-            <header>
-                <h1>TimmyTime Audio<br>Playground</h1>
-                <div class="tagline">
-                    Royalty-free vibes • Alabama soul • HUI energy
-                </div>
-            </header>
-
-            <section>
-                <h2 class="section-title">Playlists</h2>
-
-                <div class="playlist-buttons">
-                    <div class="music-btn" onclick="window.location.href='https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b'">
-                        Playlist 1
-                    </div>
-
-                    <div class="music-btn" onclick="window.location.href='https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f'">
-                        Playlist 2
-                    </div>
-
-                    <div class="music-btn" onclick="window.location.href='https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44'">
-                        Playlist 3
-                    </div>
-
-                    <div class="music-btn" onclick="window.location.href='https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df'">
-                        Playlist 4
-                    </div>
-
-                    <div class="music-btn" onclick="window.location.href='https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2'">
-                        Playlist 5
-                    </div>
-                </div>
-            </section>
-
-            <section class="single-track">
-                <h3>Single Track</h3>
-                <div class="feature-btn" onclick="window.location.href='https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d'">
-                    Feature Track
-                </div>
-            </section>
-
-            <footer>
-                App made by iPhone 17 Pro Max • Timmy Bubbles
-            </footer>
-        </div>
-    </main>
+    // fetch global visitor count from Flask endpoint
+    fetch('/count')
+      .then(res => res.json())
+      .then(data => {
+        const counter = document.createElement('div');
+        counter.classList.add('counter');
+        counter.innerHTML = `👁️ Visitor Count: ${data.visits}`;
+        document.body.appendChild(counter);
+      })
+      .catch(err => console.error('Count fetch error:', err));
+  </script>
 </body>
 </html>
