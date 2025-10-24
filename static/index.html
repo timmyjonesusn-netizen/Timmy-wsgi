@@ -4,76 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Today's Featured Playlist</title>
-  <style>
-    body {
-      font-family: Georgia, 'Times New Roman', serif;
-      color: #111;
-      background-color: #fafafa;
-      text-align: left;
-      padding: 30px;
-    }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      margin-top: 0;
-      margin-bottom: 2rem;
-      color: #444;
-    }
-
-    .playlist {
-      margin-bottom: 2.5rem;
-    }
-
-    .playlist a {
-      font-weight: bold;
-      font-size: 1.6rem;
-      color: #c700ff;
-      text-decoration: none;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .playlist a:hover {
-      color: #ff00aa;
-      text-shadow: 0 0 10px #ff66ff, 0 0 20px #ff33ff;
-    }
-
-    .desc {
-      margin-top: 0.4rem;
-      color: #333;
-      font-size: 1rem;
-    }
-  </style>
+  <!-- this line is CRITICAL -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <h1>Today’s Featured Playlist</h1>
-  <p>Hand-picked for mood & flow</p>
+  <p>Hand-picked for mood &amp; flow</p>
 
   <div class="playlist">
-    <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank">Midnight Neon Cruise</a>
+    <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener">
+      Midnight Neon Cruise
+    </a>
     <div class="desc">dreamy synth / slow drift / safe for socials</div>
   </div>
 
   <div class="playlist">
-    <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank">Southern Heatwave</a>
+    <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener">
+      Southern Heatwave
+    </a>
     <div class="desc">swagger beat / outlaw country trap / creator-safe</div>
   </div>
 
   <div class="playlist">
-    <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank">Halo Pulse</a>
-    <div class="desc">angel pads / uplight energy / intro & outro friendly</div>
+    <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener">
+      Halo Pulse
+    </a>
+    <div class="desc">angel pads / uplight energy / intro &amp; outro friendly</div>
   </div>
 
   <div class="playlist">
-    <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank">Purple Drive</a>
+    <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener">
+      Purple Drive
+    </a>
     <div class="desc">midtempo glide / neon ride / safe for ads</div>
   </div>
 
   <div class="playlist">
-    <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank">Yeti Stomp</a>
+    <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener">
+      Yeti Stomp
+    </a>
     <div class="desc">heavy bass / crowd hype / walk-in music / promo safe</div>
   </div>
 </body>
