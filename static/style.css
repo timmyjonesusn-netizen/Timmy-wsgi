@@ -1,74 +1,168 @@
-/* --- Base Page --- */
+/* --- Page background / global --- */
 body {
   margin: 0;
-  padding: 2rem 1.25rem 4rem;
+  padding: 2rem 1rem 5rem;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
-  background: radial-gradient(circle at 20% 20%, rgba(180, 0, 255, 0.25) 0%, rgba(10, 0, 40, 1) 70%);
-  color: #fff;
   line-height: 1.4;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 0, 255, 0.25) 0%, rgba(30, 0, 70, 1) 70%);
+  background-attachment: fixed;
+  color: #fff;
 }
 
-/* --- Layout --- */
+/* layout wrapper */
 .page-wrap {
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
-/* --- Header --- */
+/* --- Header text --- */
 .headline {
-  font-size: 2rem;
+  font-size: clamp(2rem, 2.2rem + 1vw, 2.6rem);
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
-  margin-bottom: 0.3rem;
+  line-height: 1.15;
+  margin: 0 0 1rem 0;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(255,0,255,0.8),
+    0 0 40px rgba(255,0,255,0.4),
+    0 10px 40px rgba(0,0,0,0.8);
 }
 
 .subhead {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 2rem;
-}
-
-/* --- Playlist Cards --- */
-.playlist-block {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 0, 255, 0.4);
-  border-radius: 14px;
-  padding: 1.25rem 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow:
-    0 0 20px rgba(255, 0, 200, 0.4),
-    0 10px 25px rgba(0, 0, 0, 0.8);
-  transition: all 0.25s ease-in-out;
-}
-
-.playlist-block:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
-}
-
-/* --- Playlist Titles --- */
-.playlist-name {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0 0 0.4rem 0;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.9);
+  margin: 0 0 2rem 0;
   text-shadow:
-    0 0 10px rgba(255, 0, 180, 0.8),
-    0 0 25px rgba(255, 0, 255, 0.7);
+    0 0 12px rgba(255,0,200,0.6),
+    0 10px 30px rgba(0,0,0,0.8);
 }
 
-/* --- Playlist Description --- */
-.playlist-desc {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
+/* --- Playlist card link wrappers --- */
+.playlist-block {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.12) 0%, rgba(20,0,40,0.8) 70%);
+  border-radius: 20px;
+  padding: 1.5rem 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+
+  border: 1px solid rgba(255,0,200,0.4);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.9),
+    0 0 40px rgba(255,0,255,0.4),
+    0 0 120px rgba(255,0,255,0.3);
+
+  position: relative;
+  overflow: hidden;
+  transition: all .2s ease;
 }
 
-/* --- Mobile Friendly --- */
+/* glossy edge/highlight at the top of each card */
+.playlist-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 20% 0%,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0) 60%
+  );
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: .4;
+  transition: opacity .2s;
+}
+
+/* hover / tap feedback */
+.playlist-block:active,
+.playlist-block:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow:
+    0 30px 70px rgba(0,0,0,0.95),
+    0 0 50px rgba(255,0,255,0.6),
+    0 0 160px rgba(255,0,255,0.45);
+}
+.playlist-block:active::before,
+.playlist-block:hover::before {
+  opacity: .6;
+}
+
+/* inside each card */
+.playlist-inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* playlist title */
+.playlist-name {
+  margin: 0 0 .75rem 0;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(255,0,255,0.8),
+    0 0 40px rgba(255,0,255,0.5),
+    0 10px 40px rgba(0,0,0,0.9);
+}
+
+/* bubble row container */
+.bubble-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem .5rem;
+  row-gap: .5rem;
+  column-gap: .5rem;
+  max-width: 100%;
+}
+
+/* pill/bubble base */
+.bubble {
+  display: inline-block;
+  font-size: .9rem;
+  line-height: 1.2;
+  font-weight: 500;
+  color: #fff;
+  padding: .5rem .6rem .45rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.18) 0%, rgba(40,0,60,0.8) 70%);
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.8),
+    0 0 20px rgba(255,0,255,0.5);
+  border: 1px solid rgba(255,0,255,0.4);
+  white-space: nowrap;
+}
+
+/* special bubble for “safe” tags */
+.bubble-safe {
+  background: radial-gradient(circle at 0% 0%, rgba(0,255,150,0.2) 0%, rgba(0,40,30,0.8) 70%);
+  border: 1px solid rgba(0,255,170,0.5);
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.8),
+    0 0 20px rgba(0,255,170,0.5),
+    0 0 60px rgba(0,255,170,0.4);
+}
+
+/* spacing tweaks for bigger screens */
 @media (min-width: 480px) {
-  .headline {
-    font-size: 2.4rem;
+  body {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
+
+  .playlist-block {
+    padding: 2rem 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
   .playlist-name {
-    font-size: 1.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .bubble-row {
+    max-width: 90%;
   }
 }
