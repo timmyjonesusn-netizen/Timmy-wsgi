@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimmyApp Playlists</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- pastel yellow -> pale pink glow background -->
+  <div class="bg-gradient"></div>
+
+  <!-- floating bubbles layer -->
+  <div id="bubble-layer"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="page-shell">
+    <section class="section-head">
+      <h1 class="section-title">TimmyApp Music Hub 💜</h1>
+      <p class="section-sub">
+        Royalty-friendly vibe tracks for creators. Use for background,
+        reels, shorts. No strikes.
+      </p>
+
+      <h2 class="featured-header">Today’s Featured Playlist</h2>
+      <p class="featured-sub">Hand-picked for mood &amp; flow</p>
+    </section>
+
+    <section class="playlist-section">
+
+      <article class="playlist-card">
+        <h3 class="playlist-name">Midnight Neon Cruise</h3>
+        <p class="playlist-desc">dreamy synth / slow drift / safe for socials</p>
+      </article>
+
+      <article class="playlist-card">
+        <h3 class="playlist-name">Southern Heatwave</h3>
+        <p class="playlist-desc">swagger beat / outlaw country trap / creator-safe</p>
+      </article>
+
+      <article class="playlist-card">
+        <h3 class="playlist-name">Halo Pulse</h3>
+        <p class="playlist-desc">angel pads / uplight energy / intro &amp; outro friendly</p>
+      </article>
+
+      <article class="playlist-card">
+        <h3 class="playlist-name">Purple Drive</h3>
+        <p class="playlist-desc">midtempo glide / neon ride / safe for ads</p>
+      </article>
+
+      <article class="playlist-card">
+        <h3 class="playlist-name">Yeti Stomp</h3>
+        <p class="playlist-desc">heavy bass / crowd hype / walk-in energy</p>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- BUBBLE SCRIPT -->
+  <script>
+    (function () {
+      const layer = document.getElementById('bubble-layer');
+      const BUBBLE_COUNT = 40;
+      const MIN_SIZE = 6;
+      const MAX_SIZE = 14;
+      const DURATION_MIN = 10;
+      const DURATION_MAX = 22;
+
+      const COLOR_SETS = [
+        { fill: 'radial-gradient(circle at 30% 30%, rgba(30,60,255,0.6) 0%, rgba(10,10,40,0.0) 70%)', ring: 'rgba(0,150,255,0.8)' },
+        { fill: 'radial-gradient(circle at 30% 30%, rgba(255,140,0,0.55) 0%, rgba(60,20,0,0.0) 70%)', ring: 'rgba(255,180,80,0.9)' },
+        { fill: 'radial-gradient(circle at 30% 30%, rgba(200,0,255,0.5) 0%, rgba(30,0,50,0.0) 70%)', ring: 'rgba(255,0,200,0.8)' }
+      ];
+
+      function rand(min, max) { return Math.random() * (max - min) + min; }
+
+      function makeBubble() {
+        const b = document.createElement('span');
+        b.className = 'bubble';
+        const size = rand(MIN_SIZE, MAX_SIZE);
+        b.style.setProperty('--size', size + 'px');
+        const startX = rand(-10, 110);
+        b.style.setProperty('--xStart', startX + 'vw');
+        const xDrift = rand(-20, 20);
+        b.style.setProperty('--xDrift', xDrift + 'px');
+        const duration = rand(DURATION_MIN, DURATION_MAX);
+        b.style.setProperty('--floatTime', duration + 's');
+        const delay = rand(0, 8);
+        b.style.setProperty('--delayTime', delay + 's');
+        const c = COLOR_SETS[Math.floor(Math.random() * COLOR_SETS.length)];
+        b.style.setProperty('--bubbleFill', c.fill);
+        b.style.setProperty('--bubbleRing', c.ring);
+        b.addEventListener('animationend', () => {
+          const newSize = rand(MIN_SIZE, MAX_SIZE);
+          b.style.setProperty('--size', newSize + 'px');
+          const newStartX = rand(-10, 110);
+          b.style.setProperty('--xStart', newStartX + 'vw');
+          const newXDrift = rand(-20, 20);
+          b.style.setProperty('--xDrift', newXDrift + 'px');
+          const newDuration = rand(DURATION_MIN, DURATION_MAX);
+          b.style.setProperty('--floatTime', newDuration + 's');
+          const newDelay = rand(0, 8);
+          b.style.setProperty('--delayTime', newDelay + 's');
+          const newColor = COLOR_SETS[Math.floor(Math.random() * COLOR_SETS.length)];
+          b.style.setProperty('--bubbleFill', newColor.fill);
+          b.style.setProperty('--bubbleRing', newColor.ring);
+          b.classList.remove('run');
+          b.offsetHeight;
+          b.classList.add('run');
+        });
+        layer.appendChild(b);
+      }
+
+      for (let i = 0; i < BUBBLE_COUNT; i++) makeBubble();
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.bubble').forEach(b => b.classList.add('run'));
+      });
+    })();
+  </script>
+</body>
+</html>
