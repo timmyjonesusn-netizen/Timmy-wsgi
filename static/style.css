@@ -1,169 +1,133 @@
-/* smooth text / reset */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-font-smoothing: antialiased;
+/* ===== BUBBLE STYLES ===== */
+
+/* Container that holds all bubbles stays the same if you already have one */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  /* every bubble gets a glossy highlight and a glow */
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,0.6),   /* strong white reflection */
+    inset 0 -20px 40px rgba(0,0,0,0.3),     /* bottom shading for depth */
+    0 0 30px rgba(255,0,255,0.4);           /* outer neon aura */
+  animation: floatUp 8s linear infinite;    /* <- was ~10s, now 1/4 faster */
+  opacity: 0.9;
 }
 
-body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", Roboto, sans-serif;
-    background-color: #0a0014; /* deep base so gradients pop */
-    color: #fff;
-    min-height: 100vh;
-    overflow: hidden; /* bubbles float up off top */
-    position: relative;
-
-    /* make room for the fixed header bar */
-    padding-top: 56px;
+/* ===== COLOR VARIANTS ===== */
+/* deep purple core, white hot specular */
+.bubble.purple {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,0.9) 0%,        /* bright white reflection */
+    rgba(190,0,255,1) 15%,           /* electric magenta highlight */
+    rgba(80,0,120,1) 60%,            /* deep royal purple body */
+    rgba(30,0,60,1) 100%             /* shadow edge */
+  );
 }
 
-/* soft neon blobs behind everything */
-.bg-gradient {
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(255,0,204,0.35) 0%, rgba(0,0,0,0) 60%),
-        radial-gradient(circle at 80% 30%, rgba(255,128,0,0.25) 0%, rgba(0,0,0,0) 65%),
-        radial-gradient(circle at 50% 80%, rgba(140,0,255,0.35) 0%, rgba(0,0,0,0) 60%);
-    background-color: #1a0026;
-    filter: blur(40px);
-    z-index: 0;
+/* dark blue bubble with pink edge */
+.bubble.blue {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,0.8) 0%,        /* specular highlight */
+    rgba(90,140,255,1) 20%,          /* inner light blue */
+    rgba(0,20,90,1) 60%,             /* dark navy body */
+    rgba(255,0,200,0.4) 100%         /* subtle pink rim glow */
+  );
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,0.5),
+    inset 0 -20px 40px rgba(0,0,0,0.4),
+    0 0 30px rgba(255,0,200,0.5);     /* pink aura */
 }
 
-/* bubble canvas */
-#bubbleCanvas {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
+/* pink bubble with green highlight */
+.bubble.pinkGreen {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,0.9) 0%,        /* shiny white glare */
+    rgba(255,105,180,1) 20%,         /* hot pink */
+    rgba(255,0,128,1) 55%,           /* richer magenta */
+    rgba(0,255,150,0.4) 75%,         /* neon green fringe */
+    rgba(60,0,60,1) 100%             /* dark edge to seal it */
+  );
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,0.6),
+    inset 0 -20px 40px rgba(0,0,0,0.3),
+    0 0 30px rgba(0,255,150,0.5);    /* greenish glow */
 }
 
-/* header bar with Timmy + Visitors counter */
-.timmy-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    z-index: 10;
-
-    background: rgba(10, 0, 20, 0.25);
-    backdrop-filter: blur(10px);
-
-    border-bottom: 1px solid rgba(255,0,204,0.45);
-    box-shadow:
-        0 0 12px rgba(255,0,204,0.4),
-        0 0 24px rgba(255,102,0,0.4);
-
-    font-size: 14px;
-    line-height: 1.2;
-    color: #fff;
-    text-shadow:
-        0 0 6px rgba(255,0,204,0.8),
-        0 0 16px rgba(255,102,0,0.6);
-    letter-spacing: 0.05em;
-    font-weight: 500;
+/* green bubble with pink fringe (sister look, flips emphasis) */
+.bubble.greenPink {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,0.85) 0%,
+    rgba(0,255,170,0.9) 20%,         /* neon aqua/green core */
+    rgba(0,120,60,1) 60%,            /* deep emerald body */
+    rgba(255,0,200,0.45) 80%,        /* pink aura at rim */
+    rgba(20,0,20,1) 100%
+  );
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,0.55),
+    inset 0 -20px 40px rgba(0,0,0,0.35),
+    0 0 30px rgba(255,0,200,0.4);
 }
 
-.timmy-left {
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: 0.08em;
-    color: #fff;
+/* tiny yellow bubbles = sparkle pops */
+.bubble.spark {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,1) 0%,          /* hot white hit */
+    rgba(255,255,150,1) 30%,         /* pale lemon */
+    rgba(255,220,0,1) 60%,           /* bright candy yellow */
+    rgba(255,140,0,0.6) 80%,         /* warm orange edge */
+    rgba(60,20,0,0.8) 100%           /* shadow edge */
+  );
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.9),
+    0 0 20px rgba(255,255,120,0.8),
+    0 0 40px rgba(255,170,0,0.6);
+  opacity: 0.95;
 }
 
-.timmy-right {
-    font-size: 13px;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: baseline;
-    gap: 4px;
-    color: #fff;
+/* ===== SIZE TUNING ===== */
+/* You can assign these with JS when you spawn bubbles */
+.bubble.large   { width: 140px; height: 140px; }
+.bubble.medium  { width: 90px;  height: 90px; }
+.bubble.small   { width: 55px;  height: 55px; }
+.bubble.tiny    { width: 28px;  height: 28px; }        /* good for spark */
+.bubble.mini    { width: 16px;  height: 16px; }        /* super tiny spark */
+
+/* Circles stay circles */
+.bubble.large,
+.bubble.medium,
+.bubble.small,
+.bubble.tiny,
+.bubble.mini {
+  border-radius: 50%;
 }
 
-.visit-num {
-    font-weight: 600;
-    text-shadow:
-        0 0 8px rgba(255,128,0,0.9),
-        0 0 16px rgba(255,0,153,0.9);
-    color: #fff;
+/* ===== MOTION ===== */
+
+/* make them rise a little faster and drift more so it's busy */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(-20px) scale(1.05);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px) scale(1.12);
+    opacity: 0;
+  }
 }
 
-/* main card that holds the playlists */
-.main-card {
-    position: relative;
-    z-index: 5; /* above bubbles */
-    width: 90%;
-    max-width: 480px;
-    margin: 0 auto;
-    background: rgba(20,0,40,0.4);
-    border: 1px solid rgba(255,0,204,0.3);
-    border-radius: 20px;
-    box-shadow:
-        0 20px 60px rgba(0,0,0,0.8),
-        0 0 30px rgba(255,0,204,0.4),
-        0 0 60px rgba(255,102,0,0.25);
-    padding: 20px 16px 28px;
-}
-
-.headline {
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    color: #fff;
-    text-align: center;
-    text-shadow:
-        0 0 8px rgba(255,0,204,0.8),
-        0 0 20px rgba(255,102,0,0.6);
-    margin-bottom: 16px;
-}
-
-/* playlist buttons smaller 2-column grid */
-.playlist-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.playlist-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-
-    font-size: 0.8rem;
-    font-weight: 600;
-    line-height: 1.2;
-    text-align: center;
-    color: #fff;
-
-    background: radial-gradient(circle at 20% 20%, rgba(255,0,204,0.4) 0%, rgba(140,0,255,0.15) 60%);
-    border: 1px solid rgba(255,0,204,0.5);
-    border-radius: 14px;
-
-    box-shadow:
-        0 8px 24px rgba(0,0,0,0.8),
-        0 0 12px rgba(255,0,204,0.5),
-        0 0 24px rgba(255,102,0,0.4);
-
-    padding: 14px 10px;
-}
-
-.playlist-btn:active {
-    transform: scale(0.97);
-}
-
-.credit {
-    font-size: 0.7rem;
-    text-align: center;
-    line-height: 1.4;
-    color: rgba(255,255,255,0.8);
-    text-shadow: 0 0 6px rgba(255,0,204,0.7);
-}
+/* You can stagger duration/speed per bubble with inline style or JS, example:
+   animation-duration: 7s;
+   animation-delay: -2s;
+   so they’re not synced like parade soldiers.
+*/
