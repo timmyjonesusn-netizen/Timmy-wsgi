@@ -1,179 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Timmy Bubbles Radio</title>
-<style>
-  :root {
-    --bg-grad-start: #b3ecff;
-    --bg-grad-end:   #d9f0ff;
-    --bubble-shadow: rgba(0,0,0,0.35);
-    --btn-grad-start:#ff66cc;
-    --btn-grad-mid:  #ffcc66;
-    --btn-grad-end:  #66ccff;
-    --btn-border:    #ff00cc;
-    --btn-shadow:    rgba(0,0,0,0.45);
-  }
-
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-    background: radial-gradient(circle at 20% 20%, var(--bg-grad-start) 0%, var(--bg-grad-end) 60%);
-    color: #000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  /* BUBBLES */
-  .bubble-layer {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .bubble {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(2px);
-    box-shadow: 0 12px 24px var(--bubble-shadow);
-    animation: floatUp linear infinite;
-  }
-
-  @keyframes floatUp {
-    0% { transform: translateY(100vh); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(-20vh) translateX(var(--drift, 0px)); opacity: 0; }
-  }
-
-  .content {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 480px;
-    padding: 24px 16px 100px;
-    text-align: center;
-  }
-
-  .playlist-btn {
-    display: block;
-    width: 100%;
-    text-decoration: none;
-    color: #fff;
-    font-weight: 700;
-    font-size: clamp(1.4rem, 2vw + 1rem, 2rem);
-    text-align: center;
-    background: radial-gradient(circle at 20% 20%, var(--btn-grad-start) 0%, var(--btn-grad-mid) 40%, var(--btn-grad-end) 100%);
-    border: 3px solid var(--btn-border);
-    border-radius: 24px;
-    padding: 18px 16px;
-    margin: 16px auto;
-    box-shadow: 0 16px 24px var(--btn-shadow), 0 0 12px rgba(255,0,255,0.6), 0 0 24px rgba(255,102,204,0.5);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 0 6px rgba(255,255,255,0.6);
-  }
-
-  .playlist-btn:active { transform: scale(0.97); }
-
-  .section-label {
-    font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
-    font-weight: 800;
-    color: #000;
-    text-shadow: 0 2px 4px rgba(255,0,255,0.4), 0 4px 6px rgba(0,0,0,0.6);
-    margin: 32px 0 8px;
-  }
-
-  .footer {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1a001a;
-    text-shadow: 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.6);
-    margin-top: 32px;
-  }
-
-  /* COUNTER BOX */
-  .counter-box {
-    margin-top: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    background: rgba(255,255,255,0.4);
-    border-radius: 12px;
-    padding: 8px 12px;
-    display: inline-block;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.35), 0 0 10px rgba(255,0,255,0.5), 0 0 20px rgba(255,102,204,0.4);
-    border: 2px solid rgba(255,0,255,0.5);
-    color: #1a001a;
-    text-shadow: 0 0 6px rgba(255,0,255,0.8), 0 0 10px rgba(255,153,0,0.8), 0 2px 4px rgba(0,0,0,0.8);
-  }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Timmy Bubbles</title>
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
-<div class="bubble-layer" id="bubbleLayer"></div>
+    <!-- Bubble canvas / glowing background lives behind everything -->
+    <div class="bg-gradient"></div>
+    <canvas id="bubbleCanvas"></canvas>
 
-<div class="content">
-  <a class="playlist-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank">Playlist 1</a>
-  <a class="playlist-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank">Playlist 2</a>
-  <a class="playlist-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank">Playlist 3</a>
-  <a class="playlist-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank">Playlist 4</a>
-  <a class="playlist-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank">Playlist 5</a>
+    <!-- Top bar with Timmy + live visitor counter -->
+    <header class="timmy-bar">
+        <div class="timmy-left">TIMMY</div>
+        <div class="timmy-right">
+            <span class="vis-label">Visitors:</span>
+            <span class="visit-num">{{ visit_count }}</span>
+        </div>
+    </header>
 
-  <div class="section-label">Single Track</div>
-  <a class="playlist-btn" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank">Feature Track</a>
+    <!-- Main content card -->
+    <main class="main-card">
+        <h1 class="headline">Timmy’s Bubble Mixes</h1>
 
-  <div class="footer">
-    App made by iPhone 17 Pro Max • Timmy Bubbles
-  </div>
+        <div class="playlist-grid">
+            {% for p in playlists %}
+            <a class="playlist-btn"
+               href="{{ p.url }}"
+               target="_blank"
+               rel="noopener noreferrer">
+                {{ p.label }}
+            </a>
+            {% endfor %}
+        </div>
 
-  <div class="counter-box">
-    Visitors: <span id="visitCount">0</span>
-  </div>
-</div>
+        <p class="credit">
+            App made on iPhone 17 Pro Max • Timmy Bubbles
+        </p>
+    </main>
 
-<script>
-(function makeBubbles() {
-  const layer = document.getElementById("bubbleLayer");
-  const bubbleColors = [
-    "radial-gradient(circle at 30% 30%, rgba(255,102,204,0.6) 0%, rgba(170,0,255,0.4) 60%)",
-    "radial-gradient(circle at 30% 30%, rgba(255,153,0,0.5) 0%, rgba(255,102,204,0.4) 60%)",
-    "radial-gradient(circle at 30% 30%, rgba(102,0,255,0.4) 0%, rgba(255,153,0,0.4) 60%)"
-  ];
+    <!-- Bubble animation script -->
+    <script>
+    (function () {
+        const canvas = document.getElementById("bubbleCanvas");
+        const ctx = canvas.getContext("2d");
 
-  const bubbleCount = 18;
-  const vw = window.innerWidth;
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+        canvas.width = w;
+        canvas.height = h;
 
-  for (let i = 0; i < bubbleCount; i++) {
-    const b = document.createElement("div");
-    b.className = "bubble";
-    const size = 40 + Math.random()*60;
-    b.style.width = size + "px";
-    b.style.height = size + "px";
-    b.style.left = Math.random() * vw + "px";
-    b.style.animationDuration = 8 + Math.random()*10 + "s";
-    b.style.animationDelay = (-1) * Math.random()*10 + "s";
-    b.style.setProperty("--drift", (Math.random()*80 - 40).toFixed(1) + "px");
-    b.style.background = bubbleColors[i % bubbleColors.length];
-    layer.appendChild(b);
-  }
-})();
+        // bubbles
+        const bubbles = [];
+        const COUNT = 40;
 
-// simple local visitor counter
-(function counter() {
-  let count = localStorage.getItem("timmy_visit_count");
-  if (!count) count = 1;
-  localStorage.setItem("timmy_visit_count", count);
-  const el = document.getElementById("visitCount");
-  if (el) el.textContent = count;
-})();
-</script>
+        function rand(min, max) {
+            return min + Math.random() * (max - min);
+        }
 
+        function makeBubble() {
+            return {
+                x: rand(0, w),
+                y: rand(h * 0.5, h + 50), // start lower half
+                r: rand(6, 24),           // smaller bubbles
+                vy: rand(-0.6, -0.15),    // float UP
+                vx: rand(-0.25, 0.25),    // slight drift
+                huePick: Math.random(),   // choose purple/pink/orange
+                alpha: rand(0.4, 0.9)
+            };
+        }
+
+        function bubbleColor(huePick) {
+            if (huePick < 0.33) {
+                // purple
+                return { r: 140, g: 0, b: 255 };
+            } else if (huePick < 0.66) {
+                // hot pink
+                return { r: 255, g: 0, b: 204 };
+            } else {
+                // orange
+                return { r: 255, g: 102, b: 0 };
+            }
+        }
+
+        for (let i = 0; i < COUNT; i++) {
+            bubbles.push(makeBubble());
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+
+            for (let b of bubbles) {
+                // move bubble
+                b.x += b.vx;
+                b.y += b.vy;
+
+                // recycle bubble if off screen
+                if (b.y + b.r < -40 || b.x < -50 || b.x > w + 50) {
+                    const fresh = makeBubble();
+                    b.x = fresh.x;
+                    b.y = h + rand(10, 60);
+                    b.r = fresh.r;
+                    b.vy = fresh.vy;
+                    b.vx = fresh.vx;
+                    b.huePick = fresh.huePick;
+                    b.alpha = fresh.alpha;
+                }
+
+                // glow color
+                const col = bubbleColor(b.huePick);
+
+                // outer glow
+                const grad = ctx.createRadialGradient(
+                    b.x, b.y, b.r * 0.2,
+                    b.x, b.y, b.r * 1.4
+                );
+                grad.addColorStop(0, `rgba(${col.r},${col.g},${col.b},${b.alpha})`);
+                grad.addColorStop(1, "rgba(0,0,0,0)");
+
+                ctx.beginPath();
+                ctx.fillStyle = grad;
+                ctx.arc(b.x, b.y, b.r * 1.4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // inner ring
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${Math.min(1,b.alpha+0.2)})`;
+                ctx.lineWidth = 2;
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        function handleResize() {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w;
+            canvas.height = h;
+        }
+
+        window.addEventListener("resize", handleResize);
+        draw();
+    })();
+    </script>
 </body>
 </html>
