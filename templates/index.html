@@ -1,33 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timmy WSGI App</title>
-
-  <!-- ✅ This is the correct way to link your CSS in Flask -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ragland Hotline</title>
+  <!-- Flask static CSS link -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="app-shell">
-    <h1 class="glow-title">Timmy App Online</h1>
-    <p class="sub">Black and white verified — CSS live check below.</p>
+  <div class="container">
+    <h1>💜 RAGLAND DOMESTIC ABUSE HOTLINE 💜</h1>
+    <p class="tagline">You are not alone. Help is here.</p>
 
-    <div class="status-box">
-      <div class="status-row">
-        <span class="label">Server:</span>
-        <span class="value good">CONNECTED ✅</span>
-      </div>
-      <div class="status-row">
-        <span class="label">CSS:</span>
-        <span class="value css-check">If you see color glow → CSS OK</span>
-      </div>
+    <div class="box">
+      <h2>📞 National Domestic Violence Hotline</h2>
+      <p><strong>1-800-799-SAFE (7233)</strong></p>
+      <a href="https://www.thehotline.org" target="_blank">thehotline.org</a>
     </div>
 
-    <div class="footer">
-      <p>WSGI Edition — Render Deployment</p>
-      <p><small>© TimmyTime</small></p>
+    <div class="box">
+      <h2>🏡 Town of Ragland – Local Assistance</h2>
+      <p>Visit the <a href="https://www.townofragland.org" target="_blank">Town of Ragland website</a>
+      online for direct contact with the Mayor’s Office and community support resources.</p>
     </div>
+
+    <div class="box alert">
+      <h2>🚨 If you are in immediate danger, call 911.</h2>
+      <p>Your safety matters — confidential, free, and available 24/7.</p>
+    </div>
+
+    <footer>
+      <p>#LoveShouldntHurt #PurpleForPeace #RaglandCares</p>
+    </footer>
   </div>
 </body>
 </html>
