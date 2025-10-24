@@ -2,269 +2,300 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>TimmyTime</title>
+
 <style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+/* =============== PAGE BACKGROUND =============== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 20%, #ffeab5 0%, #cfe3ff 40%, #a8b4d4 70%, #516180 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem 6rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
 
-  body {
-    min-height: 100vh;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-    background: radial-gradient(circle at 20% 20%, #2b003b 0%, #0a001a 70%);
-    color: #fff;
-    overflow-x: hidden;
-    overflow-y: auto;
-    position: relative;
-  }
+/* layer for bubbles sits BEHIND card */
+#bubble-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
 
-  /* BUBBLE LAYER SITS BEHIND CONTENT */
-  #bubble-layer {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
+/* =============== CARD / PANEL =============== */
+.card-wrapper {
+  position: relative;
+  z-index: 10;
+  max-width: 700px;
+  width: 100%;
+  border-radius: 24px;
+  padding: 2rem;
+  background: rgba(40, 0, 40, 0.45); /* slightly darker for contrast */
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 0 120px rgba(255,0,255,0.4),   /* back-glow for "stage light" */
+    0 30px 60px rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+}
 
-  /* one neon bubble */
-  .bubble {
-    position: absolute;
-    width: var(--size);
-    height: var(--size);
-    left: var(--x);
-    top: var(--y);
-    border-radius: 50%;
-    background: radial-gradient(circle at 40% 40%,
-      rgba(255,0,255,0.85) 0%,
-      rgba(255,0,140,0.6) 40%,
-      rgba(255,140,0,0.5) 70%,
-      rgba(0,0,0,0) 75%
-    );
-    filter: blur(20px);
-    animation: floatUp var(--duration) linear infinite;
-  }
+/* =============== TEXT STYLE =============== */
+.card-wrapper h1,
+.card-wrapper h2,
+.card-wrapper p,
+.card-wrapper a {
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.8),
+    0 0 20px rgba(255,0,255,0.4);
+  -webkit-text-stroke: 2px #000; /* black edge = readable over chaos */
+  margin: 0 0 0.75rem;
+}
 
-  @keyframes floatUp {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-200px) scale(1.1);
-      opacity: 0;
-    }
-  }
+.card-wrapper h1 {
+  font-size: 2.6rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  animation: titlePulse 4s infinite;
+}
 
-  /* CONTENT CARD */
-  .content {
-    position: relative;
-    z-index: 2; /* above bubbles */
-    padding: 16px;
-    max-width: 100%;
-    color: #fff;
-    line-height: 1.25;
-    font-weight: 600;
-  }
+/* header slow neon breathe */
+@keyframes titlePulse {
+  0%   { color: #ffb2ff; text-shadow: 0 0 10px #fff, 0 0 30px rgba(255,0,255,0.5); }
+  50%  { color: #ff7bff; text-shadow: 0 0 12px #fff, 0 0 40px rgba(255,0,255,0.7); }
+  100% { color: #ffb2ff; text-shadow: 0 0 10px #fff, 0 0 30px rgba(255,0,255,0.5); }
+}
 
-  .glass-wrap {
-    width: calc(100% - 32px);
-    max-width: 730px;
-    background: radial-gradient(circle at 20% 20%, rgba(255,0,255,0.15) 0%, rgba(255,128,0,0.07) 60%, rgba(0,0,0,0) 100%),
-                rgba(0,0,0,0.28);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    padding: 20px 24px 24px;
-    box-shadow:
-      0 30px 80px rgba(255,0,255,0.25),
-      0 0 160px rgba(255,128,0,0.4) inset;
-    border: 1px solid rgba(255,0,255,0.25);
-  }
+.card-wrapper h2 {
+  font-size: 2.2rem;
+  margin-top: 2rem;
+}
 
-  .top-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-  }
+.card-wrapper p,
+.card-wrapper a {
+  font-size: 1.5rem;
+  color: #cfe3ff;
+  text-decoration: underline;
+  display: inline-block;
+}
 
-  .left-col {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+/* =============== BUBBLE CORE STYLE =============== */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.9;
+  animation: floatUp linear infinite;
+  will-change: transform, opacity;
+}
 
-  .app-name {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #fff;
-    text-shadow:
-      0 0 12px rgba(255,0,255,0.8),
-      0 0 24px rgba(255,128,0,0.5);
-  }
+/* glossy and depth added per bubble type (instead of 1-style-for-all) */
 
-  .visitors {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #fff;
-    text-shadow:
-      0 0 12px rgba(255,0,255,0.8),
-      0 0 24px rgba(255,128,0,0.5);
-  }
+/* 1) DEEP PURPLE + WHITE REFLECTION */
+.bubble.purple {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,0.95) 0%,   /* bright hit */
+    rgba(200,0,255,1) 15%,       /* magenta shine */
+    rgba(80,0,120,1) 60%,        /* deep purple body */
+    rgba(30,0,60,1) 100%         /* dark rim */
+  );
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,0.8),
+    inset 0 -18px 40px rgba(0,0,0,0.5),
+    0 0 35px rgba(255,0,255,0.5);
+}
 
-  /* playlists layout: 2 rows x 3 columns feel */
-  .playlist-grid {
-    display: grid;
-    grid-template-columns: repeat(3,minmax(min-content,1fr));
-    grid-row-gap: 12px;
-    grid-column-gap: 24px;
-    max-width: 100%;
-    font-size: 1.4rem;
-    font-weight: 700;
-    line-height: 1.15;
-  }
+/* 2) DARK BLUE WITH PINK RIM */
+.bubble.blue {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,0.9) 0%,
+    rgba(90,140,255,1) 20%,      /* light electric blue core */
+    rgba(0,20,90,1) 60%,         /* navy body */
+    rgba(255,0,200,0.5) 100%     /* pink rim */
+  );
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,0.6),
+    inset 0 -18px 40px rgba(0,0,0,0.6),
+    0 0 35px rgba(255,0,200,0.6);
+}
 
-  .playlist-grid a {
-    color: #9bb5ff;
-    text-decoration: underline;
-    text-shadow:
-      0 0 10px rgba(155,181,255,0.8),
-      0 0 30px rgba(255,0,255,0.4);
-  }
+/* 3) HOT PINK WITH NEON GREEN FRINGE */
+.bubble.pinkGreen {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,1) 0%,
+    rgba(255,105,180,1) 20%,     /* Barbie pink */
+    rgba(255,0,128,1) 55%,       /* hot magenta */
+    rgba(0,255,150,0.5) 80%,     /* radioactive mint edge */
+    rgba(40,0,40,1) 100%         /* deep shadow edge */
+  );
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,0.8),
+    inset 0 -18px 40px rgba(0,0,0,0.45),
+    0 0 35px rgba(0,255,150,0.6);
+}
 
-  /* track section */
-  .tracks {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    color: #fff;
-  }
+/* 4) TINY YELLOW SPARK (EYE MAGNET) */
+.bubble.spark {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255,255,255,1) 0%,        /* white pop */
+    rgba(255,255,170,1) 30%,       /* pale lemon */
+    rgba(255,220,0,1) 60%,         /* bright yellow */
+    rgba(255,140,0,0.7) 80%,       /* orange rim */
+    rgba(60,20,0,0.9) 100%         /* warm shadow */
+  );
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.9),
+    0 0 25px rgba(255,255,120,0.9),
+    0 0 40px rgba(255,170,0,0.7);
+  opacity: 1;
+}
 
-  .track-title {
-    font-size: 2.4rem;
-    font-weight: 800;
-    line-height: 1.1;
-    text-shadow:
-      0 0 12px rgba(255,0,255,0.8),
-      0 0 24px rgba(255,128,0,0.5);
-  }
+/* =============== BUBBLE SIZES =============== */
+.bubble.large { width:140px; height:140px; border-radius:50%; }
+.bubble.med   { width:90px;  height:90px;  border-radius:50%; }
+.bubble.sm    { width:55px;  height:55px;  border-radius:50%; }
+.bubble.tiny  { width:28px;  height:28px;  border-radius:50%; }
+.bubble.mini  { width:16px;  height:16px;  border-radius:50%; }
 
-  .feature-link {
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-decoration: underline;
-    color: #9bb5ff;
-    text-shadow:
-      0 0 10px rgba(155,181,255,0.8),
-      0 0 30px rgba(255,0,255,0.4);
+/* =============== ANIMATION =============== */
+/* faster rise than default (1.25x ish) + gentle sway */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
   }
-
-  .tagline {
-    margin-top: 24px;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.9);
-    text-shadow:
-      0 0 8px rgba(255,0,255,0.6),
-      0 0 16px rgba(255,128,0,0.4);
+  10% {
+    opacity: 0.9;
   }
-
-  .spacer {
-    height: 120vh;
+  50% {
+    transform: translateY(-50vh) translateX(-20px) scale(1.07);
   }
-
-  a {
-    -webkit-tap-highlight-color: rgba(255,255,255,0.2);
+  100% {
+    transform: translateY(-100vh) translateX(20px) scale(1.15);
+    opacity: 0;
   }
+}
 </style>
 </head>
+
 <body>
 
-<!-- BUBBLE BACKGROUND -->
+<!-- bubble layer behind everything -->
 <div id="bubble-layer"></div>
 
-<!-- FOREGROUND CARD -->
-<div class="content">
-  <div class="glass-wrap">
-    <div class="top-bar">
-      <div class="left-col">
-        <div class="app-name">TimmyTime</div>
+<!-- main content card -->
+<div class="card-wrapper">
+  <h1>TimmyTime</h1>
+  <p>Visitors: 2</p>
 
-        <div class="visitors">Visitors: <span id="visitorCount">4</span></div>
+  <p>
+    <a href="#">Playlist 1</a> &nbsp;&nbsp;
+    <a href="#">Playlist 2</a>
+  </p>
+  <p>
+    <a href="#">Playlist 3</a> &nbsp;&nbsp;
+    <a href="#">Playlist 4</a>
+  </p>
+  <p>
+    <a href="#">Playlist 5</a>
+  </p>
+  <p>
+    <a href="#">Feature Track</a>
+  </p>
 
-        <div class="playlist-grid">
-          <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">
-            Playlist 1
-          </a>
-          <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">
-            Playlist 2
-          </a>
-          <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">
-            Playlist 3
-          </a>
-          <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">
-            Playlist 4
-          </a>
-          <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
-            Playlist 5
-          </a>
-          <a href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener noreferrer">
-            Feature Track
-          </a>
-        </div>
-
-        <div class="tracks">
-          <div class="track-title">Single Track</div>
-          <a class="feature-link"
-             href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
-             target="_blank"
-             rel="noopener noreferrer">
-            Feature Track
-          </a>
-        </div>
-
-        <div class="tagline">
-          App made by iPhone 17 Pro Max • Timmy Bubbles
-        </div>
-      </div>
-    </div>
-  </div>
+  <h2>Single Track</h2>
+  <p>App made by iPhone 17 Pro Max • Timmy Bubbles</p>
 </div>
 
-<div class="spacer"></div>
-
 <script>
-(function makeBubbles() {
-  const layer = document.getElementById('bubble-layer');
-  const BUBBLE_COUNT = 40; // density
+/*
+This script creates bubbles that each have ONE strong color identity.
+It randomizes:
+- which color class
+- which size class
+- where it starts on X
+- how fast it rises
+- when it "enters" (negative delay so they're already in motion)
+*/
 
-  function randPct() {
-    return (Math.random() * 100) + '%';
-  }
+const bubbleLayer = document.getElementById("bubble-layer");
 
-  function rand(min, max) {
-    return min + Math.random() * (max - min);
-  }
+// These match the CSS classes above
+const colorClasses = ["purple", "blue", "pinkGreen", "spark"];
+const sizeClasses  = ["large", "med", "sm", "tiny", "mini"];
 
-  for (let i = 0; i < BUBBLE_COUNT; i++) {
-    const b = document.createElement('div');
-    b.className = 'bubble';
+// Weighting for how often we spawn each color.
+// purple = hero, blue = cool depth,
+// pinkGreen = neon accent, spark = eye hook.
+function pickColor() {
+  const r = Math.random();
+  if (r < 0.40) return "purple";     // 40%
+  if (r < 0.60) return "blue";       // 20%
+  if (r < 0.85) return "pinkGreen";  // 25%
+  return "spark";                    // 15%
+}
 
-    const size = rand(70, 220);      // medium-ish bubbles
-    const duration = rand(6, 14);    // float speed
+function pickSize() {
+  const r = Math.random();
+  if (r < 0.20) return "large";
+  if (r < 0.45) return "med";
+  if (r < 0.70) return "sm";
+  if (r < 0.90) return "tiny";
+  return "mini";
+}
 
-    b.style.setProperty('--size', size + 'px');
-    b.style.setProperty('--x', randPct());
-    b.style.setProperty('--y', randPct());
-    b.style.setProperty('--duration', duration + 's');
+function spawnBubble() {
+  const b = document.createElement("div");
+  b.classList.add("bubble");
 
-    layer.appendChild(b);
-  }
-})();
+  // assign look
+  b.classList.add(pickColor());
+  b.classList.add(pickSize());
+
+  // random horizontal start position
+  b.style.left = (Math.random() * 100) + "vw";
+
+  // start slightly below view so they float through
+  b.style.bottom = "-160px";
+
+  // random animation duration ~6.5s to ~9.5s (fast-ish)
+  const duration = 8 + (Math.random()*3 - 1.5);
+  b.style.animationDuration = duration.toFixed(2) + "s";
+
+  // negative delay so they’re out of sync and already mid-float
+  const delay = -1 * Math.random() * duration;
+  b.style.animationDelay = delay.toFixed(2) + "s";
+
+  bubbleLayer.appendChild(b);
+
+  // cleanup after it's done so we don't leak DOM forever
+  setTimeout(() => {
+    bubbleLayer.removeChild(b);
+  }, (duration + Math.abs(delay)) * 1000);
+}
+
+// Spawn a bunch up front for instant fullness
+for (let i = 0; i < 40; i++) {
+  spawnBubble();
+}
+
+// Keep spawning over time so it's alive
+setInterval(() => {
+  spawnBubble();
+}, 400); // more frequent = more motion energy
 </script>
 
 </body>
