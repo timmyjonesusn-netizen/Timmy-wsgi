@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Today’s Featured Playlist</title>
 
-  <!-- CRITICAL: this is how Flask points to /static/style.css -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- HARD LINK, NO JINJA, NO GUESSING -->
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <main class="page-wrap">
