@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TimmyTime Audio Playground</title>
 <style>
-    /* ---------- GLOBAL RESET ---------- */
+    /* ---------- RESET ---------- */
     * {
         box-sizing: border-box;
         -webkit-font-smoothing: antialiased;
@@ -16,15 +16,15 @@
     body {
         min-height: 100vh;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
-        color: #fff;
-        /* LIGHTER BACKGROUND so bubbles show */
-        background: radial-gradient(circle at 20% 20%, rgba(255,255,200,1) 0%, rgba(140,200,255,1) 40%, rgba(40,60,120,1) 75%, rgba(10,0,30,1) 100%);
+        color: #111;
+        /* LIGHT DAYGLOW BACKGROUND (yellow -> light blue) */
+        background: radial-gradient(circle at 20% 20%, rgba(255,255,200,1) 0%, rgba(255,255,160,1) 30%, rgba(180,220,255,1) 60%, rgba(150,200,255,1) 80%, rgba(120,180,255,1) 100%);
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         padding: 24px;
         position: relative;
-        overflow: hidden; /* important for bubbles */
+        overflow: hidden; /* for bubbles */
     }
 
     /* ---------- FLOATING BUBBLES LAYER ---------- */
@@ -40,20 +40,19 @@
         position: absolute;
         border-radius: 50%;
         opacity: 0.8;
-        /* brighter rim so they POP on light bg */
-        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 60%);
-        border: 2px solid rgba(255,255,255,0.7);
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 60%);
+        border: 2px solid rgba(255,255,255,0.9);
         box-shadow:
-            0 0 10px rgba(255,255,255,0.9),
-            0 0 30px var(--glowColor, rgba(255,0,200,0.8)),
-            0 0 60px var(--glowColor, rgba(255,0,200,0.4));
-        filter: blur(0.5px);
+            0 0 8px rgba(255,255,255,1),
+            0 0 20px var(--glowColor, rgba(255,0,200,0.9)),
+            0 0 40px var(--glowColor, rgba(255,0,200,0.5));
+        filter: blur(0.3px);
         mix-blend-mode: screen;
         animation-timing-function: linear;
         animation-iteration-count: infinite;
     }
 
-    /* Float path: mostly up, drifting sideways */
+    /* FLOAT MOTION: up with sideways wiggle */
     @keyframes floatUpDrift {
         0%   { transform: translate3d(var(--xStart,0px),   var(--yStart,0px),0) scale(var(--scale,1)); }
         25%  { transform: translate3d(calc(var(--xStart,0px) + 30px), calc(var(--yStart,0px) - 60px),0) scale(var(--scale,1)); }
@@ -66,52 +65,50 @@
     .bubble.med    { animation-duration: 14s; }
     .bubble.fast   { animation-duration: 10s; }
 
-    /* ---------- CARD CONTAINER ---------- */
-    .card {
+    /* ---------- CONTENT STACK ---------- */
+    .wrapper {
         position: relative;
         width: 100%;
         max-width: 480px;
-        border-radius: 20px;
-        padding: 24px 20px 32px;
-        background: radial-gradient(circle at 50% 20%, rgba(40,0,40,0.9) 0%, rgba(5,0,20,0.9) 60%, rgba(0,0,10,0.95) 100%);
-        border: 1px solid rgba(255,0,255,0.3);
-        box-shadow:
-            0 0 40px rgba(255,0,255,0.4),
-            0 0 120px rgba(0,170,255,0.2),
-            0 20px 80px rgba(0,0,0,0.8);
-        z-index: 5;
+        z-index: 5; /* sit above bubbles */
         text-align: center;
+        color: #111;
+        text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0); /* fully transparent, no purple wall */
     }
 
     .title {
         font-size: clamp(1.8rem, 1.2rem + 1.5vw, 2.2rem);
         font-weight: 700;
         line-height: 1.2;
-        color: #fff;
+        color: #000;
         text-shadow:
-            0 0 8px rgba(255,255,255,0.9),
-            0 0 24px rgba(255,0,255,0.8),
-            0 0 48px rgba(0,128,255,0.6);
-        margin-bottom: 16px;
+            0 0 6px rgba(255,255,255,1),
+            0 0 20px rgba(255,255,255,0.9),
+            0 0 40px rgba(255,255,200,0.8);
+        margin-bottom: 8px;
     }
 
     .tagline {
         font-size: 1rem;
         line-height: 1.4;
-        font-weight: 500;
-        color: #ffb7ff;
-        text-shadow: 0 0 8px rgba(255,0,200,0.7), 0 0 20px rgba(0,150,255,0.6);
-        margin-bottom: 28px;
+        font-weight: 600;
+        color: #2b0055;
+        text-shadow:
+            0 0 6px rgba(255,255,255,0.9),
+            0 0 20px rgba(255,220,255,0.9),
+            0 0 40px rgba(255,180,255,0.7);
+        margin-bottom: 24px;
     }
 
     .section-label {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #ff9fff;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #2b0055;
         text-shadow:
-            0 0 6px rgba(255,0,200,0.8),
-            0 0 20px rgba(255,0,200,0.4),
-            0 0 40px rgba(0,128,255,0.4);
+            0 0 4px rgba(255,255,255,1),
+            0 0 12px rgba(255,150,255,0.8),
+            0 0 24px rgba(255,0,200,0.6);
         margin: 0 auto 12px;
     }
 
@@ -119,38 +116,46 @@
     .button-list {
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 10px;
         width: 100%;
         margin-bottom: 24px;
     }
 
+    /* BUTTONS ARE NOW ~1/4 THE SIZE:
+       - much smaller padding
+       - smaller font
+       - slim pill look
+    */
     .playlist-button {
         display: block;
         width: 100%;
-        border-radius: 16px;
-        padding: 14px 16px;              /* smaller height */
-        font-size: 1.25rem;              /* smaller text */
-        font-weight: 600;
+        border-radius: 14px;
+        padding: 8px 12px;             /* <<< short height */
+        font-size: 1rem;               /* <<< smaller text */
+        font-weight: 700;
         line-height: 1.2;
         color: #fff;
         text-align: center;
         text-decoration: none;
 
-        background: linear-gradient(
-            135deg,
-            rgba(255,0,153,0.4) 0%,
-            rgba(128,0,128,0.3) 40%,
-            rgba(0,80,200,0.4) 100%
+        background: radial-gradient(circle at 0% 0%,
+            rgba(255,0,180,0.6) 0%,
+            rgba(120,0,120,0.5) 40%,
+            rgba(0,60,180,0.6) 100%
         );
 
-        border: 1px solid rgba(255,0,255,0.4);
+        border: 1px solid rgba(255,0,255,0.7);
         box-shadow:
-            0 0 10px rgba(255,0,200,0.6),
-            0 0 30px rgba(255,0,200,0.4),
-            0 0 60px rgba(0,128,255,0.4);
+            0 0 6px rgba(255,0,200,0.9),
+            0 0 16px rgba(0,128,255,0.7),
+            0 0 32px rgba(255,255,255,0.8);
         position: relative;
         overflow: hidden;
         transition: all 0.12s ease;
+        text-shadow:
+            0 0 4px rgba(255,255,255,0.9),
+            0 0 10px rgba(255,0,200,0.8),
+            0 0 20px rgba(0,128,255,0.8);
     }
 
     .playlist-button::after {
@@ -158,51 +163,30 @@
         position: absolute;
         inset: 0;
         background: radial-gradient(circle at 50% 0%,
-            rgba(255,255,255,0.35) 0%,
+            rgba(255,255,255,0.4) 0%,
             rgba(255,255,255,0) 60%);
         mix-blend-mode: screen;
-        opacity: 0.4;
+        opacity: 0.5;
         pointer-events: none;
     }
 
-    /* tap / press feedback */
     .playlist-button:active {
-        transform: scale(0.98);
+        transform: scale(0.97);
         box-shadow:
-            0 0 20px rgba(255,0,200,0.9),
-            0 0 40px rgba(255,0,200,0.6),
-            0 0 80px rgba(0,128,255,0.6);
+            0 0 10px rgba(255,0,200,1),
+            0 0 24px rgba(0,128,255,1),
+            0 0 48px rgba(255,255,255,1);
         filter: brightness(1.2);
     }
 
-    /* ---------- FOOTER / SAFETY NOTE ---------- */
-    .safety {
-        font-size: 1rem;
-        line-height: 1.4;
-        color: #ffdfff;
-        text-shadow:
-            0 0 6px rgba(255,0,200,0.8),
-            0 0 20px rgba(255,0,200,0.4);
-        margin-top: 28px;
-    }
-
-    .safety a {
-        color: #e8b3ff;
-        text-decoration: underline;
-    }
-
-    .safety a:active {
-        color: #ffffff;
-    }
-
-    /* ---------- SMALL SCREEN TUNE ---------- */
+    /* SMALL SCREEN ADJUST */
     @media (max-width: 380px) {
         .playlist-button {
-            font-size: 1.1rem;
-            padding: 12px 14px;
+            font-size: 0.9rem;
+            padding: 7px 10px;
         }
         .section-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
     }
 </style>
@@ -212,11 +196,11 @@
 <!-- FLOATING BUBBLES -->
 <div class="bubbles">
 
-    <!-- PINK family -->
+    <!-- PINK bubbles -->
     <div class="bubble slow" style="
         --xStart:10vw; --yStart:80vh; --xEnd:5vw; --scale:0.55;
         width:80px; height:80px;
-        --glowColor: rgba(255,0,200,0.8);
+        --glowColor: rgba(255,0,200,0.9);
         background: radial-gradient(circle at 30% 30%, rgba(255,170,240,0.95) 0%, rgba(255,0,200,0.15) 60%);
         animation-name: floatUpDrift;
     "></div>
@@ -224,16 +208,16 @@
     <div class="bubble med" style="
         --xStart:70vw; --yStart:85vh; --xEnd:68vw; --scale:0.4;
         width:60px; height:60px;
-        --glowColor: rgba(255,0,200,0.8);
+        --glowColor: rgba(255,0,200,0.9);
         background: radial-gradient(circle at 30% 30%, rgba(255,190,255,0.95) 0%, rgba(255,0,200,0.15) 60%);
         animation-name: floatUpDrift;
     "></div>
 
-    <!-- BLUE family -->
+    <!-- BLUE bubbles -->
     <div class="bubble fast" style="
         --xStart:30vw; --yStart:88vh; --xEnd:28vw; --scale:0.5;
         width:70px; height:70px;
-        --glowColor: rgba(0,150,255,0.8);
+        --glowColor: rgba(0,150,255,0.9);
         background: radial-gradient(circle at 30% 30%, rgba(200,230,255,0.95) 0%, rgba(0,120,255,0.15) 60%);
         animation-name: floatUpDrift;
     "></div>
@@ -241,16 +225,16 @@
     <div class="bubble slow" style="
         --xStart:50vw; --yStart:92vh; --xEnd:52vw; --scale:0.3;
         width:45px; height:45px;
-        --glowColor: rgba(0,150,255,0.8);
+        --glowColor: rgba(0,150,255,0.9);
         background: radial-gradient(circle at 30% 30%, rgba(190,220,255,0.95) 0%, rgba(0,100,255,0.15) 60%);
         animation-name: floatUpDrift;
     "></div>
 
-    <!-- ORANGE family -->
+    <!-- ORANGE bubbles -->
     <div class="bubble med" style="
         --xStart:20vw; --yStart:95vh; --xEnd:18vw; --scale:0.45;
         width:65px; height:65px;
-        --glowColor: rgba(255,140,0,0.8);
+        --glowColor: rgba(255,140,0,0.9);
         background: radial-gradient(circle at 30% 30%, rgba(255,235,210,0.95) 0%, rgba(255,120,0,0.15) 60%);
         animation-name: floatUpDrift;
     "></div>
@@ -258,16 +242,16 @@
     <div class="bubble fast" style="
         --xStart:80vw; --yStart:90vh; --xEnd:82vw; --scale:0.28;
         width:40px; height:40px;
-        --glowColor: rgba(255,140,0,0.8);
+        --glowColor: rgba(255,140,0,0.9);
         background: radial-gradient(circle at 30% 30%, rgba(255,230,200,0.95) 0%, rgba(255,120,0,0.15) 60%);
         animation-name: floatUpDrift;
     "></div>
-
 </div>
 
-<!-- MAIN CARD CONTENT -->
-<div class="card">
-    <div class="title">TimmyTime Audio<br/>Playground</div>
+<!-- MAIN CONTENT -->
+<div class="wrapper">
+
+    <div class="title">TimmyTime Audio Playground</div>
 
     <div class="tagline">
         Royalty-free vibes • Alabama soul • HUI energy
@@ -276,59 +260,45 @@
     <div class="section-label">Playlists</div>
 
     <div class="button-list">
-        <!-- Playlist 1 -->
         <a class="playlist-button"
            href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b"
            target="_blank" rel="noopener noreferrer">
-            Playlist 1
+            Playlist&nbsp;1
         </a>
 
-        <!-- Playlist 2 -->
         <a class="playlist-button"
            href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f"
            target="_blank" rel="noopener noreferrer">
-            Playlist 2
+            Playlist&nbsp;2
         </a>
 
-        <!-- Playlist 3 -->
         <a class="playlist-button"
            href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44"
            target="_blank" rel="noopener noreferrer">
-            Playlist 3
+            Playlist&nbsp;3
         </a>
 
-        <!-- Playlist 4 -->
         <a class="playlist-button"
            href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df"
            target="_blank" rel="noopener noreferrer">
-            Playlist 4
+            Playlist&nbsp;4
         </a>
 
-        <!-- Playlist 5 -->
         <a class="playlist-button"
            href="https://www.nativecrafts.us/medicine-bags-c-164.html"
            target="_blank" rel="noopener noreferrer">
-            Playlist 5
+            Playlist&nbsp;5
         </a>
     </div>
 
     <div class="section-label">Single Track</div>
 
-    <div class="button-list" style="margin-bottom:0;">
+    <div class="button-list" style="margin-bottom:32px;">
         <a class="playlist-button"
            href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
            target="_blank" rel="noopener noreferrer">
-            Feature Track
+            Feature&nbsp;Track
         </a>
-    </div>
-
-    <div class="safety">
-        Domestic abuse help: visit the
-        <a href="https://www.townofragland.org/Default.asp?ID=33&amp;pg=Action+Center"
-           target="_blank" rel="noopener noreferrer">
-            Town of Ragland Action Center
-        </a>
-        for direct contact with the mayor.
     </div>
 </div>
 
