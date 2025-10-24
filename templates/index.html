@@ -1,150 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Today's Featured Playlist</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TimmyTime</title>
+
+    <!-- THIS LINE IS THE WHOLE FIGHT -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
 <body>
-  <!-- Animated floating bubbles in the background -->
-  <div class="bubble bubble-sm b1"></div>
-  <div class="bubble bubble-md b2"></div>
-  <div class="bubble bubble-lg b3"></div>
-  <div class="bubble bubble-sm b4"></div>
-  <div class="bubble bubble-md b5"></div>
-  <div class="bubble bubble-lg b6"></div>
 
-  <main class="page-wrap">
-    <header class="hero">
-      <h1 class="page-title">Today's Featured<br />Playlist</h1>
-      <p class="page-subtitle">Hand-picked for mood &amp; flow</p>
-    </header>
+    <!-- floating neon bubble background -->
+    <div class="bubble-bg">
+        <!-- we’ll generate bubbles in CSS -->
+    </div>
 
-    <!-- CARD 1 -->
-    <section class="playlist-card">
-      <div class="card-glow"></div>
-      <div class="card-inner">
-        <h2 class="playlist-name">Midnight Neon Cruise</h2>
+    <main class="content-card">
+        <h1 class="hero-title">TimmyTime Audio Playground</h1>
+        <p class="tagline">Royalty-free vibes • Alabama soul • HUI energy</p>
 
-        <div class="tag-row">
-          <span class="tag-pill">dreamy synth</span>
-          <span class="tag-pill">slow drift</span>
-          <span class="tag-pill safe">safe for socials</span>
-        </div>
+        <section class="links-block">
+            <h2 class="block-title">Playlists</h2>
 
-        <a
-          class="listen-btn"
-          href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ▶ Play this vibe
-        </a>
-        <p class="note-line">Royalty-free / creator-safe</p>
-      </div>
-    </section>
+            <a class="beat-link" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener">
+                Playlist 1
+            </a>
 
-    <!-- CARD 2 -->
-    <section class="playlist-card">
-      <div class="card-glow"></div>
-      <div class="card-inner">
-        <h2 class="playlist-name">Southern Heatwave</h2>
+            <a class="beat-link" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener">
+                Playlist 2
+            </a>
 
-        <div class="tag-row">
-          <span class="tag-pill">swagger beat</span>
-          <span class="tag-pill">outlaw country trap</span>
-          <span class="tag-pill safe">creator-safe</span>
-        </div>
+            <a class="beat-link" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener">
+                Playlist 3
+            </a>
 
-        <a
-          class="listen-btn"
-          href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ▶ Play this vibe
-        </a>
-        <p class="note-line">Royalty-free / post it anywhere</p>
-      </div>
-    </section>
+            <a class="beat-link" href="httpsuno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener">
+                Playlist 4
+            </a>
 
-    <!-- CARD 3 -->
-    <section class="playlist-card">
-      <div class="card-glow"></div>
-      <div class="card-inner">
-        <h2 class="playlist-name">Halo Pulse</h2>
+            <a class="beat-link" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener">
+                Playlist 5
+            </a>
+        </section>
 
-        <div class="tag-row">
-          <span class="tag-pill">neon choir</span>
-          <span class="tag-pill">uplift wave</span>
-          <span class="tag-pill safe">clean for brands</span>
-        </div>
+        <section class="links-block">
+            <h2 class="block-title">Single Track</h2>
+            <a class="beat-link" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener">
+                Feature Track
+            </a>
+        </section>
 
-        <a
-          class="listen-btn"
-          href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ▶ Play this vibe
-        </a>
-        <p class="note-line">Royalty-free / safe for reels</p>
-      </div>
-    </section>
+        <section class="links-block">
+            <h2 class="block-title">Local Craft</h2>
+            <a class="beat-link" href="https://www.nativecrafts.us/medicine-bags-c-164.html" target="_blank" rel="noopener">
+                Medicine Bags / Native Craft
+            </a>
+        </section>
 
-    <!-- CARD 4 -->
-    <section class="playlist-card">
-      <div class="card-glow"></div>
-      <div class="card-inner">
-        <h2 class="playlist-name">Outlaw Glitch Rodeo</h2>
+        <footer class="footer-line">
+            <p>Domestic abuse help: Go to the Town of Ragland website Action Center for direct contact with the mayor.</p>
+        </footer>
+    </main>
 
-        <div class="tag-row">
-          <span class="tag-pill">dusty 808s</span>
-          <span class="tag-pill">badlands bass</span>
-          <span class="tag-pill safe">no takedowns</span>
-        </div>
-
-        <a
-          class="listen-btn"
-          href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ▶ Play this vibe
-        </a>
-        <p class="note-line">Royalty-free / IG + TikTok friendly</p>
-      </div>
-    </section>
-
-    <!-- CARD 5 -->
-    <section class="playlist-card">
-      <div class="card-glow"></div>
-      <div class="card-inner">
-        <h2 class="playlist-name">Violet Drift Tapes</h2>
-
-        <div class="tag-row">
-          <span class="tag-pill">late night slide</span>
-          <span class="tag-pill">spacey low ride</span>
-          <span class="tag-pill safe">safe for socials</span>
-        </div>
-
-        <a
-          class="listen-btn"
-          href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ▶ Play this vibe
-        </a>
-        <p class="note-line">Royalty-free / chill content mode</p>
-      </div>
-    </section>
-
-    <!-- FOOTER NOTE -->
-    <footer class="footer-note">
-      <p>Tap a vibe → opens in Suno. Use in videos with no strikes.</p>
-    </footer>
-  </main>
+    <!-- optional tiny script to keep bubbles animated if we ever need JS later -->
 </body>
 </html>
