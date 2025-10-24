@@ -16,10 +16,7 @@
     --btn-shadow:    rgba(0,0,0,0.45);
   }
 
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
     margin: 0;
@@ -34,7 +31,7 @@
     overflow-x: hidden;
   }
 
-  /* FLOATING BUBBLES LAYER */
+  /* BUBBLES */
   .bubble-layer {
     position: fixed;
     inset: 0;
@@ -48,29 +45,16 @@
     border-radius: 50%;
     filter: blur(2px);
     box-shadow: 0 12px 24px var(--bubble-shadow);
-    animation-name: floatUp;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
+    animation: floatUp linear infinite;
   }
 
   @keyframes floatUp {
-    0% {
-      transform: translateY(100vh) translateX(0);
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-20vh) translateX(var(--drift, 0px));
-      opacity: 0;
-    }
+    0% { transform: translateY(100vh); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-20vh) translateX(var(--drift, 0px)); opacity: 0; }
   }
 
-  /* CONTENT ABOVE BUBBLES */
   .content {
     position: relative;
     z-index: 2;
@@ -80,11 +64,6 @@
     text-align: center;
   }
 
-  .title-spacer {
-    height: 8px;
-  }
-
-  /* PLAYLIST BUTTONS */
   .playlist-btn {
     display: block;
     width: 100%;
@@ -93,34 +72,22 @@
     font-weight: 700;
     font-size: clamp(1.4rem, 2vw + 1rem, 2rem);
     text-align: center;
-    background: radial-gradient(circle at 20% 20%,
-      var(--btn-grad-start) 0%,
-      var(--btn-grad-mid) 40%,
-      var(--btn-grad-end) 100%);
+    background: radial-gradient(circle at 20% 20%, var(--btn-grad-start) 0%, var(--btn-grad-mid) 40%, var(--btn-grad-end) 100%);
     border: 3px solid var(--btn-border);
     border-radius: 24px;
     padding: 18px 16px;
     margin: 16px auto;
-    box-shadow:
-      0 16px 24px var(--btn-shadow),
-      0 0 12px rgba(255,0,255,0.6),
-      0 0 24px rgba(255,102,204,0.5);
-    text-shadow:
-      0 2px 4px rgba(0,0,0,0.7),
-      0 0 6px rgba(255,255,255,0.6);
+    box-shadow: 0 16px 24px var(--btn-shadow), 0 0 12px rgba(255,0,255,0.6), 0 0 24px rgba(255,102,204,0.5);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 0 6px rgba(255,255,255,0.6);
   }
 
-  .playlist-btn:active {
-    transform: scale(0.97);
-  }
+  .playlist-btn:active { transform: scale(0.97); }
 
   .section-label {
     font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
     font-weight: 800;
     color: #000;
-    text-shadow:
-      0 2px 4px rgba(255,0,255,0.4),
-      0 4px 6px rgba(0,0,0,0.6);
+    text-shadow: 0 2px 4px rgba(255,0,255,0.4), 0 4px 6px rgba(0,0,0,0.6);
     margin: 32px 0 8px;
   }
 
@@ -128,52 +95,46 @@
     font-size: 1.2rem;
     font-weight: 700;
     color: #1a001a;
-    text-shadow:
-      0 2px 4px rgba(255,255,255,0.8),
-      0 4px 6px rgba(0,0,0,0.6);
-    line-height: 1.4;
+    text-shadow: 0 2px 4px rgba(255,255,255,0.8), 0 4px 6px rgba(0,0,0,0.6);
     margin-top: 32px;
+  }
+
+  /* COUNTER BOX */
+  .counter-box {
+    margin-top: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.4);
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: inline-block;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.35), 0 0 10px rgba(255,0,255,0.5), 0 0 20px rgba(255,102,204,0.4);
+    border: 2px solid rgba(255,0,255,0.5);
+    color: #1a001a;
+    text-shadow: 0 0 6px rgba(255,0,255,0.8), 0 0 10px rgba(255,153,0,0.8), 0 2px 4px rgba(0,0,0,0.8);
   }
 </style>
 </head>
 <body>
 
-<!-- FLOATING BUBBLES BACKDROP -->
 <div class="bubble-layer" id="bubbleLayer"></div>
 
-<!-- CONTENT -->
 <div class="content">
-  <div class="title-spacer"></div>
-
-  <!-- PLAYLIST BUTTONS (locked exactly how you had them working) -->
-  <a class="playlist-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">
-    Playlist 1
-  </a>
-
-  <a class="playlist-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">
-    Playlist 2
-  </a>
-
-  <a class="playlist-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">
-    Playlist 3
-  </a>
-
-  <a class="playlist-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">
-    Playlist 4
-  </a>
-
-  <a class="playlist-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
-    Playlist 5
-  </a>
+  <a class="playlist-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank">Playlist 1</a>
+  <a class="playlist-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank">Playlist 2</a>
+  <a class="playlist-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank">Playlist 3</a>
+  <a class="playlist-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank">Playlist 4</a>
+  <a class="playlist-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank">Playlist 5</a>
 
   <div class="section-label">Single Track</div>
-
-  <a class="playlist-btn" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener noreferrer">
-    Feature Track
-  </a>
+  <a class="playlist-btn" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank">Feature Track</a>
 
   <div class="footer">
     App made by iPhone 17 Pro Max • Timmy Bubbles
+  </div>
+
+  <div class="counter-box">
+    Visitors: <span id="visitCount">0</span>
   </div>
 </div>
 
@@ -192,28 +153,25 @@
   for (let i = 0; i < bubbleCount; i++) {
     const b = document.createElement("div");
     b.className = "bubble";
-
-    const size = 40 + Math.random()*60; // 40-100px
+    const size = 40 + Math.random()*60;
     b.style.width = size + "px";
     b.style.height = size + "px";
-
-    const left = Math.random() * vw;
-    b.style.left = left + "px";
-
-    const dur = 8 + Math.random()*10; // 8s-18s
-    b.style.animationDuration = dur + "s";
-
-    const delay = (-1) * Math.random()*dur;
-    b.style.animationDelay = delay + "s";
-
-    const drift = (Math.random()*80 - 40).toFixed(1) + "px";
-    b.style.setProperty("--drift", drift);
-
-    const color = bubbleColors[i % bubbleColors.length];
-    b.style.background = color;
-
+    b.style.left = Math.random() * vw + "px";
+    b.style.animationDuration = 8 + Math.random()*10 + "s";
+    b.style.animationDelay = (-1) * Math.random()*10 + "s";
+    b.style.setProperty("--drift", (Math.random()*80 - 40).toFixed(1) + "px");
+    b.style.background = bubbleColors[i % bubbleColors.length];
     layer.appendChild(b);
   }
+})();
+
+// simple local visitor counter
+(function counter() {
+  let count = localStorage.getItem("timmy_visit_count");
+  if (!count) count = 1;
+  localStorage.setItem("timmy_visit_count", count);
+  const el = document.getElementById("visitCount");
+  if (el) el.textContent = count;
 })();
 </script>
 
