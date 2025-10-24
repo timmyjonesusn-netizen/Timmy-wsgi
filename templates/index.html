@@ -5,23 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TimmyTime Audio Playground</title>
 <style>
-    /* ====== BASE LAYOUT ====== */
     :root {
         --bg-start: #fffecf;
         --bg-mid: #d5ffe9;
         --bg-end: #c4dfff;
-
-        --card-grad-1: radial-gradient(circle at 0% 0%,
-            rgba(255,0,128,0.6) 0%,
-            rgba(255,166,0,0.4) 35%,
-            rgba(0,128,255,0.4) 100%
-        );
-        --card-grad-2: linear-gradient(
-            90deg,
-            rgba(255,105,180,0.6) 0%,
-            rgba(255,255,255,0.15) 40%,
-            rgba(0,128,255,0.5) 100%
-        );
 
         --border-neon: rgba(255,0,200,0.8);
         --text-dark: #1a002b;
@@ -46,7 +33,6 @@
         overflow-x: hidden;
     }
 
-    /* container that matches the soft rounded blue strip you have */
     .app-shell {
         position: relative;
         width: 100%;
@@ -57,21 +43,26 @@
             rgba(173,216,230,0.4) 60%,
             rgba(135,206,250,0.5) 100%
         );
-        border-radius: 0;
         padding: 2rem 1rem 5rem;
         box-shadow:
             0 30px 60px rgba(0,0,0,0.15),
             0 0 120px rgba(255,255,255,0.4) inset;
-        overflow: hidden; /* hide bubbles when they exit */
+        overflow: hidden; /* clip bubbles leaving */
+    }
+
+    /* z-index stack:
+       bubble-layer sits at 1
+       content sits at 10
+       so bubbles drift BEHIND text/buttons */
+    .content {
+        position: relative;
+        z-index: 10;
     }
 
     header {
         text-align: left;
         margin-bottom: 1.5rem;
-        position: relative;
-        z-index: 10;
-        padding-right: .5rem;
-        padding-left: .5rem;
+        padding: 0 .5rem;
     }
 
     header h1 {
@@ -104,20 +95,28 @@
         margin-bottom: 1rem;
     }
 
-    /* ====== MUSIC BUTTONS ====== */
+    /* PLAYLIST BUTTONS (now ~half the height) */
     .playlist-buttons {
         position: relative;
-        z-index: 10;
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 1rem;
         margin-bottom: 2rem;
     }
 
     .music-btn {
         background-image:
-            var(--card-grad-2),
-            var(--card-grad-1);
+            radial-gradient(circle at 0% 0%,
+                rgba(255,0,128,0.6) 0%,
+                rgba(255,166,0,0.4) 35%,
+                rgba(0,128,255,0.4) 100%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(255,105,180,0.6) 0%,
+                rgba(255,255,255,0.15) 40%,
+                rgba(0,128,255,0.5) 100%
+            );
         background-blend-mode: screen, normal;
         border-radius: 20px;
         border: 2px solid var(--border-neon);
@@ -125,9 +124,9 @@
             0 18px 30px rgba(0,0,0,0.4),
             0 0 20px rgba(255,0,200,0.6),
             0 0 60px rgba(0,153,255,0.4);
-        padding: 1.5rem 1rem;
+        padding: 0.9rem 1rem;            /* was 1.5rem -> slimmer */
         text-align: center;
-        font-size: 1.9rem;
+        font-size: 1.6rem;               /* was 1.9rem -> tighter */
         line-height: 1.2;
         font-weight: 800;
         color: var(--text-light);
@@ -138,10 +137,9 @@
         user-select: none;
     }
 
-    /* ====== SINGLE TRACK BLOCK ====== */
+    /* SINGLE TRACK BLOCK */
     .single-track {
         position: relative;
-        z-index: 10;
         margin-top: 2rem;
         margin-bottom: 2rem;
         text-align: center;
@@ -173,9 +171,9 @@
             0 18px 30px rgba(0,0,0,0.4),
             0 0 20px rgba(255,0,200,0.6),
             0 0 60px rgba(255,153,0,0.4);
-        padding: 1.5rem 1rem;
+        padding: 0.9rem 1rem;           /* match slimmer */
         text-align: center;
-        font-size: 1.9rem;
+        font-size: 1.6rem;
         line-height: 1.2;
         font-weight: 800;
         color: var(--text-light);
@@ -187,10 +185,8 @@
     }
 
     footer {
-        position: relative;
-        z-index: 10;
         text-align: center;
-        margin-top: 2.5rem;
+        margin-top: 2rem;
         font-size: 1rem;
         line-height: 1.4;
         font-weight: 700;
@@ -201,14 +197,12 @@
         padding-bottom: 3rem;
     }
 
-    /* ====== BUBBLES ====== */
-
+    /* BUBBLES */
     .bubble-layer {
-        /* covers entire shell so bubbles can float behind content */
         position: absolute;
         inset: 0;
         overflow: hidden;
-        z-index: 1; /* under text/buttons, over bg */
+        z-index: 1;          /* BEHIND content */
         pointer-events: none;
     }
 
@@ -220,13 +214,13 @@
             0 8px 16px rgba(0,0,0,0.4),
             0 0 20px rgba(255,255,255,0.6) inset;
         filter: blur(0px);
-        animation-name: floatUp, swaySide;
         animation-timing-function: linear;
         animation-iteration-count: infinite;
+        /* we’ll assign animation-name + duration + delay inline */
     }
 
-    /* color variants (solid-ish with glow so they read) */
-    .bubble.purple {
+    /* solid neon looks */
+    .purple {
         background: radial-gradient(circle at 30% 30%,
             rgba(255,0,255,0.8) 0%,
             rgba(128,0,255,0.6) 60%,
@@ -237,7 +231,7 @@
             0 4px 12px rgba(0,0,0,0.6);
     }
 
-    .bubble.pink {
+    .pink {
         background: radial-gradient(circle at 30% 30%,
             rgba(255,105,180,0.85) 0%,
             rgba(255,0,128,0.6) 60%,
@@ -248,7 +242,7 @@
             0 4px 12px rgba(0,0,0,0.6);
     }
 
-    .bubble.orange {
+    .orange {
         background: radial-gradient(circle at 30% 30%,
             rgba(255,166,0,0.9) 0%,
             rgba(255,99,0,0.6) 60%,
@@ -259,31 +253,30 @@
             0 4px 12px rgba(0,0,0,0.6);
     }
 
-    /* pulsing bubble: cycles purple -> pink -> orange -> back */
-    .bubble.pulse {
+    /* pulsing hue shift */
+    .pulse {
         animation-name: floatUp, swaySide, pulseColor;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
     }
 
-    /* master upward float */
+    /* regular bubble: no hue shift, just float + sway */
+    .floatOnly {
+        animation-name: floatUp, swaySide;
+    }
+
+    /* float from below bottom to above top */
     @keyframes floatUp {
-        0% {
-            transform: translateY(100%);
-        }
-        100% {
-            transform: translateY(-120%);
-        }
+        0%   { transform: translateY(110vh); }
+        100% { transform: translateY(-140vh); }
     }
 
-    /* slow side-to-side drift */
+    /* slow wobble left-right */
     @keyframes swaySide {
-        0%   { margin-left: -10px; }
-        50%  { margin-left: 10px; }
-        100% { margin-left: -10px; }
+        0%   { margin-left: -12px; }
+        50%  { margin-left: 12px;  }
+        100% { margin-left: -12px; }
     }
 
-    /* hue shift for pulse bubbles */
+    /* color cycling for pulse bubbles */
     @keyframes pulseColor {
         0% {
             background: radial-gradient(circle at 30% 30%,
@@ -327,62 +320,43 @@
         }
     }
 
-    /* ====== INDIVIDUAL BUBBLE SIZES / SPEEDS ====== */
-    /*
-        We'll drop 15 bubbles total:
-        - 12 regular (purple / pink / orange)
-        - 3 pulsing (pulse class)
-        Different size, left, duration, delay.
-    */
-
-    /* helper class that we will reuse in inline style via nth-child overrides if desired */
-    .bubble.small  { width: 40px; height: 40px; }
-    .bubble.med    { width: 60px; height: 60px; }
-    .bubble.big    { width: 90px; height: 90px; }
-    .bubble.xbig   { width: 120px; height: 120px; }
-
-    /* We'll rely on inline style below to set:
-       left: %, bottom offset (via translateY start from 100%), animation-duration, animation-delay.
-       That way: no JS needed.
-    */
-
-    /* Make sure content sits above bubble layer visually */
-    .content {
-        position: relative;
-        z-index: 10;
-    }
+    /* size helpers */
+    .s   { width: 32px;  height: 32px;  }
+    .m   { width: 50px;  height: 50px;  }
+    .l   { width: 80px;  height: 80px;  }
+    .xl  { width: 110px; height: 110px; }
 
 </style>
 </head>
 <body>
     <main class="app-shell">
-        <!-- FLOATING BUBBLES -->
+        <!-- BUBBLES -->
         <div class="bubble-layer">
-            <!-- Regular bubbles (12) -->
-            <div class="bubble purple small"  style="left:5%;  animation-duration:14s,5s; animation-delay:0s,0s;"></div>
-            <div class="bubble pink med"      style="left:20%; animation-duration:18s,6s; animation-delay:2s,1s;"></div>
-            <div class="bubble orange big"    style="left:35%; animation-duration:22s,7s; animation-delay:4s,2s;"></div>
-            <div class="bubble purple med"    style="left:50%; animation-duration:16s,5s; animation-delay:1s,0s;"></div>
-            <div class="bubble orange small"  style="left:65%; animation-duration:20s,6s; animation-delay:3s,1s;"></div>
-            <div class="bubble pink big"      style="left:80%; animation-duration:24s,8s; animation-delay:5s,2s;"></div>
+            <!-- random-ish: each bubble gets its own left %, duration, delay -->
+            <!-- floatOnly bubbles -->
+            <div class="bubble purple s floatOnly" style="left:5%;   animation-duration:16s,5s;  animation-delay:0s,0s;"></div>
+            <div class="bubble pink m floatOnly"   style="left:18%;  animation-duration:22s,6s;  animation-delay:3s,1s;"></div>
+            <div class="bubble orange l floatOnly" style="left:31%;  animation-duration:28s,7s;  animation-delay:6s,2s;"></div>
+            <div class="bubble purple m floatOnly" style="left:46%;  animation-duration:20s,5s;  animation-delay:1s,0s;"></div>
+            <div class="bubble orange s floatOnly" style="left:62%;  animation-duration:25s,6s;  animation-delay:4s,1s;"></div>
+            <div class="bubble pink l floatOnly"   style="left:77%;  animation-duration:30s,8s;  animation-delay:7s,2s;"></div>
+            <div class="bubble purple m floatOnly" style="left:12%;  animation-duration:24s,6s;  animation-delay:9s,1s;"></div>
+            <div class="bubble pink s floatOnly"   style="left:54%;  animation-duration:18s,5s;  animation-delay:10s,0s;"></div>
+            <div class="bubble orange m floatOnly" style="left:84%;  animation-duration:26s,7s;  animation-delay:12s,2s;"></div>
+            <div class="bubble purple l floatOnly" style="left:28%;  animation-duration:32s,8s;  animation-delay:14s,2s;"></div>
+            <div class="bubble orange m floatOnly" style="left:69%;  animation-duration:19s,5s;  animation-delay:16s,0s;"></div>
+            <div class="bubble pink s floatOnly"   style="left:90%;  animation-duration:27s,6s;  animation-delay:18s,1s;"></div>
 
-            <div class="bubble purple small"  style="left:15%; animation-duration:19s,6s; animation-delay:6s,1s;"></div>
-            <div class="bubble pink med"      style="left:45%; animation-duration:21s,7s; animation-delay:7s,2s;"></div>
-            <div class="bubble orange small"  style="left:75%; animation-duration:17s,5s; animation-delay:8s,0s;"></div>
-            <div class="bubble purple big"    style="left:10%; animation-duration:25s,8s; animation-delay:9s,2s;"></div>
-            <div class="bubble orange med"    style="left:58%; animation-duration:15s,5s; animation-delay:10s,0s;"></div>
-            <div class="bubble pink small"    style="left:88%; animation-duration:23s,7s; animation-delay:11s,1s;"></div>
-
-            <!-- Pulsing bubbles (3) -->
-            <div class="bubble pulse xbig"    style="left:28%; animation-duration:28s,6s,9s; animation-delay:0s,0s,0s;"></div>
-            <div class="bubble pulse big"     style="left:62%; animation-duration:26s,7s,9s; animation-delay:4s,1s,2s;"></div>
-            <div class="bubble pulse med"     style="left:40%; animation-duration:30s,6s,9s; animation-delay:8s,2s,4s;"></div>
+            <!-- pulsing color bubbles -->
+            <div class="bubble pulse xl" style="left:35%; animation-duration:34s,6s,10s; animation-delay:0s,0s,0s;"></div>
+            <div class="bubble pulse l"  style="left:58%; animation-duration:29s,7s,10s; animation-delay:5s,1s,2s;"></div>
+            <div class="bubble pulse m"  style="left:42%; animation-duration:31s,6s,10s; animation-delay:10s,2s,4s;"></div>
         </div>
 
         <!-- MAIN CONTENT -->
         <div class="content">
             <header>
-                <h1>TimmyTime Audio<br />Playground</h1>
+                <h1>TimmyTime Audio<br>Playground</h1>
                 <div class="tagline">
                     Royalty-free vibes • Alabama soul • HUI energy
                 </div>
