@@ -1,178 +1,306 @@
-/* -------- GLOBAL PAGE BACKGROUND / TYPE -------- */
-body {
+/* RESET-ish */
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   margin: 0;
-  padding: 2rem 1rem 5rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.4;
-  background: radial-gradient(circle at 20% 20%, rgba(255, 0, 255, 0.25) 0%, rgba(30, 0, 70, 1) 70%);
-  background-attachment: fixed;
-  color: #fff;
+  padding: 0;
 }
 
-.page-wrap {
-  max-width: 800px;
-  margin: 0 auto;
+:root {
+  --bg-start: #4a007a;
+  --bg-end: #d11fa3;
+  --text-main: #fff;
+  --text-dim: rgba(255,255,255,0.8);
+
+  --card-bg-top: rgba(20, 0, 30, 0.8);
+  --card-bg-bottom: rgba(80, 0, 80, 0.2);
+
+  --pill-bg: radial-gradient(circle at 20% 20%, #3a003a 0%, #110011 60%);
+  --pill-safe-bg: radial-gradient(circle at 20% 20%, #002e1e 0%, #00120d 70%);
+  --pill-text: #ffffff;
+  --pill-safe-text: #d8ffe9;
+
+  --btn-bg: radial-gradient(circle at 20% 20%, #000000 0%, #2a0035 70%);
+  --btn-text: #ffffff;
+
+  --radius-card: 1.25rem;
+  --radius-pill: 0.9rem;
+
+  --shadow-strong: 0 30px 60px rgba(0,0,0,0.8);
+  --shadow-pill: 0 12px 24px rgba(0,0,0,0.8),
+                 0 0 16px rgba(0,255,170,0.4);
+
+  --bubble-purple: rgba(140, 0, 255, 0.4);
+  --bubble-pink: rgba(255, 0, 153, 0.4);
+  --bubble-blue: rgba(0, 102, 255, 0.3);
+  --bubble-orange: rgba(255, 102, 0, 0.4);
 }
 
-/* -------- HEADER TEXT -------- */
-.headline {
-  font-size: clamp(2rem, 2.2rem + 1vw, 2.6rem);
-  font-weight: 700;
-  line-height: 1.15;
-  margin: 0 0 1rem 0;
-  color: #fff;
-  text-shadow:
-    0 0 20px rgba(255,0,255,0.8),
-    0 0 40px rgba(255,0,255,0.4),
-    0 10px 40px rgba(0,0,0,0.8);
-}
-
-.subhead {
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: rgba(255,255,255,0.9);
-  margin: 0 0 2rem 0;
-  text-shadow:
-    0 0 12px rgba(255,0,200,0.6),
-    0 10px 30px rgba(0,0,0,0.8);
-}
-
-/* -------- PLAYLIST CARD (CLICKABLE AREA) -------- */
-.playlist-card {
-  display: block;
-  text-decoration: none;          /* kill blue underline */
-  color: inherit;                 /* keep white text */
-
-  background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.12) 0%, rgba(20,0,40,0.8) 70%);
-  border-radius: 20px;
-  padding: 1.5rem 1rem 1.25rem;
-  margin-bottom: 1.5rem;
-
-  border: 1px solid rgba(255,0,200,0.4);
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.9),
-    0 0 40px rgba(255,0,255,0.4),
-    0 0 120px rgba(255,0,255,0.3);
-
+/* PAGE BACKGROUND */
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 20%, rgba(255,0,204,0.4) 0%, rgba(0,0,0,0) 60%),
+              radial-gradient(circle at 80% 10%, rgba(0,255,255,0.15) 0%, rgba(0,0,0,0) 60%),
+              radial-gradient(circle at 50% 60%, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%),
+              linear-gradient(160deg, var(--bg-start) 0%, var(--bg-end) 60%, #2a0035 100%);
+  background-color: #2a0035;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Roboto", sans-serif;
+  color: var(--text-main);
+  padding: clamp(1.5rem, 2vw, 2rem) 1rem 4rem;
   position: relative;
-  overflow: hidden;
-  transition: all .18s ease;
+  overflow-x: hidden;
 }
 
-/* glossy highlight layer */
-.playlist-card::before {
-  content: "";
+/* LAYOUT WRAP */
+.page-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2; /* above bubbles */
+}
+
+/* HEADER */
+.hero {
+  margin-bottom: 2rem;
+}
+.page-title {
+  font-size: clamp(2.2rem, 2vw + 1.5rem, 2.8rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 12px 28px rgba(0,0,0,0.9),
+               0 0 30px rgba(255,0,255,0.4);
+}
+.page-subtitle {
+  margin-top: 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--text-dim);
+  text-shadow: 0 10px 24px rgba(0,0,0,0.8);
+}
+
+/* PLAYLIST CARD */
+.playlist-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  padding: 2px; /* for subtle border glow edge */
+  margin-bottom: 1.5rem;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%),
+              rgba(255,255,255,0.03);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.9),
+              0 0 60px rgba(255,0,255,0.2);
+  overflow: hidden;
+}
+
+/* the soft spotlight behind card content */
+.card-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at 20% 0%,
-    rgba(255,255,255,0.4) 0%,
-    rgba(255,255,255,0) 60%
-  );
-  pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: .4;
-  transition: opacity .18s;
+  background: radial-gradient(circle at 30% 30%, rgba(255,0,255,0.18) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(40px);
+  opacity: 0.6;
 }
 
-.playlist-card:hover,
-.playlist-card:active {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow:
-    0 30px 70px rgba(0,0,0,0.95),
-    0 0 50px rgba(255,0,255,0.6),
-    0 0 160px rgba(255,0,255,0.45);
-}
-
-.playlist-card:hover::before,
-.playlist-card:active::before {
-  opacity: .6;
-}
-
-/* content wrapper inside card */
-.playlist-content {
+/* inner surface of card */
+.card-inner {
   position: relative;
-  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(circle at 10% 0%, var(--card-bg-top) 0%, rgba(0,0,0,0) 70%),
+              radial-gradient(circle at 80% 80%, rgba(140, 0, 255, 0.25) 0%, rgba(0,0,0,0) 70%),
+              linear-gradient(to bottom right, rgba(10,0,20,0.9) 0%, rgba(70,0,70,0.4) 100%);
+  box-shadow: var(--shadow-strong), 0 0 60px rgba(255,0,255,0.2);
+  padding: 1.5rem 1.25rem 1.25rem;
+  border: 1px solid rgba(255,255,255,0.07);
 }
 
-/* row for title and (later we can add play button etc.) */
-.playlist-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: .75rem;
-}
-
-/* playlist title text */
+/* CARD TITLE */
 .playlist-name {
-  margin: 0;
-  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  font-weight: 700;
-  line-height: 1.2;
   color: #fff;
-  text-shadow:
-    0 0 20px rgba(255,0,255,0.8),
-    0 0 40px rgba(255,0,255,0.5),
-    0 10px 40px rgba(0,0,0,0.9);
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-shadow: 0 20px 40px rgba(0,0,0,0.95),
+               0 0 24px rgba(255,0,255,0.4);
+  margin-bottom: 1rem;
 }
 
-/* -------- BUBBLE ROW UNDER TITLE -------- */
-.bubble-row {
+/* TAGS */
+.tag-row {
   display: flex;
   flex-wrap: wrap;
-  gap: .5rem;
-  max-width: 100%;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
 }
 
-/* pill style */
-.bubble {
+.tag-pill {
   display: inline-block;
-  font-size: .8rem;
-  line-height: 1.2;
+  background: var(--pill-bg);
+  color: var(--pill-text);
+  font-size: 0.95rem;
   font-weight: 500;
-  color: #fff;
-  padding: .45rem .6rem .4rem;
+  line-height: 1.2;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-pill);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.9),
+    0 0 20px rgba(255,0,255,0.4);
+  border: 1px solid rgba(255,255,255,0.12);
+  position: relative;
+}
+
+.tag-pill.safe {
+  background: var(--pill-safe-bg);
+  color: var(--pill-safe-text);
+  box-shadow: var(--shadow-pill);
+  border: 1px solid rgba(0,255,170,0.4);
+}
+
+/* BUTTON */
+.listen-btn {
+  display: inline-block;
+  text-decoration: none;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.8rem 1rem;
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    0 24px 48px rgba(0,0,0,0.95),
+    0 0 32px rgba(255,0,255,0.45),
+    0 0 64px rgba(0,255,170,0.25);
+  text-align: center;
+  width: fit-content;
+  min-width: 10rem;
+}
+
+.listen-btn:active {
+  scale: 0.97;
+}
+
+/* note under button */
+.note-line {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  text-shadow: 0 10px 20px rgba(0,0,0,0.9);
+}
+
+/* FOOTER */
+.footer-note {
+  margin-top: 2rem;
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-shadow: 0 10px 20px rgba(0,0,0,0.9);
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* FLOATING BUBBLES */
+.bubble {
+  position: absolute;
   border-radius: 999px;
-  background: radial-gradient(circle at 0% 0%, rgba(255,255,255,0.18) 0%, rgba(40,0,60,0.8) 70%);
-  box-shadow:
-    0 10px 20px rgba(0,0,0,0.8),
-    0 0 20px rgba(255,0,255,0.5);
-  border: 1px solid rgba(255,0,255,0.4);
-  white-space: nowrap;
+  filter: blur(12px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* greenish version for “safe / cleared / approved” tags */
-.bubble-safe {
-  background: radial-gradient(circle at 0% 0%, rgba(0,255,150,0.22) 0%, rgba(0,40,30,0.8) 70%);
-  border: 1px solid rgba(0,255,170,0.5);
-  box-shadow:
-    0 10px 20px rgba(0,0,0,0.8),
-    0 0 20px rgba(0,255,170,0.5),
-    0 0 60px rgba(0,255,170,0.4);
+.bubble-sm {
+  width: 60px;
+  height: 60px;
+  animation-duration: 14s;
+}
+.bubble-md {
+  width: 100px;
+  height: 100px;
+  animation-duration: 18s;
+}
+.bubble-lg {
+  width: 150px;
+  height: 150px;
+  animation-duration: 22s;
 }
 
-/* -------- RESPONSIVE TWEAKS -------- */
+/* individual bubbles w/ different colors & paths */
+.b1 {
+  background: var(--bubble-purple);
+  left: 10%;
+  top: 70%;
+  animation-name: floatUp1;
+}
+.b2 {
+  background: var(--bubble-pink);
+  left: 70%;
+  top: 75%;
+  animation-name: floatUp2;
+}
+.b3 {
+  background: var(--bubble-blue);
+  left: 50%;
+  top: 85%;
+  animation-name: floatUp3;
+}
+.b4 {
+  background: var(--bubble-orange);
+  left: 20%;
+  top: 30%;
+  animation-name: floatUp2;
+}
+.b5 {
+  background: var(--bubble-blue);
+  left: 80%;
+  top: 20%;
+  animation-name: floatUp1;
+}
+.b6 {
+  background: var(--bubble-purple);
+  left: 40%;
+  top: 10%;
+  animation-name: floatUp3;
+}
+
+/* bubble float animations */
+@keyframes floatUp1 {
+  0%   { transform: translateY(0px) translateX(0px) scale(1);   opacity:0.5; }
+  25%  { transform: translateY(-20px) translateX(-10px) scale(1.05); opacity:0.6; }
+  50%  { transform: translateY(-40px) translateX(5px) scale(0.95);  opacity:0.4; }
+  75%  { transform: translateY(-60px) translateX(-5px) scale(1.1);  opacity:0.6; }
+  100% { transform: translateY(0px) translateX(0px) scale(1);   opacity:0.5; }
+}
+
+@keyframes floatUp2 {
+  0%   { transform: translateY(0px) translateX(0px) scale(1);   opacity:0.55; }
+  25%  { transform: translateY(-15px) translateX(8px) scale(1.08);  opacity:0.6; }
+  50%  { transform: translateY(-35px) translateX(-5px) scale(0.9);  opacity:0.4; }
+  75%  { transform: translateY(-55px) translateX(5px) scale(1.15);  opacity:0.65; }
+  100% { transform: translateY(0px) translateX(0px) scale(1);   opacity:0.55; }
+}
+
+@keyframes floatUp3 {
+  0%   { transform: translateY(0px) translateX(0px) scale(1);   opacity:0.5; }
+  25%  { transform: translateY(-25px) translateX(-6px) scale(1.1);  opacity:0.6; }
+  50%  { transform: translateY(-45px) translateX(6px) scale(0.92);  opacity:0.4; }
+  75%  { transform: translateY(-65px) translateX(-3px) scale(1.08); opacity:0.6; }
+  100% { transform: translateY(0px) translateX(0px) scale(1);   opacity:0.5; }
+}
+
+/* RESPONSIVE TUNE UPS */
 @media (min-width: 480px) {
-  body {
-    padding-left: 2rem;
-    padding-right: 2rem;
+  .playlist-name {
+    font-size: 2rem;
   }
-
-  .playlist-card {
-    padding: 2rem 1.5rem 1.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .playlist-title-row {
-    margin-bottom: 1rem;
-  }
-
-  .bubble-row {
-    max-width: 90%;
-  }
-
-  .bubble {
-    font-size: .8rem;
+  .listen-btn {
+    font-size: 1.1rem;
   }
 }
