@@ -1,38 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ragland Hotline</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- THIS LINE IS LIFE OR DEATH -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Today’s Featured Playlist</title>
+
+    <!-- THIS is the important part for the 404 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>💜 RAGLAND DOMESTIC ABUSE HOTLINE 💜</h1>
-    <p class="tagline">You are not alone. Help is here.</p>
+    <main class="page-wrap">
+        <header class="top-header">
+            <h1 class="headline">Today’s Featured Playlist</h1>
+            <p class="subhead">Hand-picked for mood &amp; flow</p>
+        </header>
 
-    <div class="box">
-      <h2>📞 National Domestic Violence Hotline</h2>
-      <p><strong>1-800-799-SAFE (7233)</strong></p>
-      <a href="https://www.thehotline.org" target="_blank">thehotline.org</a>
-    </div>
+        <section class="playlist-block">
+            <h2 class="playlist-name">Midnight Neon Cruise</h2>
+            <p class="playlist-desc">dreamy synth / slow drift / safe for socials</p>
+        </section>
 
-    <div class="box">
-      <h2>🏡 Town of Ragland – Local Assistance</h2>
-      <p>Visit the <a href="https://www.townofragland.org" target="_blank">Town of Ragland website</a>
-      online for direct contact with the Mayor’s Office and community support resources.</p>
-    </div>
+        <section class="playlist-block">
+            <h2 class="playlist-name">Southern Heatwave</h2>
+            <p class="playlist-desc">swagger beat / outlaw country trap / creator-safe</p>
+        </section>
 
-    <div class="box alert">
-      <h2>🚨 If you are in immediate danger, call 911.</h2>
-      <p>Your safety matters — confidential, free, and available 24/7.</p>
-    </div>
+        <section class="playlist-block">
+            <h2 class="playlist-name">Halo Pulse</h2>
+            <p class="playlist-desc">angel pads / uplight energy / intro &amp; outro friendly</p>
+        </section>
 
-    <footer>
-      <p>#LoveShouldntHurt #PurpleForPeace #RaglandCares</p>
-    </footer>
-  </div>
+        <section class="playlist-block">
+            <h2 class="playlist-name">Purple Drive</h2>
+            <p class="playlist-desc">midtempo glide / neon ride / safe for ads</p>
+        </section>
+
+        <section class="playlist-block">
+            <h2 class="playlist-name">Yeti Stomp</h2>
+            <p class="playlist-desc">heavy bass / crowd hype / walk-in music / promo safe</p>
+        </section>
+    </main>
 </body>
 </html>
