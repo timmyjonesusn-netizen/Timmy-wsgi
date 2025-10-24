@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TimmyTime</title>
 <style>
-  /* ----- RESET / BASE ----- */
   * {
     box-sizing: border-box;
     margin: 0;
@@ -22,15 +21,16 @@
     position: relative;
   }
 
-  /* This is the neon bubble field behind everything */
+  /* BUBBLE LAYER SITS BEHIND CONTENT */
   #bubble-layer {
     position: fixed;
     inset: 0;
-    z-index: 0; /* stays BEHIND the text */
+    z-index: 0;
     pointer-events: none;
+    overflow: hidden;
   }
 
-  /* each bubble */
+  /* one neon bubble */
   .bubble {
     position: absolute;
     width: var(--size);
@@ -59,197 +59,191 @@
     }
   }
 
-  /* ----- CONTENT ON TOP ----- */
+  /* CONTENT CARD */
   .content {
     position: relative;
-    z-index: 2; /* this is the fix: text ABOVE bubbles */
+    z-index: 2; /* above bubbles */
     padding: 16px;
     max-width: 100%;
     color: #fff;
-    text-shadow: 0 0 12px rgba(255,0,255,0.6),
-                 0 0 22px rgba(255,128,0,0.4);
     line-height: 1.25;
     font-weight: 600;
   }
 
-  /* top row layout: left block / right block */
+  .glass-wrap {
+    width: calc(100% - 32px);
+    max-width: 730px;
+    background: radial-gradient(circle at 20% 20%, rgba(255,0,255,0.15) 0%, rgba(255,128,0,0.07) 60%, rgba(0,0,0,0) 100%),
+                rgba(0,0,0,0.28);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 20px 24px 24px;
+    box-shadow:
+      0 30px 80px rgba(255,0,255,0.25),
+      0 0 160px rgba(255,128,0,0.4) inset;
+    border: 1px solid rgba(255,0,255,0.25);
+  }
+
   .top-bar {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 24px;
   }
 
   .left-col {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    font-size: 1.1rem;
+    gap: 16px;
   }
 
   .app-name {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow:
+      0 0 12px rgba(255,0,255,0.8),
+      0 0 24px rgba(255,128,0,0.5);
   }
 
   .visitors {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     font-weight: 700;
+    color: #fff;
+    text-shadow:
+      0 0 12px rgba(255,0,255,0.8),
+      0 0 24px rgba(255,128,0,0.5);
   }
 
-  /* playlists row */
-  .playlist-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    font-size: 1.1rem;
-    font-weight: 600;
+  /* playlists layout: 2 rows x 3 columns feel */
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(min-content,1fr));
+    grid-row-gap: 12px;
+    grid-column-gap: 24px;
+    max-width: 100%;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .playlist-grid a {
+    color: #9bb5ff;
     text-decoration: underline;
-    color: #8da0ff;
+    text-shadow:
+      0 0 10px rgba(155,181,255,0.8),
+      0 0 30px rgba(255,0,255,0.4);
   }
 
-  .playlist-row a {
-    color: #8da0ff;
-  }
-
-  /* Single Track / Feature Track section */
+  /* track section */
   .tracks {
-    margin-top: 8px;
+    margin-top: 24px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-size: 1.8rem;
-    font-weight: 800;
+    gap: 16px;
     color: #fff;
   }
 
   .track-title {
-    font-size: 2rem;
+    font-size: 2.4rem;
     font-weight: 800;
     line-height: 1.1;
+    text-shadow:
+      0 0 12px rgba(255,0,255,0.8),
+      0 0 24px rgba(255,128,0,0.5);
   }
 
   .feature-link {
-    font-size: 1.3rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 700;
     text-decoration: underline;
-    color: #8da0ff;
+    color: #9bb5ff;
+    text-shadow:
+      0 0 10px rgba(155,181,255,0.8),
+      0 0 30px rgba(255,0,255,0.4);
   }
 
-  /* footer line under header */
   .tagline {
-    margin-top: 8px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.8);
-    text-shadow: 0 0 8px rgba(255,0,255,0.6),
-                 0 0 16px rgba(255,128,0,0.4);
+    margin-top: 24px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    text-shadow:
+      0 0 8px rgba(255,0,255,0.6),
+      0 0 16px rgba(255,128,0,0.4);
   }
 
-  /* give the header block a subtle dark glass so it never disappears */
-  .glass-wrap {
-    background: rgba(0,0,0,0.28);
-    backdrop-filter: blur(6px);
-    border-radius: 12px;
-    padding: 12px 14px 16px;
-    max-width: 100%;
-    box-shadow: 0 20px 60px rgba(255,0,255,0.2),
-                0 0 120px rgba(255,128,0,0.4) inset;
-  }
-
-  /* make sure page can scroll past bubble layer height */
   .spacer {
     height: 120vh;
   }
 
-  /* links tappable */
   a {
     -webkit-tap-highlight-color: rgba(255,255,255,0.2);
   }
-
 </style>
 </head>
 <body>
 
-<!-- NEON BUBBLES UNDER EVERYTHING -->
+<!-- BUBBLE BACKGROUND -->
 <div id="bubble-layer"></div>
 
-<!-- CONTENT ON TOP -->
+<!-- FOREGROUND CARD -->
 <div class="content">
   <div class="glass-wrap">
-
     <div class="top-bar">
-
       <div class="left-col">
         <div class="app-name">TimmyTime</div>
 
-        <!-- Update this number from your Flask counter -->
         <div class="visitors">Visitors: <span id="visitorCount">4</span></div>
 
-        <!-- Playlists row -->
-        <div class="playlist-row">
+        <div class="playlist-grid">
           <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">
             Playlist 1
           </a>
-
           <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">
             Playlist 2
           </a>
-
           <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">
             Playlist 3
           </a>
-
           <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">
             Playlist 4
           </a>
-
           <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
             Playlist 5
           </a>
+          <a href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener noreferrer">
+            Feature Track
+          </a>
+        </div>
+
+        <div class="tracks">
+          <div class="track-title">Single Track</div>
+          <a class="feature-link"
+             href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
+             target="_blank"
+             rel="noopener noreferrer">
+            Feature Track
+          </a>
+        </div>
+
+        <div class="tagline">
+          App made by iPhone 17 Pro Max • Timmy Bubbles
         </div>
       </div>
-
     </div>
-
-    <!-- Track links -->
-    <div class="tracks">
-      <div class="track-title">Single Track</div>
-
-      <a class="feature-link"
-         href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
-         target="_blank"
-         rel="noopener noreferrer">
-        Feature Track
-      </a>
-    </div>
-
-    <!-- Tagline -->
-    <div class="tagline">
-      App made by iPhone 17 Pro Max • Timmy Bubbles
-    </div>
-
   </div>
 </div>
 
-<!-- space so you can still scroll and see bubbles down screen -->
 <div class="spacer"></div>
 
 <script>
-/*
-  Bubble generator.
-  We fill #bubble-layer with a bunch of absolutely positioned
-  neon blobs that float upward and fade.
-*/
 (function makeBubbles() {
   const layer = document.getElementById('bubble-layer');
+  const BUBBLE_COUNT = 40; // density
 
-  // how many bubbles on screen
-  const BUBBLE_COUNT = 40; // nice dense field like your screenshot
-
-  // helper to random %
   function randPct() {
-    return Math.random() * 100 + '%';
+    return (Math.random() * 100) + '%';
   }
 
   function rand(min, max) {
@@ -260,8 +254,8 @@
     const b = document.createElement('div');
     b.className = 'bubble';
 
-    const size = rand(70, 220); // medium/small bubbles, not giant fog
-    const duration = rand(6, 14); // seconds to rise
+    const size = rand(70, 220);      // medium-ish bubbles
+    const duration = rand(6, 14);    // float speed
 
     b.style.setProperty('--size', size + 'px');
     b.style.setProperty('--x', randPct());
@@ -271,27 +265,6 @@
     layer.appendChild(b);
   }
 })();
-
-/*
-  OPTIONAL:
-  If your Flask is returning a visitor count via an endpoint like /count,
-  you can uncomment this fetch and it will live-update the number.
-  This won't break anything if you leave it commented.
-*/
-
-/*
-fetch('/count')
-  .then(r => r.json())
-  .then(data => {
-    const el = document.getElementById('visitorCount');
-    if (el && data && typeof data.count !== 'undefined') {
-      el.textContent = data.count;
-    }
-  })
-  .catch(() => {
-    // fail silent, because we classy
-  });
-*/
 </script>
 
 </body>
