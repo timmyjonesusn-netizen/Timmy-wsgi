@@ -39,7 +39,6 @@ PAGE_HTML = """
         position:relative;
     }
 
-    /* floating bubbles */
     .bubble {
         position:absolute;
         border-radius:50%;
@@ -52,13 +51,12 @@ PAGE_HTML = """
     }
 
     @keyframes floatUp {
-        0%   { transform: translateY(0)    scale(1);   opacity:0; }
+        0%   { transform: translateY(0) scale(1); opacity:0; }
         10%  { opacity:0.9; }
         90%  { opacity:0.9; }
         100% { transform: translateY(-110vh) scale(1.05); opacity:0; }
     }
 
-    /* main glass panel */
     .panel {
         position:relative;
         width:90%;
@@ -172,8 +170,6 @@ PAGE_HTML = """
 </head>
 <body>
 
-<!-- bubbles get injected here by JS -->
-
 <div class="panel">
     <div class="title-row">
         <div class="brand">TimmyTime</div>
@@ -183,94 +179,48 @@ PAGE_HTML = """
     <div id="counter" class="counter-box">0</div>
 
     <div class="note">
-        App made on iPhone 17 Pro Max.<br/>
-        Reduction to Suno AI for playlist.<br/>
-        Goal: 999,999.
+        Every first punch counts toward 999,999.<br/>
+        App made on iPhone 17 Pro Max. Reduction to Suno AI for playlist.
     </div>
 
     <div class="btn-list">
-        <a class="music-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">
-            Timmy Bubbles • Playlist 1
-            <span>Smooth / vibe / late night</span>
-        </a>
-        <a class="music-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">
-            Timmy Bubbles • Playlist 2
-            <span>Neon lounge feels</span>
-        </a>
-        <a class="music-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">
-            Timmy Bubbles • Playlist 3
-            <span>Energy / hype / gym mirror flex</span>
-        </a>
-        <a class="music-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">
-            Timmy Bubbles • Playlist 4
-            <span>Afterparty drift</span>
-        </a>
-        <a class="music-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">
-            Timmy Bubbles • Playlist 5
-            <span>Slow kiss + trouble 🥀</span>
-        </a>
+        <a class="music-btn" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank">Timmy Bubbles • Playlist 1<span>Smooth / vibe / late night</span></a>
+        <a class="music-btn" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank">Timmy Bubbles • Playlist 2<span>Neon lounge feels</span></a>
+        <a class="music-btn" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank">Timmy Bubbles • Playlist 3<span>Energy / hype / gym mirror flex</span></a>
+        <a class="music-btn" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank">Timmy Bubbles • Playlist 4<span>Afterparty drift</span></a>
+        <a class="music-btn" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank">Timmy Bubbles • Playlist 5<span>Slow kiss + trouble 🥀</span></a>
     </div>
 </div>
 
 <script>
-    // ----- VISITOR COUNTER LOGIC -----
-    (function(){
-        let count = 1 + Math.floor(Math.random()*5);
-        const maxCount = 999999;
-        const el = document.getElementById('counter');
-
-        function renderCount(){
-            el.textContent = count.toLocaleString('en-US');
-        }
-
-        renderCount();
-
-        // gentle tick
-        setInterval(()=>{
-            if(count < maxCount){
-                count += 1;
-                renderCount();
-            }
-        }, 4000);
-    })();
-
-
-    // ----- BUBBLES -----
-    const BUBBLE_COLORS = [
-        'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,0,204,0.2) 40%, rgba(0,0,0,0) 70%)',
-        'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,140,0,0.2) 40%, rgba(0,0,0,0) 70%)',
-        'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(140,0,255,0.25) 40%, rgba(0,0,0,0) 70%)'
-    ];
-
-    function makeBubble(){
-        const b = document.createElement('div');
-        b.className = 'bubble';
-
-        const size = 20 + Math.random()*80; // 20px - 100px
-        const left = Math.random()*100;     // vw
-        const duration = 8 + Math.random()*10; // 8s - 18s
-        const delay = -Math.random()*duration;  // already in motion
-
-        b.style.width = size + 'px';
-        b.style.height = size + 'px';
-        b.style.left = left + 'vw';
-        b.style.bottom = '-120px';
-        b.style.background = BUBBLE_COLORS[Math.floor(Math.random()*BUBBLE_COLORS.length)];
-        b.style.animationDuration = duration + 's';
-        b.style.animationDelay = delay + 's';
-
-        document.body.appendChild(b);
-    }
-
-    // initial field
-    for(let i=0;i<30;i++){
-        makeBubble();
-    }
-
-    // keep it alive
-    setInterval(()=>{
-        makeBubble();
-    }, 2000);
+(function(){
+    let count = 1 + Math.floor(Math.random()*5);
+    const maxCount = 999999;
+    const el = document.getElementById('counter');
+    function renderCount(){ el.textContent = count.toLocaleString('en-US'); }
+    renderCount();
+    let bumpsLeft = 2;
+    const timer = setInterval(()=>{
+        if (count < maxCount && bumpsLeft > 0){
+            count += 1; bumpsLeft -= 1; renderCount();
+        } else { clearInterval(timer); }
+    }, 4000);
+})();
+const BUBBLE_COLORS = [
+ 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,0,204,0.2) 40%, rgba(0,0,0,0) 70%)',
+ 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,140,0,0.2) 40%, rgba(0,0,0,0) 70%)',
+ 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(140,0,255,0.25) 40%, rgba(0,0,0,0) 70%)'
+];
+function makeBubble(){
+ const b=document.createElement('div');
+ b.className='bubble';
+ const size=20+Math.random()*80,left=Math.random()*100,duration=8+Math.random()*10,delay=-Math.random()*duration;
+ b.style.width=size+'px';b.style.height=size+'px';b.style.left=left+'vw';b.style.bottom='-120px';
+ b.style.background=BUBBLE_COLORS[Math.floor(Math.random()*BUBBLE_COLORS.length)];
+ b.style.animationDuration=duration+'s';b.style.animationDelay=delay+'s';document.body.appendChild(b);
+}
+for(let i=0;i<30;i++)makeBubble();
+setInterval(()=>makeBubble(),2000);
 </script>
 
 </body>
