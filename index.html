@@ -9,16 +9,16 @@
 </head>
 <body>
 
-  <!-- FULLSCREEN LOCKED BACKGROUND -->
+  <!-- LOCKED FULLSCREEN BACKGROUND -->
   <div class="main-bg">
     <canvas id="bubbleCanvas"></canvas>
     <div class="bg-glow-overlay"></div>
   </div>
 
-  <!-- SCROLLABLE CONTENT ABOVE BACKGROUND -->
+  <!-- CONTENT SHELL (SCROLLS INSIDE, NOT BODY) -->
   <div class="content-shell">
 
-    <!-- TOP CARD: BRAND + COUNTER -->
+    <!-- TOP CARD -->
     <section class="counter-card glass-card">
       <div class="brand-row">
         <div class="brand-left">
@@ -27,7 +27,6 @@
         </div>
         <div class="brand-right">
           <div class="now-serving-label">NOW SERVING</div>
-          <!-- hardcoded so Flask doesn't have to inject anything -->
           <div class="now-serving-number">14</div>
         </div>
       </div>
@@ -41,7 +40,7 @@
       </div>
     </section>
 
-    <!-- PLAYLIST LIST -->
+    <!-- PLAYLISTS -->
     <section class="playlist-wrap glass-card">
       <div class="playlist-item">
         <div class="playlist-title">Timmy Bubbles · Playlist 1</div>
@@ -69,10 +68,9 @@
       </div>
     </section>
 
-    <!-- BOTTOM CONTROL BAR / THIS IS THE "BOTTOM HALF" -->
+    <!-- BOTTOM CONTROL BAR -->
     <section class="control-bar glass-card">
 
-      <!-- status indicators -->
       <div class="status-row">
         <div class="status-chip good">
           <div class="status-dot pulse-good"></div>
@@ -85,22 +83,18 @@
         </div>
       </div>
 
-      <!-- change video control -->
       <button class="change-video-btn">
         CHANGE VIDEO
       </button>
 
-      <!-- lock + warning -->
       <div class="lock-copy">
         LOCK MODE • Do not edit live files.<br/>
         Observing build. All first punch rolls toward 999,999.
       </div>
     </section>
 
-    <!-- spacer so bottom content isn't under the iPhone bar -->
     <div class="page-bottom-spacer"></div>
-
-  </div><!-- /content-shell -->
+  </div>
 
   <script src="/static/script.js"></script>
 </body>
