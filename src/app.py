@@ -1,11 +1,10 @@
-import os
 from flask import Flask, send_file
+import os
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    # serve the raw index.html right next to this file
     return send_file("index.html")
 
 if __name__ == "__main__":
