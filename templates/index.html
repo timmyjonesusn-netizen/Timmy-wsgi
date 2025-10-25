@@ -6,7 +6,7 @@
 <title>TimmyTime</title>
 
 <style>
-/* =============== PAGE BACKGROUND =============== */
+/* ===== PAGE BACKGROUND ===== */
 body {
   margin: 0;
   min-height: 100vh;
@@ -21,7 +21,7 @@ body {
   overflow: hidden;
 }
 
-/* layer for bubbles sits BEHIND card */
+/* layer where bubbles live (behind card) */
 #bubble-layer {
   position: absolute;
   inset: 0;
@@ -30,7 +30,7 @@ body {
   z-index: 1;
 }
 
-/* =============== CARD / PANEL =============== */
+/* ===== CARD / PANEL ===== */
 .card-wrapper {
   position: relative;
   z-index: 10;
@@ -38,16 +38,16 @@ body {
   width: 100%;
   border-radius: 24px;
   padding: 2rem;
-  background: rgba(40, 0, 40, 0.45); /* slightly darker for contrast */
+  background: rgba(40, 0, 40, 0.45);
   backdrop-filter: blur(20px);
   box-shadow:
-    0 0 120px rgba(255,0,255,0.4),   /* back-glow for "stage light" */
+    0 0 120px rgba(255,0,255,0.4),
     0 30px 60px rgba(0,0,0,0.7);
   border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
 }
 
-/* =============== TEXT STYLE =============== */
+/* ===== TEXT ===== */
 .card-wrapper h1,
 .card-wrapper h2,
 .card-wrapper p,
@@ -58,7 +58,7 @@ body {
   text-shadow:
     0 0 10px rgba(255,255,255,0.8),
     0 0 20px rgba(255,0,255,0.4);
-  -webkit-text-stroke: 2px #000; /* black edge = readable over chaos */
+  -webkit-text-stroke: 2px #000;
   margin: 0 0 0.75rem;
 }
 
@@ -66,14 +66,6 @@ body {
   font-size: 2.6rem;
   margin-top: 0;
   margin-bottom: 0.5rem;
-  animation: titlePulse 4s infinite;
-}
-
-/* header slow neon breathe */
-@keyframes titlePulse {
-  0%   { color: #ffb2ff; text-shadow: 0 0 10px #fff, 0 0 30px rgba(255,0,255,0.5); }
-  50%  { color: #ff7bff; text-shadow: 0 0 12px #fff, 0 0 40px rgba(255,0,255,0.7); }
-  100% { color: #ffb2ff; text-shadow: 0 0 10px #fff, 0 0 30px rgba(255,0,255,0.5); }
 }
 
 .card-wrapper h2 {
@@ -89,89 +81,77 @@ body {
   display: inline-block;
 }
 
-/* =============== BUBBLE CORE STYLE =============== */
+/* ===== BUBBLE BASE ===== */
 .bubble {
   position: absolute;
   border-radius: 50%;
   opacity: 0.9;
   animation: floatUp linear infinite;
   will-change: transform, opacity;
+  /* shared gloss so it looks like glass not a flat dot */
+  box-shadow:
+    inset 0 0 18px rgba(255,255,255,0.9),   /* bright white glare */
+    inset 0 -20px 40px rgba(0,0,0,0.4),     /* lower shadow */
+    0 0 30px rgba(255,255,255,0.15);        /* faint outer bloom */
 }
 
-/* glossy and depth added per bubble type (instead of 1-style-for-all) */
+/* ===== COLOR VARIANTS ===== */
 
-/* 1) DEEP PURPLE + WHITE REFLECTION */
+/* PURPLE bubble: deep violet body, dark rim */
 .bubble.purple {
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255,255,255,0.95) 0%,   /* bright hit */
-    rgba(200,0,255,1) 15%,       /* magenta shine */
-    rgba(80,0,120,1) 60%,        /* deep purple body */
-    rgba(30,0,60,1) 100%         /* dark rim */
+    rgba(255,255,255,1) 0%,        /* white highlight */
+    rgba(160,0,255,1) 20%,         /* neon violet */
+    rgba(80,0,140,1) 60%,          /* rich purple */
+    rgba(30,0,60,1) 100%           /* dark rim */
   );
   box-shadow:
-    inset 0 0 22px rgba(255,255,255,0.8),
-    inset 0 -18px 40px rgba(0,0,0,0.5),
-    0 0 35px rgba(255,0,255,0.5);
+    inset 0 0 18px rgba(255,255,255,0.9),
+    inset 0 -20px 40px rgba(0,0,0,0.6),
+    0 0 35px rgba(190,0,255,0.6);  /* purple glow */
 }
 
-/* 2) DARK BLUE WITH PINK RIM */
+/* BLUE bubble: electric blue body, deep navy rim */
 .bubble.blue {
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255,255,255,0.9) 0%,
-    rgba(90,140,255,1) 20%,      /* light electric blue core */
-    rgba(0,20,90,1) 60%,         /* navy body */
-    rgba(255,0,200,0.5) 100%     /* pink rim */
+    rgba(255,255,255,1) 0%,        /* white highlight */
+    rgba(110,170,255,1) 20%,       /* bright electric blue */
+    rgba(0,40,120,1) 60%,          /* deep blue core */
+    rgba(0,10,40,1) 100%           /* almost black navy rim */
   );
   box-shadow:
-    inset 0 0 22px rgba(255,255,255,0.6),
-    inset 0 -18px 40px rgba(0,0,0,0.6),
-    0 0 35px rgba(255,0,200,0.6);
+    inset 0 0 18px rgba(255,255,255,0.9),
+    inset 0 -20px 40px rgba(0,0,0,0.6),
+    0 0 35px rgba(0,120,255,0.6);  /* blue glow */
 }
 
-/* 3) HOT PINK WITH NEON GREEN FRINGE */
-.bubble.pinkGreen {
+/* ORANGE bubble: hot orange body, darker ember rim */
+.bubble.orange {
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255,255,255,1) 0%,
-    rgba(255,105,180,1) 20%,     /* Barbie pink */
-    rgba(255,0,128,1) 55%,       /* hot magenta */
-    rgba(0,255,150,0.5) 80%,     /* radioactive mint edge */
-    rgba(40,0,40,1) 100%         /* deep shadow edge */
+    rgba(255,255,255,1) 0%,        /* white highlight */
+    rgba(255,190,0,1) 20%,         /* gold/yellow hot core */
+    rgba(255,110,0,1) 50%,         /* bright orange */
+    rgba(140,30,0,1) 80%,          /* burnt orange edge */
+    rgba(60,10,0,1) 100%           /* deep rim */
   );
   box-shadow:
-    inset 0 0 22px rgba(255,255,255,0.8),
-    inset 0 -18px 40px rgba(0,0,0,0.45),
-    0 0 35px rgba(0,255,150,0.6);
+    inset 0 0 18px rgba(255,255,255,0.9),
+    inset 0 -20px 40px rgba(0,0,0,0.6),
+    0 0 35px rgba(255,120,0,0.6);  /* orange glow */
 }
 
-/* 4) TINY YELLOW SPARK (EYE MAGNET) */
-.bubble.spark {
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255,255,255,1) 0%,        /* white pop */
-    rgba(255,255,170,1) 30%,       /* pale lemon */
-    rgba(255,220,0,1) 60%,         /* bright yellow */
-    rgba(255,140,0,0.7) 80%,       /* orange rim */
-    rgba(60,20,0,0.9) 100%         /* warm shadow */
-  );
-  box-shadow:
-    inset 0 0 20px rgba(255,255,255,0.9),
-    0 0 25px rgba(255,255,120,0.9),
-    0 0 40px rgba(255,170,0,0.7);
-  opacity: 1;
-}
-
-/* =============== BUBBLE SIZES =============== */
+/* ===== BUBBLE SIZES ===== */
 .bubble.large { width:140px; height:140px; border-radius:50%; }
 .bubble.med   { width:90px;  height:90px;  border-radius:50%; }
 .bubble.sm    { width:55px;  height:55px;  border-radius:50%; }
 .bubble.tiny  { width:28px;  height:28px;  border-radius:50%; }
 .bubble.mini  { width:16px;  height:16px;  border-radius:50%; }
 
-/* =============== ANIMATION =============== */
-/* faster rise than default (1.25x ish) + gentle sway */
+/* ===== ANIMATION ===== */
+/* quick lift with a little sway */
 @keyframes floatUp {
   0% {
     transform: translateY(0) translateX(0) scale(1);
@@ -193,10 +173,10 @@ body {
 
 <body>
 
-<!-- bubble layer behind everything -->
+<!-- bubble layer -->
 <div id="bubble-layer"></div>
 
-<!-- main content card -->
+<!-- your content card -->
 <div class="card-wrapper">
   <h1>TimmyTime</h1>
   <p>Visitors: 2</p>
@@ -209,12 +189,8 @@ body {
     <a href="#">Playlist 3</a> &nbsp;&nbsp;
     <a href="#">Playlist 4</a>
   </p>
-  <p>
-    <a href="#">Playlist 5</a>
-  </p>
-  <p>
-    <a href="#">Feature Track</a>
-  </p>
+  <p><a href="#">Playlist 5</a></p>
+  <p><a href="#">Feature Track</a></p>
 
   <h2>Single Track</h2>
   <p>App made by iPhone 17 Pro Max • Timmy Bubbles</p>
@@ -222,30 +198,23 @@ body {
 
 <script>
 /*
-This script creates bubbles that each have ONE strong color identity.
-It randomizes:
-- which color class
-- which size class
-- where it starts on X
-- how fast it rises
-- when it "enters" (negative delay so they're already in motion)
+Bubble generator.
+We ONLY use purple, blue, orange now.
+We randomize size, start position, speed, and delay so the screen never looks still.
 */
 
 const bubbleLayer = document.getElementById("bubble-layer");
 
-// These match the CSS classes above
-const colorClasses = ["purple", "blue", "pinkGreen", "spark"];
+// Only these three, like you said.
+const colorClasses = ["purple", "blue", "orange"];
 const sizeClasses  = ["large", "med", "sm", "tiny", "mini"];
 
-// Weighting for how often we spawn each color.
-// purple = hero, blue = cool depth,
-// pinkGreen = neon accent, spark = eye hook.
+// Weighted pick so purple/blue are common and orange hits like accent heat.
 function pickColor() {
   const r = Math.random();
-  if (r < 0.40) return "purple";     // 40%
-  if (r < 0.60) return "blue";       // 20%
-  if (r < 0.85) return "pinkGreen";  // 25%
-  return "spark";                    // 15%
+  if (r < 0.4) return "purple";   // 40%
+  if (r < 0.8) return "blue";     // 40%
+  return "orange";                // 20%
 }
 
 function pickSize() {
@@ -260,42 +229,40 @@ function pickSize() {
 function spawnBubble() {
   const b = document.createElement("div");
   b.classList.add("bubble");
-
-  // assign look
   b.classList.add(pickColor());
   b.classList.add(pickSize());
 
-  // random horizontal start position
+  // random X position across the viewport
   b.style.left = (Math.random() * 100) + "vw";
 
-  // start slightly below view so they float through
+  // start just below the bottom so they float through
   b.style.bottom = "-160px";
 
-  // random animation duration ~6.5s to ~9.5s (fast-ish)
+  // duration ~6.5s to ~9.5s
   const duration = 8 + (Math.random()*3 - 1.5);
   b.style.animationDuration = duration.toFixed(2) + "s";
 
-  // negative delay so they’re out of sync and already mid-float
+  // negative delay so they’re already in motion when page loads
   const delay = -1 * Math.random() * duration;
   b.style.animationDelay = delay.toFixed(2) + "s";
 
   bubbleLayer.appendChild(b);
 
-  // cleanup after it's done so we don't leak DOM forever
+  // cleanup after its full life so DOM doesn't grow forever
   setTimeout(() => {
-    bubbleLayer.removeChild(b);
+    if (b.parentNode) {
+      bubbleLayer.removeChild(b);
+    }
   }, (duration + Math.abs(delay)) * 1000);
 }
 
-// Spawn a bunch up front for instant fullness
+// blast a bunch at start
 for (let i = 0; i < 40; i++) {
   spawnBubble();
 }
 
-// Keep spawning over time so it's alive
-setInterval(() => {
-  spawnBubble();
-}, 400); // more frequent = more motion energy
+// steady stream
+setInterval(spawnBubble, 400);
 </script>
 
 </body>
