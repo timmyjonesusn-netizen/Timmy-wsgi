@@ -16,15 +16,16 @@ def load_and_bump_counter():
             raw = f.read().strip()
             current = int(raw)
     except:
-        current = 0  # safe fallback if file missing/bad
+        current = 0  # safe fallback if file missing or bad
 
-    current += 1  # NOW SERVING next number
+    # increment: NOW SERVING next number
+    current += 1
 
     try:
         with open(COUNTER_FILE, "w") as f:
             f.write(str(current))
     except:
-        # if we fail to write, we still serve current
+        # if the write fails for some reason, we still serve the in-memory value
         pass
 
     return current
@@ -33,6 +34,8 @@ def load_and_bump_counter():
 def build_page_html(serving_number: int) -> str:
     """
     Build the full HTML page with the live counter number inserted.
+    No JS manipulates the number; it's all server-side now.
+    Bubbles are medium density and some of them pop.
     """
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -89,13 +92,13 @@ def build_page_html(serving_number: int) -> str:
     }}
 
     @keyframes floatUp {{
-        0%   {{ transform: translateY(0) scale(1);    opacity:0;   }}
+        0%   {{ transform: translateY(0)    scale(1);    opacity:0;   }}
         10%  {{ opacity:0.9; }}
         80%  {{ opacity:0.9; }}
         100% {{ transform: translateY(-110vh) scale(1.05); opacity:0.4; }}
     }}
 
-    /* pop animation at the end */
+    /* pop flash at death */
     .pop {{
         animation: popBurst 0.18s forwards;
         box-shadow:
@@ -114,7 +117,7 @@ def build_page_html(serving_number: int) -> str:
         100% {{ transform: scale(0.2); opacity:0;   }}
     }}
 
-    /* ==================== PANEL ==================== */
+    /* ==================== PANEL / TEXT ==================== */
 
     .panel {{
         position:relative;
@@ -274,7 +277,8 @@ def build_page_html(serving_number: int) -> str:
 </div>
 
 <script>
-    // ==================== BUBBLE LOGIC WITH POP ====================
+    // MEDIUM BUBBLE FIELD (not empty, not insane)
+    // still pops about half the time
 
     const BUBBLE_COLORS = [
         'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,0,204,0.2) 40%, rgba(0,0,0,0) 70%)',
@@ -286,10 +290,9 @@ def build_page_html(serving_number: int) -> str:
         const b = document.createElement('div');
         b.className = 'bubble';
 
-        // randomize visuals
-        const size = 20 + Math.random()*80;      // 20px - 100px
+        const size = 20 + Math.random()*80;      // 20px–100px
         const left = Math.random()*100;          // vw
-        const duration = 8 + Math.random()*10;   // 8s - 18s
+        const duration = 8 + Math.random()*10;   // 8s–18s
         const delay = -Math.random()*duration;   // start mid-flight sometimes
 
         b.style.width = size + 'px';
@@ -300,9 +303,8 @@ def build_page_html(serving_number: int) -> str:
         b.style.animationDuration = duration + 's';
         b.style.animationDelay = delay + 's';
 
-        // when floatUp finishes, do a "pop" then remove
         b.addEventListener('animationend', () => {{
-            // ~50% of bubbles pop, ~50% just vanish quietly
+            // ~50% pop flash, ~50% just disappear
             if (Math.random() < 0.5) {{
                 b.classList.add('pop');
                 b.addEventListener('animationend', () => {{
@@ -316,12 +318,12 @@ def build_page_html(serving_number: int) -> str:
         document.body.appendChild(b);
     }}
 
-    // fill screen with starter bubbles
-    for (let i = 0; i < 30; i++) {{
+    // medium density: start with ~20
+    for (let i = 0; i < 20; i++) {{
         makeBubble();
     }}
 
-    // keep generating over time
+    // add new bubbles over time to keep motion
     setInterval(() => {{
         makeBubble();
     }}, 2000);
@@ -333,7 +335,7 @@ def build_page_html(serving_number: int) -> str:
 
 @app.route("/", methods=["GET"])
 def home():
-    # bump counter and build page using that number
+    # bump counter and build the page with that number
     current_value = load_and_bump_counter()
     html = build_page_html(current_value)
     return Response(html, mimetype="text/html")
