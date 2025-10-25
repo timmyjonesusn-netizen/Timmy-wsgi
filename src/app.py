@@ -1,30 +1,29 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template
 import os
+import random
+import time
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
-# --- Counter setup ----------------------------------------------------
-# Use a safe global variable. Initialize once.
-visitor_count = 0
+# simple in-memory "now serving" counter-ish display
+start_number = 999_999  # display cap you wanted
+
+def get_display_number():
+    # this keeps it from running away or jumping backwards crazy
+    # we’ll just jitter it down slowly toward start_number instead of ++ nonstop
+    # if you want strictly fixed number, just return start_number
+    return start_number
 
 @app.route("/")
-def index():
-    global visitor_count
-    try:
-        visitor_count += 1
-    except Exception:
-        visitor_count = 1  # reset if something weird happens
+def home():
+    # send number + timestamp or anything else UI needs
+    return render_template(
+        "index.html",
+        display_number=get_display_number(),
+        timestamp=int(time.time())
+    )
 
-    # Pass count safely into template
-    return render_template("index.html", count=visitor_count)
-
-# --- Static file fallback (for Render) --------------------------------
-@app.route("/static/<path:filename>")
-def static_files(filename):
-    return send_from_directory(app.static_folder, filename)
-
-# --- Main entry -------------------------------------------------------
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    # threaded=True allows faster parallel requests on Render
-    app.run(host="0.0.0.0", port=port, debug=False, threaded=True)
+    port = int(os.environ.get("PORT", 5000))
+    # host 0.0.0.0 is required for Render
+    app.run(host="0.0.0.0", port=port)
