@@ -1,202 +1,194 @@
+<!--
+TIMMYTIME LIVE
+Do not paste partials.
+Replace whole file only.
+If anything looks wrong in production:
+1. Restore last good from /locked/index.locked.html
+2. Deploy to STAGE first, then promote to LIVE
+build v2.1 • live
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TimmyTime Bubbles</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>TimmyTime</title>
+
+  <!-- cache-bust so Safari/CDN grabs fresh each deploy -->
+  <link rel="stylesheet" href="style.css?v=2.1">
+  <script src="script.js?v=2.1" defer></script>
+
+  <!-- emergency fallback styling if style.css fails -->
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      overflow: hidden;
-      background: radial-gradient(circle at bottom, #a1c4fd 0%, #c2e9fb 100%);
-      font-family: 'Poppins', sans-serif;
-      color: white;
-      text-align: center;
-    }
-
-    /* floating bubbles */
-    .bubble {
-      position: absolute;
-      bottom: -100px;
-      border-radius: 50%;
-      opacity: 0.8;
-      animation: rise 12s infinite ease-in;
-    }
-
-    @keyframes rise {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0.9;
-      }
-      100% {
-        transform: translateY(-110vh) scale(1.2);
-        opacity: 0;
-      }
-    }
-
-    /* main container */
-    .container {
-      position: relative;
-      z-index: 10;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at 30% 30%, #ffe1ff 0%, #9fd0ff 40%, #3b4a68 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
       padding: 20px;
-      max-width: 350px;
-      margin: 60px auto;
-      box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+      box-sizing: border-box;
+    }
+
+    .app-card {
+      width: 100%;
+      max-width: 700px;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.3) 60%);
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.4);
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.6),
+        0 0 30px rgba(255,0,255,0.4),
+        0 0 60px rgba(255,165,0,0.25);
+      padding: 20px;
+      box-sizing: border-box;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     h1 {
-      font-size: 2rem;
-      color: #fff;
-      text-shadow: 0 0 6px #ff66cc, 0 0 20px #ff33cc;
-    }
-
-    a {
-      display: inline-block;
-      color: #b3d9ff;
-      font-weight: bold;
-      text-decoration: none;
-      margin: 8px;
-      transition: color 0.3s;
-    }
-    a:hover {
-      color: #66ffff;
-    }
-
-    /* neon access counter */
-    .tt-access-wrapper {
-      color: #fff;
-      text-align: center;
-      font-family: "Orbitron", system-ui, -apple-system, sans-serif;
-      padding: 20px 10px;
-      margin: 10px auto 30px auto;
-      max-width: 400px;
-      background: radial-gradient(circle at 50% 0%, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.6) 60%);
-      border-radius: 20px;
-    }
-
-    .tt-access-title {
-      font-size: 1.8rem;
+      font-size: clamp(2.2rem, 2.5vw, 2.8rem);
       line-height: 1.1;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.2rem;
-      color: #ff66cc;
+      font-weight: 700;
+      color: #fff;
       text-shadow:
-        0 0 4px #ff66cc,
-        0 0 10px #ff66cc,
-        0 0 20px #ff33cc,
-        0 0 40px #ff0099,
-        0 0 80px #ff00ff;
-      margin-bottom: 16px;
+        0 0 4px #000,
+        0 0 8px #ff00ff,
+        0 0 16px #ff00ff;
+      margin: 0 0 10px;
     }
 
-    .tt-counter-label {
+    .visitors-line {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow:
+        0 0 4px #000,
+        0 0 8px #ff00ff,
+        0 0 16px #ff00ff;
+      margin: 0 0 20px;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-row-gap: 18px;
+      grid-column-gap: 24px;
+      max-width: 500px;
+      margin-bottom: 24px;
+    }
+
+    .links-grid a {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #bcd4ff;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-shadow:
+        0 0 4px #000,
+        0 0 8px rgba(0,0,0,0.8),
+        0 0 16px rgba(0,0,0,0.8);
+    }
+
+    .links-grid a:hover {
+      filter: brightness(1.2);
+    }
+
+    .feature-row {
+      grid-column: 1 / span 2;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 2vw, 2.4rem);
+      line-height: 1.2;
+      font-weight: 700;
+      color: #fff;
+      text-shadow:
+        0 0 4px #000,
+        0 0 8px #ff00ff,
+        0 0 16px #ff00ff;
+      margin: 10px 0 16px;
+    }
+
+    .credits {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow:
+        0 0 4px #000,
+        0 0 8px rgba(0,0,0,0.8),
+        0 0 16px rgba(0,0,0,0.8);
+      line-height: 1.4;
+      margin: 0 0 10px;
+    }
+
+    .build-tag {
       font-size: 0.9rem;
       font-weight: 500;
-      letter-spacing: 0.4rem;
       color: rgba(255,255,255,0.8);
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.4),
-        0 0 20px rgba(0,150,255,0.3);
-      margin-bottom: 16px;
+      text-shadow: 0 0 4px #000;
+      opacity: 0.8;
+      margin-top: 8px;
     }
 
-    .tt-counter-box {
-      background: radial-gradient(circle at 50% 20%, rgba(10,20,40,0.6) 0%, rgba(0,0,0,0.95) 60%);
-      border-radius: 12px;
-      padding: 16px 24px;
-      box-shadow:
-        0 20px 40px rgba(0,0,0,0.9),
-        0 0 30px rgba(0,140,255,0.4),
-        0 0 80px rgba(255,100,0,0.2);
-      border: 2px solid rgba(0,200,255,0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto 20px auto;
-      max-width: 360px;
-    }
-
-    .tt-counter-digits {
-      font-size: 2rem;
+    .status-line {
+      font-size: 0.9rem;
       font-weight: 600;
-      letter-spacing: 0.4rem;
-      color: #33ccff;
-      text-shadow:
-        0 0 10px #33ccff,
-        0 0 20px #00ffff,
-        0 0 30px rgba(0,200,255,0.6);
-    }
-
-    .tt-counter-cap {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 0.2rem;
-      text-shadow:
-        0 0 6px rgba(0,180,255,0.6),
-        0 0 20px rgba(255,110,0,0.4);
-    }
-
-    footer {
-      font-size: 0.8rem;
-      margin-top: 20px;
-      color: #ddd;
-      text-shadow: 0 0 3px #000;
+      color: #00ff9c;
+      text-shadow: 0 0 4px #000;
+      margin-top: 4px;
+      opacity: 0.9;
     }
   </style>
 </head>
+
 <body>
-
-  <!-- Floating Bubbles -->
-  <script>
-    for (let i = 0; i < 25; i++) {
-      const bubble = document.createElement('div');
-      bubble.classList.add('bubble');
-      bubble.style.width = bubble.style.height = Math.random() * 30 + 10 + 'px';
-      bubble.style.left = Math.random() * 100 + 'vw';
-      bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(${100+Math.random()*155}, ${50+Math.random()*205}, ${200+Math.random()*55}, 0.4))`;
-      bubble.style.animationDuration = 10 + Math.random() * 10 + 's';
-      bubble.style.animationDelay = Math.random() * 10 + 's';
-      document.body.appendChild(bubble);
-    }
-  </script>
-
-  <div class="container">
+  <main class="app-card">
     <h1>TimmyTime</h1>
 
-    <!-- Neon Counter under TimmyTime -->
-    <section class="tt-access-wrapper">
-      <div class="tt-access-title">ACCESS</div>
-      <div class="tt-counter-label">NOW SERVING</div>
-      <div class="tt-counter-box">
-        <div id="tt-counter-digits" class="tt-counter-digits"></div>
-      </div>
-      <div class="tt-counter-cap">/ 999,999</div>
+    <p class="visitors-line">
+      Visitors:
+      <span id="visitorCount">…</span>
+    </p>
+
+    <section class="links-grid">
+      <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">Playlist 1</a>
+
+      <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">Playlist 2</a>
+
+      <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">Playlist 3</a>
+
+      <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">Playlist 4</a>
+
+      <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="feature-row">Playlist 5</a>
+
+      <a href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="feature-row">Feature Track</a>
     </section>
 
-    <p>Visitors: 6</p>
-    <a href="#">Playlist 1</a>
-    <a href="#">Playlist 2</a>
-    <a href="#">Playlist 3</a>
-    <a href="#">Playlist 4</a>
-    <a href="#">Playlist 5</a>
-    <br>
-    <a href="#">Feature Track</a>
+    <h2 class="section-title">Single Track</h2>
 
-    <footer>
+    <p class="credits">
       App made by iPhone 17 Pro Max • Timmy Bubbles
-    </footer>
-  </div>
+    </p>
 
-  <script>
-    // static counter display
-    const START_VALUE = 40;
-    const DIGITS = 6;
-    document.getElementById("tt-counter-digits").textContent = START_VALUE.toString().padStart(DIGITS, '0');
-  </script>
+    <!-- this is the build marker the JS will read -->
+    <p class="build-tag" id="buildTag" data-version="2.1">
+      build v2.1 • live
+    </p>
+
+    <!-- this is a quiet health line just for you -->
+    <p class="status-line" id="statusLine">
+      status: normal
+    </p>
+  </main>
 </body>
 </html>
