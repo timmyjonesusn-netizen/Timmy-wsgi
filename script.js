@@ -1,26 +1,25 @@
-// ===== LOCKED DISPLAY MODE =====
-// This version does NOT keep counting. It shows a value and stops.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Timmy Luxe Counter</title>
 
-const START_VALUE = 40;   // <- put the number you want to show
-const DIGITS = 6;         // forces 6 digits like 000040
+  <!-- built-in cache-buster -->
+  <link rel="stylesheet" href="style.css?v=3" />
+</head>
+<body>
+  <div class="counter-wrapper">
+    <div class="counter-label">NOW SERVING</div>
 
-const counterEl = document.getElementById("lux-counter");
+    <div id="lux-counter" class="counter-display">
+      <!-- digits injected by script.js -->
+    </div>
 
-// Build the digits once
-function buildDigits(num) {
-  const padded = num.toString().padStart(DIGITS, "0");
-  counterEl.innerHTML = "";
+    <div class="counter-cap">/ 999,999</div>
+  </div>
 
-  for (let i = 0; i < padded.length; i++) {
-    const span = document.createElement("span");
-    span.className = "digit";
-    span.textContent = padded[i];
-    counterEl.appendChild(span);
-  }
-}
-
-// Add the shimmer effect to the whole counter box
-counterEl.classList.add("shimmer");
-
-// Render once and DONE (no loop, no runaway)
-buildDigits(START_VALUE);
+  <!-- built-in cache-buster -->
+  <script src="script.js?v=3"></script>
+</body>
+</html>
