@@ -1,59 +1,62 @@
-// ===== CONFIG =====
-const MAX_VALUE = 999999; // show "/ 999,999" to match
-const START_VALUE = 0;    // where we begin
-const TICK_MS = 120;      // speed of count-up (smaller = faster)
+// CONFIG
+const MAX_VALUE = 999999; // cap
+const START_VALUE = 0;    // starting point
+const TICK_MS = 120;      // how fast to count (ms per tick)
 
-// ===== SETUP =====
+// grab the display box from the HTML
 const counterEl = document.getElementById("lux-counter");
 
-// create 6 digits to start "000000"
+// track the current count
 let currentValue = START_VALUE;
 
+// build the 6-digit display like "000000"
 function buildDigits(num) {
-  const str = num.toString().padStart(6, "0");
-  counterEl.innerHTML = ""; // clear
-  for (let i = 0; i < str.length; i++) {
-    const d = document.createElement("span");
-    d.className = "digit";
-    d.textContent = str[i];
-    counterEl.appendChild(d);
+  const padded = num.toString().padStart(6, "0");
+  counterEl.innerHTML = ""; // clear whatever was there
+
+  for (let i = 0; i < padded.length; i++) {
+    const span = document.createElement("span");
+    span.className = "digit";
+    span.textContent = padded[i];
+    counterEl.appendChild(span);
   }
 }
 
-// call once on load
+// set up first render
 buildDigits(currentValue);
 
-// shimmer class for the sweep animation
+// add shimmer animation class to the whole block
 counterEl.classList.add("shimmer");
 
-// ===== ANIMATION LOOP =====
+// tick the counter upward until we hit MAX_VALUE
 function tickUp() {
   if (currentValue >= MAX_VALUE) {
-    return; // stop at cap
+    return; // stop at the cap
   }
 
   currentValue++;
 
-  // update digits visually
-  const newStr = currentValue.toString().padStart(6, "0");
+  const newString = currentValue.toString().padStart(6, "0");
   const digitEls = counterEl.querySelectorAll(".digit");
 
   for (let i = 0; i < digitEls.length; i++) {
-    if (digitEls[i].textContent !== newStr[i]) {
-      digitEls[i].textContent = newStr[i];
+    if (digitEls[i].textContent !== newString[i]) {
+      // update digit
+      digitEls[i].textContent = newString[i];
 
-      // pulse effect
+      // add pulse effect class
       digitEls[i].classList.add("pulse");
-      // remove pulse after animation so it can trigger again
+
+      // remove the pulse class after animation so it can pulse again
       setTimeout(() => {
         digitEls[i].classList.remove("pulse");
       }, 200);
     }
   }
 
-  // queue next tick
+  // schedule next tick
   setTimeout(tickUp, TICK_MS);
 }
 
-// start the count
+// start counting
 tickUp();
