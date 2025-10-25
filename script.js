@@ -1,11 +1,12 @@
-// ===== SET THE NUMBER YOU WANT TO SHOW =====
-const START_VALUE = 40;   // <-- change this to whatever you want
-const DIGITS = 6;         // always show 6 digits like 000040
+// ===== LOCKED DISPLAY MODE =====
+// This version does NOT keep counting. It shows a value and stops.
 
-// grab the display box
+const START_VALUE = 40;   // <- put the number you want to show
+const DIGITS = 6;         // forces 6 digits like 000040
+
 const counterEl = document.getElementById("lux-counter");
 
-// build those digits once and done
+// Build the digits once
 function buildDigits(num) {
   const padded = num.toString().padStart(DIGITS, "0");
   counterEl.innerHTML = "";
@@ -18,8 +19,8 @@ function buildDigits(num) {
   }
 }
 
-// shimmer forever because we’re glossy
+// Add the shimmer effect to the whole counter box
 counterEl.classList.add("shimmer");
 
-// render the static value
+// Render once and DONE (no loop, no runaway)
 buildDigits(START_VALUE);
