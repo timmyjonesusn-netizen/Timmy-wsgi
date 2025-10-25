@@ -1,418 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TimmyTime</title>
-<style>
-    * {
-        box-sizing: border-box;
-        -webkit-font-smoothing: antialiased;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
-        background-color: #2f4661; /* deep slate blue background like screenshot */
-        background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0) 70%),
-                          radial-gradient(circle at 80% 30%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
-        background-size: cover;
-        min-height: 100vh;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        padding: 40px 16px 80px;
-        color: #fff;
-    }
-
-    /* Outer glow frame */
-    .card-outer {
-        position: relative;
-        width: 100%;
-        max-width: 420px;
-        background: radial-gradient(circle at 50% 20%,
-                    rgba(140,0,255,0.6) 0%,
-                    rgba(255,0,150,0.4) 40%,
-                    rgba(0,0,0,0) 70%);
-        padding: 16px;
-        border-radius: 8px;
-        box-shadow:
-            0 0 30px rgba(255,0,255,0.4),
-            0 0 60px rgba(150,0,255,0.3),
-            0 30px 60px rgba(0,0,0,0.8);
-    }
-
-    /* Inner panel with border */
-    .panel {
-        position: relative;
-        background: radial-gradient(circle at 50% 0%,
-                    rgba(200,230,255,0.22) 0%,
-                    rgba(80,110,130,0.4) 60%,
-                    rgba(30,40,50,0.5) 100%);
-        border: 2px solid rgba(255,255,255,0.5);
-        border-radius: 12px;
-        box-shadow:
-            0 10px 25px rgba(0,0,0,0.8),
-            0 0 40px rgba(255,255,255,0.2) inset;
-        padding: 24px 16px 28px;
-        overflow: hidden;
-    }
-
-    /* Bubble layer behind content */
-    .bubble-layer {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .bubble {
-        position: absolute;
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%,
-                    rgba(255,255,255,0.6) 0%,
-                    rgba(255,255,255,0.15) 40%,
-                    rgba(180,200,255,0.07) 60%,
-                    rgba(0,0,30,0) 70%);
-        box-shadow:
-            0 0 8px rgba(255,255,255,0.5),
-            0 0 20px rgba(255,255,255,0.2);
-        opacity: 0.28; /* clear, not fog */
-        animation: floatUp linear infinite;
-        border: 1px solid rgba(255,255,255,0.25);
-        backdrop-filter: blur(2px);
-    }
-
-    @keyframes floatUp {
-        0% {
-            transform: translateY(20px) scale(1);
-        }
-        100% {
-            transform: translateY(-140vh) scale(1.05);
-        }
-    }
-
-    /* Glow text styles */
-    .glow-block {
-        text-align: center;
-        margin-bottom: 24px;
-        line-height: 1.25;
-    }
-
-    .app-title {
-        font-weight: 700;
-        color: #fff;
-        text-align: center;
-        text-shadow:
-            0 0 6px rgba(255,255,255,0.9),
-            0 0 16px rgba(255,0,255,0.8),
-            0 0 32px rgba(255,0,180,0.6),
-            0 0 64px rgba(255,0,130,0.5);
-        font-size: clamp(1.9rem, 2.2vw + 1.4rem, 2.3rem);
-        line-height: 1.15;
-        margin-bottom: 16px;
-    }
-
-    .serving-line {
-        color: #fff;
-        font-weight: 700;
-        text-shadow:
-            0 0 6px rgba(255,255,255,0.9),
-            0 0 16px rgba(255,0,255,0.8),
-            0 0 32px rgba(255,0,180,0.6),
-            0 0 64px rgba(255,0,130,0.5);
-        font-size: 1.5rem;
-        line-height: 1.25;
-    }
-
-    .live-number {
-        font-size: 2rem;
-        font-weight: 800;
-        display: inline-block;
-        min-width: 6ch;
-        color: #fff;
-        text-shadow:
-            0 0 6px rgba(255,255,255,0.9),
-            0 0 16px rgba(255,0,255,0.8),
-            0 0 32px rgba(255,0,180,0.6),
-            0 0 64px rgba(255,0,130,0.5);
-        margin-top: 8px;
-        margin-bottom: 8px;
-        transition: transform 0.3s ease;
-    }
-
-    .max-line {
-        color: #fff;
-        font-weight: 700;
-        text-shadow:
-            0 0 6px rgba(255,255,255,0.9),
-            0 0 16px rgba(255,0,255,0.8),
-            0 0 32px rgba(255,0,180,0.6),
-            0 0 64px rgba(255,0,130,0.5);
-        font-size: 1.5rem;
-        line-height: 1.25;
-    }
-
-    /* Playlist buttons grid */
-    .playlist-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0,1fr));
-        gap: 16px;
-        justify-items: center;
-        margin-bottom: 16px;
-    }
-
-    .playlist-row-single {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 16px;
-    }
-
-    .btn-link {
-        appearance: none;
-        -webkit-appearance: none;
-        border: none;
-        text-decoration: none;
-        color: #fff;
-        font-weight: 700;
-        font-size: 1.4rem;
-        line-height: 1.2;
-        padding: 10px 14px;
-        min-width: 150px;
-        text-align: center;
-        background: linear-gradient(
-            to bottom right,
-            rgba(255,255,255,0.55),
-            rgba(190,200,210,0.4) 40%,
-            rgba(100,110,130,0.3) 60%,
-            rgba(30,30,40,0.4) 100%
-        );
-        border-radius: 6px;
-        box-shadow:
-            0 10px 15px rgba(0,0,0,0.8),
-            0 0 10px rgba(255,255,255,0.7) inset;
-        border: 2px solid rgba(255,255,255,0.6);
-        text-shadow:
-            0 0 3px rgba(0,0,0,0.8),
-            0 0 8px rgba(0,0,0,0.9);
-    }
-
-    /* Feature Track + Single Track */
-    .feature-wrap {
-        text-align: center;
-        margin-bottom: 24px;
-    }
-
-    .feature-btn-holder {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 16px;
-    }
-
-    .feature-btn {
-        display: inline-block;
-    }
-
-    .single-track-label {
-        font-size: 2rem;
-        font-weight: 800;
-        line-height: 1.2;
-        color: #fff;
-        text-align: center;
-        text-shadow:
-            0 0 6px rgba(255,255,255,0.9),
-            0 0 16px rgba(255,0,255,0.8),
-            0 0 32px rgba(255,0,180,0.6),
-            0 0 64px rgba(255,0,130,0.5);
-        margin-bottom: 24px;
-    }
-
-    /* Footer area */
-    .footer {
-        position: relative;
-        text-align: center;
-        font-size: 1.4rem;
-        line-height: 1.35;
-        font-weight: 700;
-        color: #fff;
-        text-shadow:
-            0 0 4px rgba(0,0,0,0.9),
-            0 0 12px rgba(0,0,0,0.8);
-        margin: 0 auto;
-        max-width: 320px;
-    }
-
-    .footer p {
-        margin-bottom: 16px;
-    }
-
-    .footer .small-line {
-        font-size: 1.1rem;
-        line-height: 1.4;
-        font-weight: 600;
-    }
-
-    .build-line {
-        font-size: 1.3rem;
-        font-weight: 700;
-        margin-bottom: 6px;
-        color: #fff;
-        text-shadow:
-            0 0 4px rgba(255,255,255,0.8),
-            0 0 10px rgba(255,0,255,0.7),
-            0 0 24px rgba(255,0,150,0.6);
-    }
-
-    .status-line {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #00ff5a;
-        text-shadow:
-            0 0 6px rgba(0,255,100,0.9),
-            0 0 16px rgba(0,255,100,0.6),
-            0 0 32px rgba(0,200,80,0.5),
-            0 0 64px rgba(0,150,60,0.4),
-            0 0 90px rgba(255,255,255,0.4);
-    }
-
-    @media (min-width:480px){
-        .btn-link {
-            min-width: 160px;
-        }
-    }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimmyTime Counter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+  <div class="overlay"></div>
+  <div class="container">
+    <h1>TimmyTime</h1>
+    <h2>Now Serving</h2>
+    <div id="counter">0</div>
+    <h3>of 999,999</h3>
 
-<div class="card-outer">
-    <div class="panel">
-        <!-- bubbles behind content -->
-        <div class="bubble-layer" id="bubble-layer"></div>
-
-        <!-- actual content -->
-        <div style="position:relative; z-index:1;">
-
-            <!-- title + counter -->
-            <div class="glow-block">
-                <div class="app-title">TimmyTime</div>
-
-                <div class="serving-line">Now Serving</div>
-                <div id="liveNumber" class="live-number">123,484</div>
-                <div class="max-line">of 999,999</div>
-            </div>
-
-            <!-- playlists -->
-            <div class="playlist-grid">
-                <a class="btn-link" href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">Playlist 1</a>
-                <a class="btn-link" href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">Playlist 2</a>
-
-                <a class="btn-link" href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">Playlist 3</a>
-                <a class="btn-link" href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">Playlist 4</a>
-            </div>
-
-            <div class="playlist-row-single">
-                <a class="btn-link" href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">Playlist 5</a>
-            </div>
-
-            <!-- feature + single track -->
-            <div class="feature-wrap">
-                <div class="feature-btn-holder">
-                    <a class="btn-link feature-btn" href="#" target="_blank" rel="noopener noreferrer">Feature Track</a>
-                </div>
-
-                <div class="single-track-label">Single Track</div>
-            </div>
-
-            <!-- footer -->
-            <div class="footer">
-                <p>
-                    App made by iPhone 17 Pro Max • Timmy Bubbles
-                </p>
-
-                <p>
-                    Playlists curated via Suno AI<br/>
-                    <span class="small-line">(external links • reduction applied)</span>
-                </p>
-
-                <div class="build-line">build v2.2 • live</div>
-                <div class="status-line">status: normal</div>
-            </div>
-        </div>
+    <div class="buttons">
+      <button onclick="openPlaylist(1)">Playlist 1</button>
+      <button onclick="openPlaylist(2)">Playlist 2</button>
+      <button onclick="openPlaylist(3)">Playlist 3</button>
+      <button onclick="openPlaylist(4)">Playlist 4</button>
+      <button onclick="openPlaylist(5)">Playlist 5</button>
+      <button onclick="openPlaylist('feature')">Feature Track</button>
+      <button onclick="openPlaylist('single')">Single Track</button>
     </div>
-</div>
 
-<script>
-/* -------------------------
-   Bubble generator
--------------------------- */
-(function makeBubbles(){
-    const layer = document.getElementById('bubble-layer');
+    <p>App made by iPhone 17</p>
+  </div>
 
-    // a set of different bubble sizes/speeds/positions
-    const bubbleSpec = [
-        {size:60,  dur:22, left:10},
-        {size:40,  dur:18, left:30},
-        {size:90,  dur:28, left:55},
-        {size:35,  dur:16, left:70},
-        {size:75,  dur:24, left:85},
-        {size:28,  dur:14, left:20},
-        {size:50,  dur:20, left:45},
-        {size:32,  dur:15, left:62},
-        {size:58,  dur:21, left:80},
-        {size:44,  dur:19, left:15},
-        {size:68,  dur:25, left:37},
-        {size:26,  dur:13, left:53},
-        {size:88,  dur:27, left:73},
-        {size:34,  dur:16, left:90}
-    ];
+  <canvas id="bubbles"></canvas>
 
-    bubbleSpec.forEach(spec => {
-        const b = document.createElement('div');
-        b.className = 'bubble';
-        b.style.width = spec.size + 'px';
-        b.style.height = spec.size + 'px';
-        b.style.left = spec.left + '%';
-        b.style.bottom = (-20 - Math.random()*40) + 'px';
-        b.style.animationDuration = spec.dur + 's';
-        b.style.animationDelay = (-Math.random()*spec.dur) + 's';
-        layer.appendChild(b);
-    });
-})();
+  <script>
+    // --- Counter ---
+    let counter = document.getElementById("counter");
+    let count = 0;
+    const target = 999999;
+    const speed = 2; // Lower = slower start
+    const easeIn = 0.02; // Smooth acceleration
+    let interval = setInterval(() => {
+      count += Math.ceil((target - count) * easeIn);
+      if (count >= 123485) clearInterval(interval);
+      counter.innerText = count.toLocaleString();
+    }, speed * 20);
 
-/* -------------------------
-   Live counter with guard
--------------------------- */
-let currentNumber = 123484; // starting visible number
-const maxNumber = 999999;
-const liveNumberElement = document.getElementById("liveNumber");
-let counterInterval = null;
+    // --- Playlists ---
+    function openPlaylist(num) {
+      const links = {
+        1: "https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b",
+        2: "https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f",
+        3: "https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44",
+        4: "https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df",
+        5: "https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2",
+        feature: "https://suno.com/playlist/feature",
+        single: "https://suno.com/playlist/single"
+      };
+      window.open(links[num], "_blank");
+    }
 
-function formatNumber(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+    // --- Bubbles ---
+    const canvas = document.getElementById("bubbles");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-function updateCounter() {
-  if (currentNumber < maxNumber) {
-    currentNumber++;
-    liveNumberElement.textContent = formatNumber(currentNumber);
+    const bubbles = [];
+    const colors = ["rgba(255, 102, 255, 0.15)", "rgba(255, 128, 0, 0.15)", "rgba(100, 100, 255, 0.15)", "rgba(255, 255, 255, 0.05)"];
 
-    // pulse effect each tick
-    liveNumberElement.style.transform = "scale(1.1)";
-    setTimeout(() => {
-      liveNumberElement.style.transform = "scale(1)";
-    }, 300);
-  }
-}
+    for (let i = 0; i < 50; i++) {
+      bubbles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 20 + 5,
+        d: Math.random() * 1.5,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
 
-function startCounter() {
-  if (counterInterval) clearInterval(counterInterval);
-  counterInterval = setInterval(updateCounter, 4000); // every 4 seconds
-}
-
-document.addEventListener("DOMContentLoaded", startCounter);
-</script>
-
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      bubbles.forEach(b => {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+        b.y -= b.d;
+        if (b.y < -b.r) {
+          b.y = canvas.height + b.r;
+          b.x = Math.random() * canvas.width;
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
 </body>
 </html>
