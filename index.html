@@ -1,20 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>TimmyTime Access Counter</title>
-  <link rel="stylesheet" href="style.css?v=5" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimmyTime Bubbles</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at bottom, #a1c4fd 0%, #c2e9fb 100%);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    /* floating bubbles */
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: rise 12s infinite ease-in;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* main container */
+    .container {
+      position: relative;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 20px;
+      max-width: 350px;
+      margin: 60px auto;
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #fff;
+      text-shadow: 0 0 6px #ff66cc, 0 0 20px #ff33cc;
+    }
+
+    a {
+      display: inline-block;
+      color: #b3d9ff;
+      font-weight: bold;
+      text-decoration: none;
+      margin: 8px;
+      transition: color 0.3s;
+    }
+    a:hover {
+      color: #66ffff;
+    }
+
+    /* neon access counter */
+    .tt-access-wrapper {
+      color: #fff;
+      text-align: center;
+      font-family: "Orbitron", system-ui, -apple-system, sans-serif;
+      padding: 20px 10px;
+      margin: 10px auto 30px auto;
+      max-width: 400px;
+      background: radial-gradient(circle at 50% 0%, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.6) 60%);
+      border-radius: 20px;
+    }
+
+    .tt-access-title {
+      font-size: 1.8rem;
+      line-height: 1.1;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+      color: #ff66cc;
+      text-shadow:
+        0 0 4px #ff66cc,
+        0 0 10px #ff66cc,
+        0 0 20px #ff33cc,
+        0 0 40px #ff0099,
+        0 0 80px #ff00ff;
+      margin-bottom: 16px;
+    }
+
+    .tt-counter-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.4rem;
+      color: rgba(255,255,255,0.8);
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.4),
+        0 0 20px rgba(0,150,255,0.3);
+      margin-bottom: 16px;
+    }
+
+    .tt-counter-box {
+      background: radial-gradient(circle at 50% 20%, rgba(10,20,40,0.6) 0%, rgba(0,0,0,0.95) 60%);
+      border-radius: 12px;
+      padding: 16px 24px;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.9),
+        0 0 30px rgba(0,140,255,0.4),
+        0 0 80px rgba(255,100,0,0.2);
+      border: 2px solid rgba(0,200,255,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 20px auto;
+      max-width: 360px;
+    }
+
+    .tt-counter-digits {
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: 0.4rem;
+      color: #33ccff;
+      text-shadow:
+        0 0 10px #33ccff,
+        0 0 20px #00ffff,
+        0 0 30px rgba(0,200,255,0.6);
+    }
+
+    .tt-counter-cap {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.2rem;
+      text-shadow:
+        0 0 6px rgba(0,180,255,0.6),
+        0 0 20px rgba(255,110,0,0.4);
+    }
+
+    footer {
+      font-size: 0.8rem;
+      margin-top: 20px;
+      color: #ddd;
+      text-shadow: 0 0 3px #000;
+    }
+  </style>
 </head>
 <body>
-  <div class="neon-title">TimmyTime Access</div>
 
-  <div class="counter-wrapper">
-    <div class="counter-label">NOW SERVING</div>
-    <div id="lux-counter" class="counter-display"></div>
-    <div class="counter-cap">/ 999,999</div>
+  <!-- Floating Bubbles -->
+  <script>
+    for (let i = 0; i < 25; i++) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      bubble.style.width = bubble.style.height = Math.random() * 30 + 10 + 'px';
+      bubble.style.left = Math.random() * 100 + 'vw';
+      bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(${100+Math.random()*155}, ${50+Math.random()*205}, ${200+Math.random()*55}, 0.4))`;
+      bubble.style.animationDuration = 10 + Math.random() * 10 + 's';
+      bubble.style.animationDelay = Math.random() * 10 + 's';
+      document.body.appendChild(bubble);
+    }
+  </script>
+
+  <div class="container">
+    <h1>TimmyTime</h1>
+
+    <!-- Neon Counter under TimmyTime -->
+    <section class="tt-access-wrapper">
+      <div class="tt-access-title">ACCESS</div>
+      <div class="tt-counter-label">NOW SERVING</div>
+      <div class="tt-counter-box">
+        <div id="tt-counter-digits" class="tt-counter-digits"></div>
+      </div>
+      <div class="tt-counter-cap">/ 999,999</div>
+    </section>
+
+    <p>Visitors: 6</p>
+    <a href="#">Playlist 1</a>
+    <a href="#">Playlist 2</a>
+    <a href="#">Playlist 3</a>
+    <a href="#">Playlist 4</a>
+    <a href="#">Playlist 5</a>
+    <br>
+    <a href="#">Feature Track</a>
+
+    <footer>
+      App made by iPhone 17 Pro Max • Timmy Bubbles
+    </footer>
   </div>
 
-  <script src="script.js?v=5"></script>
+  <script>
+    // static counter display
+    const START_VALUE = 40;
+    const DIGITS = 6;
+    document.getElementById("tt-counter-digits").textContent = START_VALUE.toString().padStart(DIGITS, '0');
+  </script>
 </body>
 </html>
