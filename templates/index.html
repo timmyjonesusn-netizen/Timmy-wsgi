@@ -1,15 +1,298 @@
-<div class="bubble-bg">
-    <!-- existing bubbles -->
-    <div class="bubble bubble-lg pos-a"></div>
-    <div class="bubble bubble-md pos-b"></div>
-    <div class="bubble bubble-md pos-c"></div>
-    <div class="bubble bubble-sm pos-d"></div>
-    <div class="bubble bubble-lg pos-e"></div>
-    <div class="bubble bubble-md pos-f"></div>
-    <div class="bubble bubble-sm pos-g"></div>
-    <div class="bubble bubble-md pos-h"></div>
-    <div class="bubble bubble-lg pos-i"></div>
-    <div class="bubble bubble-md pos-j"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Timmy Bubbles Radio</title>
 
-    <!-- (maybe minis if we added them already) -->
-</div>
+<style>
+    /* --- PAGE BACKGROUND --- */
+    :root {
+        --bg-top: radial-gradient(circle at 20% 20%, rgba(255,230,200,1) 0%, rgba(255,180,200,0) 60%);
+        --bg-mid: radial-gradient(circle at 60% 40%, rgba(255,0,128,0.4) 0%, rgba(0,0,0,0) 60%);
+        --bg-bottom: radial-gradient(circle at 50% 80%, rgba(0,20,80,0.9) 0%, rgba(0,0,0,1) 70%);
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "Inter", Roboto, sans-serif;
+        background: radial-gradient(circle at 20% 15%, #ffe5a8 0%, rgba(255, 229, 168, 0) 60%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.4) 0%, rgba(0,0,0,0) 60%),
+                    radial-gradient(circle at 50% 80%, rgba(10,20,80,1) 0%, rgba(0,0,0,1) 70%);
+        background-color: #0a0a1a;
+        background-blend-mode: screen, lighten, normal;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* --- GLASS PANEL FOR TEXT --- */
+    .panel {
+        max-width: 90%;
+        width: 90%;
+        background: radial-gradient(circle at 20% 20%, rgba(255, 0, 128, 0.25) 0%, rgba(0,0,0,0) 60%),
+                    radial-gradient(circle at 80% 30%, rgba(255,165,0,0.15) 0%, rgba(0,0,0,0) 60%),
+                    rgba(0,0,0,0.35);
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.35);
+        box-shadow:
+            0 30px 60px rgba(0,0,0,0.8),
+            0 0 60px rgba(255,0,128,0.4),
+            0 0 120px rgba(255,165,0,0.2);
+        backdrop-filter: blur(20px) saturate(140%);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+        color: #fff;
+        padding: 24px;
+        margin: 48px auto 0 auto;
+        line-height: 1.15;
+    }
+
+    /* --- LINKS / PLAYLISTS --- */
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px 24px;
+        font-size: clamp(1.2rem, 1vw + 1rem, 1.6rem);
+        font-weight: 700;
+        text-shadow:
+            0 0 6px rgba(0,0,0,0.8),
+            0 0 18px rgba(255,255,255,0.6);
+    }
+
+    .links a {
+        color: #cfe0ff;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
+        -webkit-text-stroke: 1px #000;
+    }
+
+    .links a:active,
+    .links a:focus,
+    .links a:hover {
+        color: #ffffff;
+        text-shadow:
+            0 0 6px rgba(255,255,255,0.9),
+            0 0 18px rgba(255,0,200,0.8);
+    }
+
+    /* --- MAIN HEADERS --- */
+    h1 {
+        margin: 24px 0 16px 0;
+        font-size: clamp(2.4rem, 1vw + 2rem, 3rem);
+        font-weight: 800;
+        color: #fff;
+        text-shadow:
+            0 0 4px rgba(0,0,0,1),
+            0 0 12px rgba(255,0,200,0.9),
+            0 0 48px rgba(255,165,0,0.7);
+        -webkit-text-stroke: 1px #000;
+        line-height: 1.15;
+    }
+
+    .tagline {
+        font-size: clamp(1.4rem, 1vw + 1rem, 1.8rem);
+        font-weight: 700;
+        color: #fff;
+        text-shadow:
+            0 0 4px rgba(0,0,0,1),
+            0 0 12px rgba(255,0,200,0.9),
+            0 0 48px rgba(255,165,0,0.7);
+        -webkit-text-stroke: 1px #000;
+        line-height: 1.3;
+    }
+
+    /* --- BASE COLOR BUBBLES (pink/purple/orange glow) --- */
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 60%),
+                    radial-gradient(circle at 70% 70%, rgba(255,0,200,0.5) 0%, rgba(255,165,0,0.3) 60%),
+                    radial-gradient(circle at 50% 50%, rgba(128,0,255,0.4) 0%, rgba(0,0,0,0) 70%);
+        box-shadow:
+            0 0 20px rgba(255,0,200,0.6),
+            0 0 40px rgba(255,165,0,0.4),
+            0 0 80px rgba(128,0,255,0.4);
+        border: 1px solid rgba(255,255,255,0.7);
+        mix-blend-mode: screen;
+        opacity: 0.8;
+        animation: floatUp linear forwards;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(0) scale(1);
+            filter: blur(0px);
+        }
+        100% {
+            transform: translateY(-120vh) scale(1.05);
+            filter: blur(2px);
+        }
+    }
+
+    /* --- WHITE FROTH BUBBLES --- */
+    .white-bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 60%),
+                    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 60%);
+        box-shadow:
+            0 0 10px rgba(255,255,255,0.9),
+            0 0 20px rgba(255,255,255,0.6),
+            0 0 40px rgba(255,255,255,0.3);
+        opacity: 0.8;
+        border: 1px solid rgba(255,255,255,0.9);
+        mix-blend-mode: screen;
+        animation: floatUpWhite linear forwards;
+    }
+
+    @keyframes floatUpWhite {
+        0% {
+            transform: translateY(0) scale(1);
+            opacity: 0.8;
+            filter: blur(0px);
+        }
+        90% {
+            opacity: 0.7;
+        }
+        100% {
+            transform: translateY(-120vh) scale(0);
+            opacity: 0;
+            filter: blur(2px);
+        }
+    }
+
+    /* make sure nothing blocks taps */
+    .bubbles-wrapper,
+    .white-bubbles-wrapper {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: -10vh;
+        top: auto;
+        width: 100%;
+        pointer-events: none;
+        overflow: visible;
+        z-index: 0; /* behind panel */
+    }
+
+    /* panel sits above bubbles */
+    .panel {
+        position: relative;
+        z-index: 5;
+    }
+</style>
+</head>
+<body>
+
+    <!-- GLASS PANEL CONTENT -->
+    <div class="panel">
+        <div class="links">
+            <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b">Playlist 1</a>
+            <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f">Playlist 2</a>
+            <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44">Playlist 3</a>
+            <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df">Playlist 4</a>
+            <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2">Playlist 5</a>
+            <a href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d">Feature Track</a>
+        </div>
+
+        <h1>Single Track</h1>
+
+        <div class="tagline">
+            App made by iPhone 17 Pro Max • Timmy Bubbles
+        </div>
+    </div>
+
+    <!-- BUBBLE LAYERS -->
+    <div class="bubbles-wrapper" id="colorBubbles"></div>
+    <div class="white-bubbles-wrapper" id="whiteBubbles"></div>
+
+<script>
+/*
+    Timmy Bubble Engine
+    - Layer 1: neon color bubbles (pink / purple / orange)
+    - Layer 2: fizzy white champagne bubbles
+    - both rise & get removed, so memory stays chill
+*/
+
+//////////////////////
+// COLOR BUBBLES
+//////////////////////
+
+function createColorBubble() {
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
+
+    // random size: these are bigger, juicy
+    const size = Math.random() * 140 + 60; // 60px - 200px
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+
+    // random horizontal position
+    bubble.style.left = Math.random() * 100 + 'vw';
+
+    // start low-ish so they stack at bottom like your screenshot
+    bubble.style.bottom = (Math.random() * 15 - 10) + 'vh';
+
+    // duration: slow float
+    const duration = 8 + Math.random() * 10; // 8s - 18s
+    bubble.style.animationDuration = duration + 's';
+
+    document.getElementById('colorBubbles').appendChild(bubble);
+
+    // cleanup after done
+    setTimeout(() => {
+        bubble.remove();
+    }, (duration + 0.5) * 1000);
+}
+
+// spawn a few at start so bottom looks full immediately
+for (let i = 0; i < 12; i++) {
+    createColorBubble();
+}
+// keep making them
+setInterval(createColorBubble, 1200);
+
+
+//////////////////////
+// WHITE FROTH BUBBLES
+//////////////////////
+
+function createWhiteBubble() {
+    const wb = document.createElement('div');
+    wb.classList.add('white-bubble');
+
+    // fizz are smaller, some tiny some medium
+    const size = Math.random() * 25 + 10; // 10px - 35px
+    wb.style.width = size + 'px';
+    wb.style.height = size + 'px';
+
+    // random x
+    wb.style.left = Math.random() * 100 + 'vw';
+
+    // start near bottom band, like foam at the bottom of the glass
+    wb.style.bottom = (Math.random() * 20 - 5) + 'vh';
+
+    // fast-ish float so it feels alive
+    const duration = 4 + Math.random() * 6; // 4s - 10s
+    wb.style.animationDuration = duration + 's';
+
+    document.getElementById('whiteBubbles').appendChild(wb);
+
+    // remove after pop (animation ends)
+    setTimeout(() => {
+        wb.remove();
+    }, (duration + 0.5) * 1000);
+}
+
+// start with a burst
+for (let i = 0; i < 20; i++) {
+    createWhiteBubble();
+}
+// keep fizzing
+setInterval(createWhiteBubble, 600);
+
+</script>
+</body>
+</html>
