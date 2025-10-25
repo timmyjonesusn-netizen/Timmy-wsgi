@@ -1,284 +1,425 @@
-<!--
-TIMMYTIME LIVE
-Do not paste partials.
-Replace whole file only.
-
-If anything looks wrong in production:
-1. Restore last good from /locked/
-2. Deploy to STAGE first, then promote to LIVE
-
-build v2.2 • live
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1.0,viewport-fit=cover"
-  />
-  <title>TimmyTime</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>TimmyTime</title>
 
-  <!-- cache-bust so Safari/CDN grabs fresh on each release -->
-  <link rel="stylesheet" href="style.css?v=2.2">
-  <script src="script.js?v=2.2" defer></script>
-
-  <!-- emergency fallback styling + bubble layer positioning
-       (this runs even if style.css fails to load) -->
-  <style>
-    :root {
-      --bubble-purple: rgba(200, 0, 255, 0.55);
-      --bubble-pink:   rgba(255, 90, 200, 0.55);
-      --bubble-orange: rgba(255, 150,  50, 0.55);
-    }
-
+<style>
+    /* --- RESET --- */
     * {
-      box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100vh;
-      background: radial-gradient(circle at 30% 30%, #ffe1ff 0%, #9fd0ff 40%, #3b4a68 100%);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        background: radial-gradient(circle at 20% 20%, rgba(255,0,255,0.25) 0%, rgba(0,0,0,0) 60%),
+                    radial-gradient(circle at 80% 30%, rgba(0,200,255,0.2) 0%, rgba(0,0,0,0) 60%),
+                    linear-gradient(to bottom right, #2b2f55 0%, #4a6a8f 40%, #91a8c3 100%);
+        background-color: #3b4f6a;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* bubble container sits behind content, does not block taps */
+    /* --- BUBBLE FIELD (behind card) --- */
     .bubble-field {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      z-index: 0;
-      pointer-events: none;
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
     }
 
-    /* fallback bubble style if CSS file doesn't load */
     .bubble {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%),
-                  var(--bubble-purple);
-      box-shadow:
-        0 0 20px rgba(255,0,255,0.6),
-        0 0 40px rgba(255,165,0,0.4);
-      opacity: 0.7;
-      filter: blur(0.3px);
-      animation: floatUp 12s linear infinite;
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.8;
+        filter: blur(0.3px);
+        box-shadow:
+            0 0 12px rgba(255,255,255,0.6),
+            0 0 32px rgba(255,0,255,0.4),
+            0 0 64px rgba(255,128,0,0.25);
+        border: 2px solid rgba(255,255,255,0.6);
+        background: radial-gradient(circle at 30% 30%,
+            rgba(255,255,255,0.9) 0%,
+            rgba(255,255,255,0.4) 20%,
+            rgba(255,0,255,0.35) 45%,
+            rgba(255,128,0,0.3) 60%,
+            rgba(0,0,80,0.4) 100%);
+        animation-name: rise, drift;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
     }
 
-    @keyframes floatUp {
-      0%   { transform: translateY(100vh) scale(1);   opacity: 0; }
-      10%  { opacity: 0.9; }
-      90%  { opacity: 0.9; }
-      100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+    /* vertical float */
+    @keyframes rise {
+        0%   { transform: translateY(0) scale(1); opacity: 0; }
+        5%   { opacity: 0.9; }
+        90%  { opacity: 0.9; }
+        100% { transform: translateY(-120vh) scale(1.05); opacity: 0; }
     }
 
-    .app-card {
-      position: relative;
-      z-index: 10; /* above bubbles */
-      width: 100%;
-      max-width: 700px;
-      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.4) 60%);
-      border-radius: 20px;
-      border: 2px solid rgba(255,255,255,0.4);
-      box-shadow:
-        0 20px 40px rgba(0,0,0,0.7),
-        0 0 30px rgba(255,0,255,0.4),
-        0 0 60px rgba(255,165,0,0.25);
-      padding: 20px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+    /* sideways wobble */
+    @keyframes drift {
+        0%   { margin-left: 0px; }
+        25%  { margin-left: -10px; }
+        50%  { margin-left: 4px; }
+        75%  { margin-left: -6px; }
+        100% { margin-left: 0px; }
     }
 
-    h1 {
-      font-size: clamp(2.2rem, 2.5vw, 2.8rem);
-      line-height: 1.1;
-      font-weight: 700;
-      color: #fff;
-      text-align: center;
-      text-shadow:
-        0 0 4px #000,
-        0 0 8px #ff00ff,
-        0 0 16px #ff00ff;
-      margin: 0 0 12px;
+    /* --- CARD --- */
+    .card {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 420px;
+        background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 70%),
+                    linear-gradient(to bottom right, rgba(40,60,80,0.9) 0%, rgba(110,150,180,0.8) 100%);
+        border-radius: 18px;
+        border: 2px solid rgba(255,255,255,0.4);
+        box-shadow:
+            0 12px 35px rgba(0,0,0,0.8),
+            0 0 30px rgba(255,0,255,0.4),
+            0 0 60px rgba(0,200,255,0.25);
+        padding: 24px 16px 32px;
+        text-align: center;
+        color: #fff;
     }
 
-    .now-serving {
-      font-size: clamp(1.4rem, 2vw, 1.8rem);
-      line-height: 1.2;
-      font-weight: 700;
-      color: #fff;
-      text-align: center;
-      text-shadow:
-        0 0 4px #000,
-        0 0 8px #ff00ff,
-        0 0 16px #ff00ff;
-      margin: 0 0 24px;
-      word-break: break-word;
+    .title {
+        font-size: 2.4rem;
+        font-weight: 800;
+        line-height: 1.1;
+        color: #fff;
+        text-shadow:
+            0 0 6px #fff,
+            0 0 14px rgba(255,0,255,0.9),
+            0 0 28px rgba(255,0,255,0.6),
+            0 0 42px rgba(255,0,255,0.4);
+        margin-bottom: 12px;
     }
 
-    .links-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-row-gap: 18px;
-      grid-column-gap: 24px;
-      max-width: 500px;
-      margin: 0 auto 24px;
+    .counter-line {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #fff;
+        text-shadow:
+            0 0 4px #fff,
+            0 0 10px rgba(255,0,255,0.9),
+            0 0 24px rgba(255,0,255,0.4);
+        margin-bottom: 24px;
     }
 
-    .links-grid a {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #bcd4ff;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-      text-shadow:
-        0 0 4px #000,
-        0 0 8px rgba(0,0,0,0.8),
-        0 0 16px rgba(0,0,0,0.8);
-      text-align: center;
-      display: block;
+    .counter-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        display: block;
     }
 
-    .links-grid a:hover {
-      filter: brightness(1.2);
+    /* --- PLAYLIST GRID --- */
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 16px;
+        justify-items: center;
+        margin-bottom: 16px;
     }
 
-    .feature-row {
-      grid-column: 1 / span 2;
+    .grid .btn-link {
+        width: 100%;
+        text-align: center;
     }
 
-    .section-title {
-      font-size: clamp(2rem, 2vw, 2.4rem);
-      line-height: 1.2;
-      font-weight: 700;
-      color: #fff;
-      text-align: center;
-      text-shadow:
-        0 0 4px #000,
-        0 0 8px #ff00ff,
-        0 0 16px #ff00ff;
-      margin: 10px 0 16px;
+    .single-col {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        justify-items: center;
+        margin-bottom: 24px;
     }
 
-    .credits {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #fff;
-      text-shadow:
-        0 0 4px #000,
-        0 0 8px rgba(0,0,0,0.8),
-        0 0 16px rgba(0,0,0,0.8);
-      line-height: 1.4;
-      text-align: center;
-      margin: 24px 0 8px;
+    /* --- LINK BUTTON STYLE --- */
+    .btn-link a {
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #e9f3ff;
+        text-decoration: none;
+        text-shadow:
+            0 1px 2px rgba(0,0,0,0.8),
+            0 0 6px rgba(255,255,255,0.9),
+            0 0 18px rgba(180,210,255,0.9),
+            0 0 34px rgba(0,0,0,0.9);
+        border-bottom: 3px solid rgba(220,230,255,0.8);
+        box-shadow:
+            0 6px 20px rgba(0,0,0,0.9),
+            0 0 16px rgba(200,230,255,0.4);
+        border-radius: 4px;
+        padding: 4px 6px 2px;
+        display: inline-block;
+        min-width: 140px;
     }
 
-    .suno-credit {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.8);
-      text-align: center;
-      text-shadow: 0 0 4px #000;
-      margin: 0 0 16px;
+    .btn-link a:active,
+    .btn-link a:focus,
+    .btn-link a:hover {
+        filter: brightness(1.15);
+        text-shadow:
+            0 1px 2px rgba(0,0,0,0.9),
+            0 0 8px rgba(255,255,255,1),
+            0 0 24px rgba(255,0,255,0.9),
+            0 0 40px rgba(255,128,0,0.8);
+        border-bottom-color: rgba(255,255,255,1);
     }
 
-    .build-tag {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: rgba(255,255,255,0.8);
-      text-align: center;
-      text-shadow: 0 0 4px #000;
-      opacity: 0.8;
-      margin: 0;
+    /* FEATURE + SINGLE TRACK big callout */
+    .feature-label {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #e9f3ff;
+        text-decoration: none;
+        text-shadow:
+            0 1px 2px rgba(0,0,0,0.8),
+            0 0 6px rgba(255,255,255,0.9),
+            0 0 18px rgba(180,210,255,0.9),
+            0 0 34px rgba(0,0,0,0.9);
+        border-bottom: 3px solid rgba(220,230,255,0.8);
+        box-shadow:
+            0 6px 20px rgba(0,0,0,0.9),
+            0 0 16px rgba(200,230,255,0.4);
+        border-radius: 4px;
+        padding: 4px 6px 2px;
+        display: inline-block;
+    }
+
+    .single-track-header {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #fff;
+        text-shadow:
+            0 0 6px #fff,
+            0 0 14px rgba(255,0,255,0.9),
+            0 0 28px rgba(255,0,255,0.6),
+            0 0 42px rgba(255,0,255,0.4);
+        margin: 24px 0;
+    }
+
+    /* --- FOOTER / META --- */
+    .app-info {
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #fff;
+        text-align: center;
+        text-shadow:
+            0 2px 4px rgba(0,0,0,0.9),
+            0 0 10px rgba(0,0,0,0.9),
+            0 0 24px rgba(0,0,0,0.7),
+            0 0 36px rgba(0,0,0,0.6);
+        margin-bottom: 16px;
+    }
+
+    .suno-note {
+        color: #fff;
+        font-size: 1.4rem;
+        font-weight: 600;
+        line-height: 1.4;
+        text-shadow:
+            0 2px 4px rgba(0,0,0,0.9),
+            0 0 10px rgba(0,0,0,0.9),
+            0 0 24px rgba(0,0,0,0.7);
+        margin-bottom: 20px;
+    }
+
+    .build-line {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #dcdcdc;
+        text-shadow:
+            0 2px 4px rgba(0,0,0,0.9),
+            0 0 10px rgba(0,0,0,0.9);
+        margin-bottom: 6px;
     }
 
     .status-line {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #00ff9c;
-      text-align: center;
-      text-shadow: 0 0 4px #000;
-      margin: 4px 0 0;
-      opacity: 0.9;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #00ff66;
+        text-shadow:
+            0 2px 4px rgba(0,0,0,0.9),
+            0 0 10px rgba(0,0,0,0.9),
+            0 0 24px rgba(0,255,0,0.6);
     }
-  </style>
+
+    /* accessibility tap target spacing on mobile */
+    @media (max-width: 400px) {
+        .btn-link a { font-size: 1.6rem; min-width: 130px; }
+        .feature-label { font-size: 1.7rem; }
+        .single-track-header { font-size: 2.2rem; }
+    }
+</style>
 </head>
-
 <body>
-  <!-- bubbles background -->
-  <div class="bubble-field" id="bubbleField">
-    <!-- bubbles are created in JS for performance -->
-  </div>
 
-  <main class="app-card">
+<!-- BUBBLE FIELD -->
+<div class="bubble-field" id="bubbleField"></div>
 
-    <h1>TimmyTime</h1>
+<!-- CARD -->
+<div class="card">
+    <div class="title">TimmyTime</div>
 
-    <!-- Now Serving line -->
-    <p class="now-serving">
-      Now Serving
-      <span id="nowServingNumber">—</span>
-      of 999,999
-    </p>
+    <div class="counter-line">
+        <span>Now Serving</span>
+        <span class="counter-number" id="counterDisplay">—</span>
+        <span>of 999,999</span>
+    </div>
 
-    <!-- playlists -->
-    <section class="links-grid">
-      <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b"
-         target="_blank"
-         rel="noopener noreferrer">Playlist 1</a>
+    <div class="grid">
+        <div class="btn-link"><a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">Playlist 1</a></div>
+        <div class="btn-link"><a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">Playlist 2</a></div>
 
-      <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f"
-         target="_blank"
-         rel="noopener noreferrer">Playlist 2</a>
+        <div class="btn-link"><a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">Playlist 3</a></div>
+        <div class="btn-link"><a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">Playlist 4</a></div>
 
-      <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44"
-         target="_blank"
-         rel="noopener noreferrer">Playlist 3</a>
+        <div class="btn-link" style="grid-column:1 / span 2;">
+            <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" target="_blank" rel="noopener noreferrer">Playlist 5</a>
+        </div>
+    </div>
 
-      <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df"
-         target="_blank"
-         rel="noopener noreferrer">Playlist 4</a>
+    <div class="single-col">
+        <div class="btn-link">
+            <a class="feature-label" href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" target="_blank" rel="noopener noreferrer">
+                Feature Track
+            </a>
+        </div>
+    </div>
 
-      <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2"
-         target="_blank"
-         rel="noopener noreferrer"
-         class="feature-row">Playlist 5</a>
+    <div class="single-track-header">Single Track</div>
 
-      <a href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d"
-         target="_blank"
-         rel="noopener noreferrer"
-         class="feature-row">Feature Track</a>
-    </section>
+    <div class="app-info">
+        App made by iPhone 17 Pro Max • Timmy Bubbles
+    </div>
 
-    <h2 class="section-title">Single Track</h2>
+    <div class="suno-note">
+        Playlists curated via Suno AI<br />
+        (external links • reduction applied)
+    </div>
 
-    <p class="credits">
-      App made by iPhone 17 Pro Max • Timmy Bubbles
-    </p>
+    <div class="build-line">build v2.2 • live</div>
+    <div class="status-line">status: normal</div>
+</div>
 
-    <p class="suno-credit">
-      Playlists curated via Suno AI (external links)
-    </p>
+<script>
+/* ===========================
+   COUNTER LOGIC
+   =========================== */
 
-    <!-- build info (page version + status hooks) -->
-    <p class="build-tag" id="buildTag" data-version="2.2">
-      build v2.2 • live
-    </p>
+(function() {
+    // Start number (you can change this to whatever you want live to show)
+    let current = 123456; // <-- EDIT THIS START VALUE if you want
+    const goal = 999999;
+    const counterEl = document.getElementById('counterDisplay');
 
-    <p class="status-line" id="statusLine">
-      status: normal
-    </p>
-  </main>
+    function formatNumber(n) {
+        // Adds commas to 123456 -> "123,456"
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function updateCounter() {
+        if (current < goal) {
+            current += Math.floor(Math.random() * 3); // slow crawl +1 or +2
+        }
+        if (current > goal) current = goal;
+        counterEl.textContent = formatNumber(current);
+    }
+
+    // init immediately
+    updateCounter();
+    // update about every 1.5s so it feels alive but not racing
+    setInterval(updateCounter, 1500);
+})();
+
+/* ===========================
+   BUBBLE GENERATOR
+   =========================== */
+
+(function() {
+    const field = document.getElementById('bubbleField');
+
+    // We'll generate ~30-40 bubbles at staggered timings.
+    // Different colors: purple, pink, orange, deep blue
+    const colors = [
+        "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, rgba(255,0,255,0.35) 45%, rgba(255,128,0,0.3) 60%, rgba(0,0,80,0.4) 100%)",
+        "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, rgba(255,128,0,0.4) 45%, rgba(255,0,128,0.35) 60%, rgba(60,0,120,0.4) 100%)",
+        "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, rgba(255,80,0,0.4) 45%, rgba(255,0,0,0.35) 60%, rgba(80,0,0,0.4) 100%)",
+        "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, rgba(80,80,255,0.35) 45%, rgba(0,40,120,0.4) 60%, rgba(0,0,40,0.5) 100%)"
+    ];
+
+    function createBubble() {
+        const b = document.createElement('div');
+        b.classList.add('bubble');
+
+        // random size from tiny to mid
+        const size = Math.random() * 60 + 20; // 20px - 80px
+        b.style.width = size + "px";
+        b.style.height = size + "px";
+
+        // random horizontal start
+        const startLeft = Math.random() * 100; // vw %
+        b.style.left = startLeft + "vw";
+
+        // random bottom offset so they don't all spawn exactly at bottom edge
+        const startBottom = - (Math.random() * 60); // -0 to -60px below view
+        b.style.bottom = startBottom + "px";
+
+        // pick a color gradient
+        b.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+        // tweak glow per bubble
+        b.style.boxShadow = `
+            0 0 8px rgba(255,255,255,0.7),
+            0 0 24px rgba(255,0,255,0.5),
+            0 0 48px rgba(255,128,0,0.35)
+        `;
+
+        // random duration so some float faster/slower
+        const riseDur = 10 + Math.random() * 10; // 10s - 20s
+        const driftDur = 4 + Math.random() * 4; // 4s - 8s
+        b.style.animationDuration = riseDur + "s, " + driftDur + "s";
+
+        // delay so they don't all pulse at once
+        const delay = Math.random() * 8; // 0-8s
+        b.style.animationDelay = delay + "s, " + delay + "s";
+
+        field.appendChild(b);
+
+        // remove after it's done floating way up (riseDur plus delay buffer)
+        setTimeout(() => {
+            field.removeChild(b);
+        }, (riseDur + delay) * 1000);
+    }
+
+    // Make a steady stream
+    // burst first:
+    for (let i = 0; i < 35; i++) {
+        setTimeout(createBubble, i * 120);
+    }
+    // then continue spawning a new one every ~700ms
+    setInterval(createBubble, 700);
+})();
+</script>
+
 </body>
 </html>
