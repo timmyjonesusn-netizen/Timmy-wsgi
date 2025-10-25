@@ -2,103 +2,106 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>TimmyTime Control Panel</title>
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TimmyTime</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
-  <!-- Header / Brand Row -->
-  <header class="header-bar">
-    <div class="brand">
-      <div class="brand-title">TimmyTime</div>
-      <div class="brand-sub">Now Serving</div>
-    </div>
+  <!-- FULLSCREEN BACKGROUND / BUBBLES (locked to viewport) -->
+  <div class="main-bg">
+    <canvas id="bubbleCanvas"></canvas>
+    <div class="bg-glow-overlay"></div>
+  </div>
 
-    <div class="counter-block">
-      <div class="counter-label">#</div>
-      <div id="liveCounter" class="counter-value">999,999</div>
-    </div>
-  </header>
+  <!-- SCROLLABLE APP CONTENT SITTING ABOVE THE BACKGROUND -->
+  <div class="content-shell">
 
-  <!-- Main Content Area -->
-  <main class="main-wrap">
-
-    <!-- Video Section -->
-    <section class="panel video-panel">
-      <h2 class="panel-title">Info Reel</h2>
-
-      <video
-        id="infoVideo"
-        class="info-video"
-        playsinline
-        controls
-        preload="metadata"
-      >
-        <source
-          id="videoSource"
-          src="{{ url_for('static', filename='videos/Info.mp4') }}"
-          type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-
-      <!-- Quick swap UI -->
-      <div class="video-controls-row">
-        <select id="videoSelect" class="video-select">
-          <option value="{{ url_for('static', filename='videos/Info.mp4') }}">Info.mp4</option>
-          <option value="{{ url_for('static', filename='videos/Club.mp4') }}">Club.mp4</option>
-          <option value="{{ url_for('static', filename='videos/Message.mp4') }}">Message.mp4</option>
-        </select>
-
-        <button id="applyVideoBtn" class="swap-btn">
-          Change Video
-        </button>
+    <!-- TOP BLOCK: BRAND + COUNTER -->
+    <section class="counter-card glass-card">
+      <div class="brand-row">
+        <div class="brand-left">
+          <div class="brand-name">TimmyTime</div>
+          <div class="brand-sub">iPhone 17 Pro Max Build</div>
+        </div>
+        <div class="brand-right">
+          <div class="now-serving-label">NOW SERVING</div>
+          <div class="now-serving-number">{{ count }}</div>
+        </div>
       </div>
 
-      <!-- Status light -->
-      <div id="loadStatus" class="load-status load-ok">
-        READY
+      <div class="punch-line">
+        Every first punch counts toward 999,999
       </div>
 
-      <div class="note-line">
-        App made by iPhone 17 Pro Max, Timmy Bubbles.
+      <div class="suno-note">
+        Reduced to Suno AI for playlist curation and vibe only.
       </div>
     </section>
 
-    <!-- Playlist / Links / Actions -->
-    <section class="panel actions-panel">
-      <h2 class="panel-title">Media / Playlist</h2>
-
-      <div class="button-grid">
-        <a class="action-btn" href="https://suno.ai" target="_blank" rel="noopener noreferrer">
-          Suno Playlist 1
-        </a>
-
-        <a class="action-btn" href="https://suno.ai" target="_blank" rel="noopener noreferrer">
-          Suno Playlist 2
-        </a>
-
-        <a class="action-btn" href="https://suno.ai" target="_blank" rel="noopener noreferrer">
-          Suno Playlist 3
-        </a>
-
-        <a class="action-btn" href="https://suno.ai" target="_blank" rel="noopener noreferrer">
-          Suno Playlist 4
-        </a>
-
-        <a class="action-btn" href="https://suno.ai" target="_blank" rel="noopener noreferrer">
-          Suno Playlist 5
-        </a>
+    <!-- PLAYLIST GRID -->
+    <section class="playlist-wrap glass-card">
+      <div class="playlist-item">
+        <div class="playlist-title">Timmy Bubbles · Playlist 1</div>
+        <div class="playlist-desc">Night drive sax / smooth Yeti energy</div>
       </div>
 
-      <div class="tiny-disclaimer">
-        Reduction to Suno AI for playlist.
+      <div class="playlist-item">
+        <div class="playlist-title">Timmy Bubbles · Playlist 2</div>
+        <div class="playlist-desc">Club floor. Hands up. Neon sweat.</div>
+      </div>
+
+      <div class="playlist-item">
+        <div class="playlist-title">Timmy Bubbles · Playlist 3</div>
+        <div class="playlist-desc">Pink aura, slow grind, late text.</div>
+      </div>
+
+      <div class="playlist-item">
+        <div class="playlist-title">Timmy Bubbles · Playlist 4</div>
+        <div class="playlist-desc">Swagger walk-in / main character cam.</div>
+      </div>
+
+      <div class="playlist-item">
+        <div class="playlist-title">Timmy Bubbles · Playlist 5</div>
+        <div class="playlist-desc">Chaos set / lights flashing / bass hits.</div>
       </div>
     </section>
 
-  </main>
+    <!-- BOTTOM CONTROL BAR (THIS IS THE "MISSING BOTTOM HALF") -->
+    <section class="control-bar glass-card">
 
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+      <div class="status-row">
+        <div class="status-chip good">
+          <div class="status-dot pulse-good"></div>
+          <div class="status-text">
+            LIVE / GOOD
+          </div>
+        </div>
+
+        <div class="status-chip bad">
+          <div class="status-dot pulse-bad"></div>
+          <div class="status-text">
+            FAULT
+          </div>
+        </div>
+      </div>
+
+      <button class="change-video-btn">
+        CHANGE VIDEO
+      </button>
+
+      <div class="lock-copy">
+        LOCK MODE • Do not edit live files.<br/>
+        Observing v096 draft. Next punch rolls toward 999,999.
+      </div>
+    </section>
+
+    <!-- This bottom spacer ensures last card isn't hidden by iOS bars -->
+    <div class="page-bottom-spacer"></div>
+
+  </div><!-- /content-shell -->
+
+  <script src="/static/script.js"></script>
 </body>
 </html>
