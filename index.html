@@ -2,49 +2,100 @@
 TIMMYTIME LIVE
 Do not paste partials.
 Replace whole file only.
+
 If anything looks wrong in production:
-1. Restore last good from /locked/index.locked.html
+1. Restore last good from /locked/
 2. Deploy to STAGE first, then promote to LIVE
-build v2.1 • live
+
+build v2.2 • live
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0,viewport-fit=cover"
+  />
   <title>TimmyTime</title>
 
-  <!-- cache-bust so Safari/CDN grabs fresh each deploy -->
-  <link rel="stylesheet" href="style.css?v=2.1">
-  <script src="script.js?v=2.1" defer></script>
+  <!-- cache-bust so Safari/CDN grabs fresh on each release -->
+  <link rel="stylesheet" href="style.css?v=2.2">
+  <script src="script.js?v=2.2" defer></script>
 
-  <!-- emergency fallback styling if style.css fails -->
+  <!-- emergency fallback styling + bubble layer positioning
+       (this runs even if style.css fails to load) -->
   <style>
+    :root {
+      --bubble-purple: rgba(200, 0, 255, 0.55);
+      --bubble-pink:   rgba(255, 90, 200, 0.55);
+      --bubble-orange: rgba(255, 150,  50, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
       background: radial-gradient(circle at 30% 30%, #ffe1ff 0%, #9fd0ff 40%, #3b4a68 100%);
       color: #fff;
-      min-height: 100vh;
       display: flex;
       justify-content: center;
       padding: 20px;
-      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* bubble container sits behind content, does not block taps */
+    .bubble-field {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* fallback bubble style if CSS file doesn't load */
+    .bubble {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%),
+                  var(--bubble-purple);
+      box-shadow:
+        0 0 20px rgba(255,0,255,0.6),
+        0 0 40px rgba(255,165,0,0.4);
+      opacity: 0.7;
+      filter: blur(0.3px);
+      animation: floatUp 12s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) scale(1);   opacity: 0; }
+      10%  { opacity: 0.9; }
+      90%  { opacity: 0.9; }
+      100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
     }
 
     .app-card {
+      position: relative;
+      z-index: 10; /* above bubbles */
       width: 100%;
       max-width: 700px;
-      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.3) 60%);
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.4) 60%);
       border-radius: 20px;
       border: 2px solid rgba(255,255,255,0.4);
       box-shadow:
-        0 20px 40px rgba(0,0,0,0.6),
+        0 20px 40px rgba(0,0,0,0.7),
         0 0 30px rgba(255,0,255,0.4),
         0 0 60px rgba(255,165,0,0.25);
       padding: 20px;
-      box-sizing: border-box;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
@@ -54,22 +105,26 @@ build v2.1 • live
       line-height: 1.1;
       font-weight: 700;
       color: #fff;
+      text-align: center;
       text-shadow:
         0 0 4px #000,
         0 0 8px #ff00ff,
         0 0 16px #ff00ff;
-      margin: 0 0 10px;
+      margin: 0 0 12px;
     }
 
-    .visitors-line {
-      font-size: 1.8rem;
+    .now-serving {
+      font-size: clamp(1.4rem, 2vw, 1.8rem);
+      line-height: 1.2;
       font-weight: 700;
       color: #fff;
+      text-align: center;
       text-shadow:
         0 0 4px #000,
         0 0 8px #ff00ff,
         0 0 16px #ff00ff;
-      margin: 0 0 20px;
+      margin: 0 0 24px;
+      word-break: break-word;
     }
 
     .links-grid {
@@ -78,7 +133,7 @@ build v2.1 • live
       grid-row-gap: 18px;
       grid-column-gap: 24px;
       max-width: 500px;
-      margin-bottom: 24px;
+      margin: 0 auto 24px;
     }
 
     .links-grid a {
@@ -91,6 +146,8 @@ build v2.1 • live
         0 0 4px #000,
         0 0 8px rgba(0,0,0,0.8),
         0 0 16px rgba(0,0,0,0.8);
+      text-align: center;
+      display: block;
     }
 
     .links-grid a:hover {
@@ -106,6 +163,7 @@ build v2.1 • live
       line-height: 1.2;
       font-weight: 700;
       color: #fff;
+      text-align: center;
       text-shadow:
         0 0 4px #000,
         0 0 8px #ff00ff,
@@ -122,46 +180,75 @@ build v2.1 • live
         0 0 8px rgba(0,0,0,0.8),
         0 0 16px rgba(0,0,0,0.8);
       line-height: 1.4;
-      margin: 0 0 10px;
+      text-align: center;
+      margin: 24px 0 8px;
+    }
+
+    .suno-credit {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      text-shadow: 0 0 4px #000;
+      margin: 0 0 16px;
     }
 
     .build-tag {
       font-size: 0.9rem;
       font-weight: 500;
       color: rgba(255,255,255,0.8);
+      text-align: center;
       text-shadow: 0 0 4px #000;
       opacity: 0.8;
-      margin-top: 8px;
+      margin: 0;
     }
 
     .status-line {
       font-size: 0.9rem;
       font-weight: 600;
       color: #00ff9c;
+      text-align: center;
       text-shadow: 0 0 4px #000;
-      margin-top: 4px;
+      margin: 4px 0 0;
       opacity: 0.9;
     }
   </style>
 </head>
 
 <body>
+  <!-- bubbles background -->
+  <div class="bubble-field" id="bubbleField">
+    <!-- bubbles are created in JS for performance -->
+  </div>
+
   <main class="app-card">
+
     <h1>TimmyTime</h1>
 
-    <p class="visitors-line">
-      Visitors:
-      <span id="visitorCount">…</span>
+    <!-- Now Serving line -->
+    <p class="now-serving">
+      Now Serving
+      <span id="nowServingNumber">—</span>
+      of 999,999
     </p>
 
+    <!-- playlists -->
     <section class="links-grid">
-      <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" target="_blank" rel="noopener noreferrer">Playlist 1</a>
+      <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b"
+         target="_blank"
+         rel="noopener noreferrer">Playlist 1</a>
 
-      <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" target="_blank" rel="noopener noreferrer">Playlist 2</a>
+      <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f"
+         target="_blank"
+         rel="noopener noreferrer">Playlist 2</a>
 
-      <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" target="_blank" rel="noopener noreferrer">Playlist 3</a>
+      <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44"
+         target="_blank"
+         rel="noopener noreferrer">Playlist 3</a>
 
-      <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" target="_blank" rel="noopener noreferrer">Playlist 4</a>
+      <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df"
+         target="_blank"
+         rel="noopener noreferrer">Playlist 4</a>
 
       <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2"
          target="_blank"
@@ -180,12 +267,15 @@ build v2.1 • live
       App made by iPhone 17 Pro Max • Timmy Bubbles
     </p>
 
-    <!-- this is the build marker the JS will read -->
-    <p class="build-tag" id="buildTag" data-version="2.1">
-      build v2.1 • live
+    <p class="suno-credit">
+      Playlists curated via Suno AI (external links)
     </p>
 
-    <!-- this is a quiet health line just for you -->
+    <!-- build info (page version + status hooks) -->
+    <p class="build-tag" id="buildTag" data-version="2.2">
+      build v2.2 • live
+    </p>
+
     <p class="status-line" id="statusLine">
       status: normal
     </p>
