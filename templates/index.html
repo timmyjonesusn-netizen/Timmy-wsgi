@@ -1,269 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>TimmyTime</title>
-
-<style>
-/* ===== PAGE BACKGROUND ===== */
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(circle at 20% 20%, #ffeab5 0%, #cfe3ff 40%, #a8b4d4 70%, #516180 100%);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem 1rem 6rem;
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-}
-
-/* layer where bubbles live (behind card) */
-#bubble-layer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ===== CARD / PANEL ===== */
-.card-wrapper {
-  position: relative;
-  z-index: 10;
-  max-width: 700px;
-  width: 100%;
-  border-radius: 24px;
-  padding: 2rem;
-  background: rgba(40, 0, 40, 0.45);
-  backdrop-filter: blur(20px);
-  box-shadow:
-    0 0 120px rgba(255,0,255,0.4),
-    0 30px 60px rgba(0,0,0,0.7);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
-}
-
-/* ===== TEXT ===== */
-.card-wrapper h1,
-.card-wrapper h2,
-.card-wrapper p,
-.card-wrapper a {
-  font-weight: 700;
-  line-height: 1.2;
-  color: #fff;
-  text-shadow:
-    0 0 10px rgba(255,255,255,0.8),
-    0 0 20px rgba(255,0,255,0.4);
-  -webkit-text-stroke: 2px #000;
-  margin: 0 0 0.75rem;
-}
-
-.card-wrapper h1 {
-  font-size: 2.6rem;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-.card-wrapper h2 {
-  font-size: 2.2rem;
-  margin-top: 2rem;
-}
-
-.card-wrapper p,
-.card-wrapper a {
-  font-size: 1.5rem;
-  color: #cfe3ff;
-  text-decoration: underline;
-  display: inline-block;
-}
-
-/* ===== BUBBLE BASE ===== */
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.9;
-  animation: floatUp linear infinite;
-  will-change: transform, opacity;
-  /* shared gloss so it looks like glass not a flat dot */
-  box-shadow:
-    inset 0 0 18px rgba(255,255,255,0.9),   /* bright white glare */
-    inset 0 -20px 40px rgba(0,0,0,0.4),     /* lower shadow */
-    0 0 30px rgba(255,255,255,0.15);        /* faint outer bloom */
-}
-
-/* ===== COLOR VARIANTS ===== */
-
-/* PURPLE bubble: deep violet body, dark rim */
-.bubble.purple {
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255,255,255,1) 0%,        /* white highlight */
-    rgba(160,0,255,1) 20%,         /* neon violet */
-    rgba(80,0,140,1) 60%,          /* rich purple */
-    rgba(30,0,60,1) 100%           /* dark rim */
-  );
-  box-shadow:
-    inset 0 0 18px rgba(255,255,255,0.9),
-    inset 0 -20px 40px rgba(0,0,0,0.6),
-    0 0 35px rgba(190,0,255,0.6);  /* purple glow */
-}
-
-/* BLUE bubble: electric blue body, deep navy rim */
-.bubble.blue {
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255,255,255,1) 0%,        /* white highlight */
-    rgba(110,170,255,1) 20%,       /* bright electric blue */
-    rgba(0,40,120,1) 60%,          /* deep blue core */
-    rgba(0,10,40,1) 100%           /* almost black navy rim */
-  );
-  box-shadow:
-    inset 0 0 18px rgba(255,255,255,0.9),
-    inset 0 -20px 40px rgba(0,0,0,0.6),
-    0 0 35px rgba(0,120,255,0.6);  /* blue glow */
-}
-
-/* ORANGE bubble: hot orange body, darker ember rim */
-.bubble.orange {
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255,255,255,1) 0%,        /* white highlight */
-    rgba(255,190,0,1) 20%,         /* gold/yellow hot core */
-    rgba(255,110,0,1) 50%,         /* bright orange */
-    rgba(140,30,0,1) 80%,          /* burnt orange edge */
-    rgba(60,10,0,1) 100%           /* deep rim */
-  );
-  box-shadow:
-    inset 0 0 18px rgba(255,255,255,0.9),
-    inset 0 -20px 40px rgba(0,0,0,0.6),
-    0 0 35px rgba(255,120,0,0.6);  /* orange glow */
-}
-
-/* ===== BUBBLE SIZES ===== */
-.bubble.large { width:140px; height:140px; border-radius:50%; }
-.bubble.med   { width:90px;  height:90px;  border-radius:50%; }
-.bubble.sm    { width:55px;  height:55px;  border-radius:50%; }
-.bubble.tiny  { width:28px;  height:28px;  border-radius:50%; }
-.bubble.mini  { width:16px;  height:16px;  border-radius:50%; }
-
-/* ===== ANIMATION ===== */
-/* quick lift with a little sway */
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) translateX(0) scale(1);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.9;
-  }
-  50% {
-    transform: translateY(-50vh) translateX(-20px) scale(1.07);
-  }
-  100% {
-    transform: translateY(-100vh) translateX(20px) scale(1.15);
-    opacity: 0;
-  }
-}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TimmyTime</title>
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
-
 <body>
+    <div class="bubble-bg">
+        <!-- EXISTING BIG / MEDIUM / SOFT BUBBLES -->
+        <div class="bubble bubble-lg pos-a"></div>
+        <div class="bubble bubble-md pos-b"></div>
+        <div class="bubble bubble-md pos-c"></div>
+        <div class="bubble bubble-sm pos-d"></div>
+        <div class="bubble bubble-lg pos-e"></div>
+        <div class="bubble bubble-md pos-f"></div>
+        <div class="bubble bubble-sm pos-g"></div>
+        <div class="bubble bubble-md pos-h"></div>
+        <div class="bubble bubble-lg pos-i"></div>
+        <div class="bubble bubble-md pos-j"></div>
 
-<!-- bubble layer -->
-<div id="bubble-layer"></div>
+        <!-- NEW SMALL DARK POP BUBBLES (BLUE + PURPLE) -->
+        <div class="mini-bubble blue-mini mini-1"></div>
+        <div class="mini-bubble blue-mini mini-2"></div>
+        <div class="mini-bubble blue-mini mini-3"></div>
 
-<!-- your content card -->
-<div class="card-wrapper">
-  <h1>TimmyTime</h1>
-  <p>Visitors: 2</p>
+        <div class="mini-bubble purple-mini mini-4"></div>
+        <div class="mini-bubble purple-mini mini-5"></div>
+        <div class="mini-bubble purple-mini mini-6"></div>
+    </div>
 
-  <p>
-    <a href="#">Playlist 1</a> &nbsp;&nbsp;
-    <a href="#">Playlist 2</a>
-  </p>
-  <p>
-    <a href="#">Playlist 3</a> &nbsp;&nbsp;
-    <a href="#">Playlist 4</a>
-  </p>
-  <p><a href="#">Playlist 5</a></p>
-  <p><a href="#">Feature Track</a></p>
+    <main class="card">
+        <h1 class="title">TimmyTime</h1>
+        <p class="visitors"><span class="label">Visitors:</span> <span id="visitorCount">2</span></p>
 
-  <h2>Single Track</h2>
-  <p>App made by iPhone 17 Pro Max • Timmy Bubbles</p>
-</div>
+        <nav class="playlist-grid">
+            <a href="https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b" class="playlist-link">Playlist 1</a>
+            <a href="https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f" class="playlist-link">Playlist 2</a>
 
-<script>
-/*
-Bubble generator.
-We ONLY use purple, blue, orange now.
-We randomize size, start position, speed, and delay so the screen never looks still.
-*/
+            <a href="https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44" class="playlist-link">Playlist 3</a>
+            <a href="https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df" class="playlist-link">Playlist 4</a>
 
-const bubbleLayer = document.getElementById("bubble-layer");
+            <a href="https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2" class="playlist-link">Playlist 5</a>
+            <a href="https://suno.com/song/c0943681-4a5f-48f0-9e18-5c8bf5b24e8d" class="playlist-link">Feature Track</a>
+        </nav>
 
-// Only these three, like you said.
-const colorClasses = ["purple", "blue", "orange"];
-const sizeClasses  = ["large", "med", "sm", "tiny", "mini"];
+        <h2 class="single-track">Single Track</h2>
 
-// Weighted pick so purple/blue are common and orange hits like accent heat.
-function pickColor() {
-  const r = Math.random();
-  if (r < 0.4) return "purple";   // 40%
-  if (r < 0.8) return "blue";     // 40%
-  return "orange";                // 20%
-}
-
-function pickSize() {
-  const r = Math.random();
-  if (r < 0.20) return "large";
-  if (r < 0.45) return "med";
-  if (r < 0.70) return "sm";
-  if (r < 0.90) return "tiny";
-  return "mini";
-}
-
-function spawnBubble() {
-  const b = document.createElement("div");
-  b.classList.add("bubble");
-  b.classList.add(pickColor());
-  b.classList.add(pickSize());
-
-  // random X position across the viewport
-  b.style.left = (Math.random() * 100) + "vw";
-
-  // start just below the bottom so they float through
-  b.style.bottom = "-160px";
-
-  // duration ~6.5s to ~9.5s
-  const duration = 8 + (Math.random()*3 - 1.5);
-  b.style.animationDuration = duration.toFixed(2) + "s";
-
-  // negative delay so they’re already in motion when page loads
-  const delay = -1 * Math.random() * duration;
-  b.style.animationDelay = delay.toFixed(2) + "s";
-
-  bubbleLayer.appendChild(b);
-
-  // cleanup after its full life so DOM doesn't grow forever
-  setTimeout(() => {
-    if (b.parentNode) {
-      bubbleLayer.removeChild(b);
-    }
-  }, (duration + Math.abs(delay)) * 1000);
-}
-
-// blast a bunch at start
-for (let i = 0; i < 40; i++) {
-  spawnBubble();
-}
-
-// steady stream
-setInterval(spawnBubble, 400);
-</script>
-
+        <p class="footer-line">
+            App made by iPhone 17 Pro Max • Timmy Bubbles
+        </p>
+    </main>
 </body>
 </html>
