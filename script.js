@@ -1,4 +1,5 @@
-const START_VALUE = 40;  // edit this for your number
+// Final static mode
+const START_VALUE = 40; // change to your live count
 const DIGITS = 6;
 
 const counterEl = document.getElementById("lux-counter");
