@@ -3,10 +3,6 @@ import os
 
 app = Flask(__name__)
 
-# ---------- HTML GOES HERE ----------
-# This is your main page markup: header, bubbles background, counter area, buttons, etc.
-# IMPORTANT: we inline everything so Render never has to go read /src/src/src/index.html
-
 PAGE_HTML = """
 <!DOCTYPE html>
 <html lang="en">
@@ -187,8 +183,9 @@ PAGE_HTML = """
     <div id="counter" class="counter-box">0</div>
 
     <div class="note">
-        Every loss counts toward <strong>999,999</strong>.<br/>
-        App made on iPhone 17 Pro Max. Reduction to Suno AI for playlist.
+        App made on iPhone 17 Pro Max.<br/>
+        Reduction to Suno AI for playlist.<br/>
+        Goal: 999,999.
     </div>
 
     <div class="btn-list">
@@ -217,10 +214,7 @@ PAGE_HTML = """
 
 <script>
     // ----- VISITOR COUNTER LOGIC -----
-    // We keep a counter in memory for now. In the future we can back it with a file or simple KV.
-    // capped at 999999
     (function(){
-        // start number - you can change this seed
         let count = 1 + Math.floor(Math.random()*5);
         const maxCount = 999999;
         const el = document.getElementById('counter');
@@ -231,18 +225,17 @@ PAGE_HTML = """
 
         renderCount();
 
-        // fake "now serving" tick
+        // gentle tick
         setInterval(()=>{
             if(count < maxCount){
                 count += 1;
                 renderCount();
             }
-        }, 4000); // one bump every 4 seconds so it feels alive, not runaway
+        }, 4000);
     })();
 
 
     // ----- BUBBLES -----
-    // We generate a bunch of bubbles with random size, position, speed, and slight hue tweaks.
     const BUBBLE_COLORS = [
         'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,0,204,0.2) 40%, rgba(0,0,0,0) 70%)',
         'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,140,0,0.2) 40%, rgba(0,0,0,0) 70%)',
@@ -256,7 +249,7 @@ PAGE_HTML = """
         const size = 20 + Math.random()*80; // 20px - 100px
         const left = Math.random()*100;     // vw
         const duration = 8 + Math.random()*10; // 8s - 18s
-        const delay = -Math.random()*duration;  // so they’re already in motion
+        const delay = -Math.random()*duration;  // already in motion
 
         b.style.width = size + 'px';
         b.style.height = size + 'px';
@@ -269,12 +262,12 @@ PAGE_HTML = """
         document.body.appendChild(b);
     }
 
-    // fill the screen with a bunch
+    // initial field
     for(let i=0;i<30;i++){
         makeBubble();
     }
 
-    // occasionally add a new one so it never looks static
+    // keep it alive
     setInterval(()=>{
         makeBubble();
     }, 2000);
@@ -286,9 +279,7 @@ PAGE_HTML = """
 
 @app.route("/", methods=["GET"])
 def home():
-    # Serve the inlined page, not a file on disk.
     return Response(PAGE_HTML, mimetype="text/html")
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
