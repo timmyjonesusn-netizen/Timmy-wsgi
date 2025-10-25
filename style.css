@@ -1,179 +1,40 @@
-/* full-screen dark background so the metal pops */
 body {
-  background: radial-gradient(circle at 20% 20%, #1a1a1a 0%, #000000 60%);
   margin: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
   color: #fff;
-  font-family: system-ui, -apple-system, "Roboto", sans-serif;
-  text-align: center;
-}
-
-/* vertical stack for the counter block */
-.counter-wrapper {
+  font-family: "Orbitron", sans-serif;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  user-select: none;
-}
-
-/* "NOW SERVING" text */
-.counter-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.4rem;
-  color: #bbb;
-  font-weight: 500;
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.4),
-    0 0 20px rgba(0,150,255,0.3);
-}
-
-/* the black glass block behind the digits */
-.counter-display {
-  position: relative;
-  background: radial-gradient(circle at 50% 20%, rgba(60,60,60,0.4) 0%, rgba(0,0,0,0.9) 60%);
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  min-width: 240px;
-
-  display: flex;
   justify-content: center;
-
-  box-shadow:
-    0 20px 40px rgba(0,0,0,0.9),
-    0 0 30px rgba(0,140,255,0.4),
-    0 0 80px rgba(255,100,0,0.2);
-
-  border: 1px solid rgba(255,255,255,0.08);
-  outline: 2px solid rgba(0,140,255,0.4);
-  outline-offset: -4px;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* glossy highlight across the top of that glass block */
-.counter-display::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  border-radius: 12px 12px 0 0;
-  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 70%);
-  mix-blend-mode: screen;
-  filter: blur(6px);
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-/* each number character */
-.digit {
-  position: relative;
-  font-size: clamp(2rem, 2.5rem, 6vw);
-  line-height: 1;
-  font-weight: 700;
-  font-family: "JetBrains Mono", "SF Mono", Consolas, monospace;
-
-  margin: 0 2px;
-  min-width: 1.6ch;
+.counter-wrapper {
   text-align: center;
-
-  /* chrome/steel gradient in the text */
-  background: linear-gradient(
-    160deg,
-    #d9d9d9 0%,
-    #9a9a9a 35%,
-    #2a2a2a 50%,
-    #8a8a8a 65%,
-    #ffffff 100%
-  );
-  -webkit-background-clip: text;
-  color: transparent;
-
-  /* glow and depth */
-  text-shadow:
-    0 0 4px rgba(255,255,255,0.6),
-    0 0 10px rgba(0,180,255,0.6),
-    0 0 20px rgba(255,110,0,0.4),
-    0 2px 2px rgba(0,0,0,0.9);
-
-  filter:
-    drop-shadow(0 0 2px rgba(0,180,255,0.8))
-    drop-shadow(0 0 8px rgba(255,110,0,0.6));
-
-  border-radius: 4px;
-  transition: transform 0.18s ease, text-shadow 0.18s ease;
+  color: #c0c0c0;
 }
 
-/* when a digit changes, we pulse it */
-.digit.pulse {
-  transform: scale(1.08);
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.9),
-    0 0 16px rgba(0,200,255,0.9),
-    0 0 28px rgba(255,140,0,0.9),
-    0 2px 2px rgba(0,0,0,1);
+.counter-title {
+  font-size: 1.4em;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
 }
 
-/* animated shimmer strip moving across the glass panel */
-.counter-display.shimmer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -40%;
-  width: 40%;
-  background: linear-gradient(
-    75deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.4) 50%,
-    rgba(255,255,255,0) 100%
-  );
-  filter: blur(8px);
-  mix-blend-mode: screen;
-  opacity: 0.4;
-  pointer-events: none;
-
-  animation: sweep 2.8s linear infinite;
+.counter-display {
+  font-size: 2.5em;
+  background: linear-gradient(180deg, #001122 0%, #111 100%);
+  border: 2px solid rgba(0, 200, 255, 0.6);
+  border-radius: 10px;
+  padding: 15px 40px;
+  color: #33ccff;
+  text-shadow: 0 0 15px #33ccff;
+  display: inline-block;
 }
 
-@keyframes sweep {
-  0%   { transform: translateX(0) skewX(-20deg); }
-  100% { transform: translateX(260%) skewX(-20deg); }
-}
-
-/* "/ 999,999" under the block */
 .counter-cap {
-  font-size: 0.7rem;
-  color: #666;
-  font-weight: 400;
-  letter-spacing: 0.15rem;
-  text-shadow:
-    0 0 6px rgba(0,180,255,0.6),
-    0 0 20px rgba(255,110,0,0.4);
-}
-
-/* tighten for iPhone screens */
-@media (max-width: 500px) {
-  .counter-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.3rem;
-  }
-
-  .counter-cap {
-    font-size: 0.6rem;
-    letter-spacing: 0.1rem;
-  }
-
-  .digit {
-    font-size: clamp(1.8rem, 2rem, 5vw);
-    min-width: 1.4ch;
-  }
-
-  .counter-display {
-    min-width: 200px;
-    padding: 0.8rem 1rem;
-  }
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 10px;
 }
