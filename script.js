@@ -1,124 +1,95 @@
-// TIMMYTIME MASTER SCRIPT
-// RULE: replace whole file, do not splice
-// build v2.2
+function openPlaylist(which) {
+  const map = {
+    1: "https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b",
+    2: "https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f",
+    3: "https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44",
+    4: "https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df",
+    5: "https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2",
+    "feature": "https://suno.com/playlist/feature",
+    "single": "https://suno.com/playlist/single"
+  };
+  const url = map[which];
+  if (url) window.open(url, "_blank");
+}
 
-(function () {
-  const buildTagEl = document.getElementById("buildTag");
-  const statusEl = document.getElementById("statusLine");
-  const nowServingEl = document.getElementById("nowServingNumber");
-  const bubbleField = document.getElementById("bubbleField");
+// =====================================================
+// COUNTER
+// =====================================================
+const counterEl = document.getElementById("counter");
+let currentVal = 0;
+const goalVal = 123485;
+const ease = 0.03; // slow ease up
 
-  // what this page THINKS it is
-  const currentVersion = buildTagEl
-    ? buildTagEl.getAttribute("data-version")
-    : null;
+function animateCounter() {
+  const diff = goalVal - currentVal;
+  if (Math.abs(diff) < 1) currentVal = goalVal;
+  else currentVal += diff * ease;
 
-  // ------------------------------------------------------------------
-  // 1. BUBBLES
-  // We'll generate a handful of animated bubbles with random size,
-  // color, start X, and animation duration, all floating upward.
-  // We keep the count modest for smooth performance.
-  // ------------------------------------------------------------------
-  function spawnBubbles() {
-    if (!bubbleField) return;
-    const COLORS = ["var(--bubble-purple)", "var(--bubble-pink)", "var(--bubble-orange)"];
+  counterEl.textContent = Math.floor(currentVal).toLocaleString("en-US");
 
-    const BUBBLE_COUNT = 14; // light but alive
-    for (let i = 0; i < BUBBLE_COUNT; i++) {
-      const b = document.createElement("div");
-      b.className = "bubble";
+  if (currentVal < goalVal) requestAnimationFrame(animateCounter);
+}
+animateCounter();
 
-      // size
-      const size = 20 + Math.random() * 60; // 20px - 80px
-      b.style.width = size + "px";
-      b.style.height = size + "px";
+// =====================================================
+// BUBBLES
+// =====================================================
+const canvas = document.getElementById("bubbleCanvas");
+const ctx = canvas.getContext("2d");
 
-      // pick a glow color
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-      b.style.background = `
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%),
-        ${color}
-      `;
+function sizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+sizeCanvas();
+window.addEventListener("resize", sizeCanvas);
 
-      // horizontal position
-      const startX = Math.random() * 100; // vw-ish %
-      b.style.left = startX + "vw";
+const bubbleColors = [
+  "rgba(255, 102, 255, 0.15)",
+  "rgba(255, 128, 0, 0.15)",
+  "rgba(100, 100, 255, 0.15)",
+  "rgba(255, 255, 255, 0.07)"
+];
 
-      // animation duration + delay so they drift at different speeds
-      const dur = 10 + Math.random() * 10; // 10s - 20s
-      const delay = -Math.random() * dur;  // so they start mid-flight
-      b.style.animationDuration = dur + "s";
-      b.style.animationDelay = delay + "s";
+function makeBubble() {
+  return {
+    x: Math.random() * canvas.width,
+    y: canvas.height + Math.random() * canvas.height,
+    r: 5 + Math.random() * 25,
+    speed: 0.3 + Math.random() * 1.0,
+    color: bubbleColors[Math.floor(Math.random() * bubbleColors.length)],
+    drift: (Math.random() - 0.5) * 0.4
+  };
+}
 
-      bubbleField.appendChild(b);
+const bubbles = [];
+for (let i = 0; i < 50; i++) {
+  bubbles.push(makeBubble());
+}
+
+function drawBubbles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let b of bubbles) {
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = b.color;
+    ctx.fill();
+
+    b.y -= b.speed;
+    b.x += b.drift;
+
+    if (b.y + b.r < 0) {
+      b.x = Math.random() * canvas.width;
+      b.y = canvas.height + b.r + Math.random() * canvas.height * 0.3;
+      b.r = 5 + Math.random() * 25;
+      b.speed = 0.3 + Math.random() * 1.0;
+      b.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
+      b.drift = (Math.random() - 0.5) * 0.4;
     }
   }
 
-  // ------------------------------------------------------------------
-  // 2. COUNTER / "NOW SERVING"
-  // We'll try to increment the counter on load.
-  // If it works, we show the real number:
-  //   "Now Serving #12 of 999,999"
-  // If it fails, we show "—" and go safe mode.
-  // ------------------------------------------------------------------
-  async function loadNowServing() {
-    if (!nowServingEl) return;
-    try {
-      const res = await fetch("/visit", { cache: "no-store" });
-      const data = await res.json();
+  requestAnimationFrame(drawBubbles);
+}
 
-      if (data && typeof data.count === "number") {
-        nowServingEl.textContent = `#${data.count}`;
-      } else {
-        nowServingEl.textContent = "—";
-        if (statusEl) {
-          statusEl.textContent = "status: safe mode (counter)";
-          statusEl.style.color = "#ffea00";
-        }
-      }
-    } catch (err) {
-      nowServingEl.textContent = "—";
-      if (statusEl) {
-        statusEl.textContent = "status: safe mode (counter offline)";
-        statusEl.style.color = "#ffea00";
-      }
-    }
-  }
-
-  // ------------------------------------------------------------------
-  // 3. AUTO-UPDATE
-  // After the page is already visible, check if the server is on
-  // a newer BUILD_VERSION. If so, force-reload with cache-bust.
-  // We stagger this so first paint feels instant.
-  // ------------------------------------------------------------------
-  async function checkForUpdate() {
-    try {
-      const res = await fetch("/version", { cache: "no-store" });
-      const data = await res.json();
-      const serverVersion = data.version;
-
-      if (serverVersion && currentVersion && serverVersion !== currentVersion) {
-        // different version? reload hard with unique query so Safari/CDN must fetch new
-        window.location.href =
-          window.location.pathname + "?autoupdate=" + Date.now();
-      }
-    } catch (err) {
-      // stay quiet, we don't scare users
-    }
-  }
-
-  // ------------------------------------------------------------------
-  // 4. INIT
-  // ------------------------------------------------------------------
-  function init() {
-    spawnBubbles();
-    loadNowServing();
-
-    // run update check after a short delay,
-    // then keep checking in the background every 10s
-    setTimeout(checkForUpdate, 1500);
-    setInterval(checkForUpdate, 10000);
-  }
-
-  init();
-})();
+drawBubbles();
