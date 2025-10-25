@@ -1,95 +1,72 @@
-function openPlaylist(which) {
-  const map = {
-    1: "https://suno.com/playlist/2ec04889-1c23-4e2d-9c27-8a2b6475da4b",
-    2: "https://suno.com/playlist/e95ddd12-7e37-43e2-b3e0-fe342085a19f",
-    3: "https://suno.com/playlist/01b65a04-d231-4574-bbb6-713997ca5b44",
-    4: "https://suno.com/playlist/457d7e00-938e-4bf0-bd59-f070729200df",
-    5: "https://suno.com/playlist/08492edd-e0ba-4aea-a3f8-bb92220b28f2",
-    "feature": "https://suno.com/playlist/feature",
-    "single": "https://suno.com/playlist/single"
-  };
-  const url = map[which];
-  if (url) window.open(url, "_blank");
-}
+// -----------------------------
+// Counter lock
+// -----------------------------
+(function () {
+  const el = document.getElementById('liveCounter');
+  if (!el) return;
 
-// =====================================================
-// COUNTER
-// =====================================================
-const counterEl = document.getElementById("counter");
-let currentVal = 0;
-const goalVal = 123485;
-const ease = 0.03; // slow ease up
+  const displayNumber = 999999;
 
-function animateCounter() {
-  const diff = goalVal - currentVal;
-  if (Math.abs(diff) < 1) currentVal = goalVal;
-  else currentVal += diff * ease;
+  const withCommas = displayNumber
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-  counterEl.textContent = Math.floor(currentVal).toLocaleString("en-US");
+  el.textContent = withCommas;
+})();
 
-  if (currentVal < goalVal) requestAnimationFrame(animateCounter);
-}
-animateCounter();
+// -----------------------------
+// Video swapper with status light
+// -----------------------------
+(function () {
+  const selectEl = document.getElementById('videoSelect');
+  const buttonEl = document.getElementById('applyVideoBtn');
+  const videoEl  = document.getElementById('infoVideo');
+  const sourceEl = document.getElementById('videoSource');
+  const statusEl = document.getElementById('loadStatus');
 
-// =====================================================
-// BUBBLES
-// =====================================================
-const canvas = document.getElementById("bubbleCanvas");
-const ctx = canvas.getContext("2d");
+  if (!selectEl || !buttonEl || !videoEl || !sourceEl || !statusEl) {
+    return;
+  }
 
-function sizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-sizeCanvas();
-window.addEventListener("resize", sizeCanvas);
-
-const bubbleColors = [
-  "rgba(255, 102, 255, 0.15)",
-  "rgba(255, 128, 0, 0.15)",
-  "rgba(100, 100, 255, 0.15)",
-  "rgba(255, 255, 255, 0.07)"
-];
-
-function makeBubble() {
-  return {
-    x: Math.random() * canvas.width,
-    y: canvas.height + Math.random() * canvas.height,
-    r: 5 + Math.random() * 25,
-    speed: 0.3 + Math.random() * 1.0,
-    color: bubbleColors[Math.floor(Math.random() * bubbleColors.length)],
-    drift: (Math.random() - 0.5) * 0.4
-  };
-}
-
-const bubbles = [];
-for (let i = 0; i < 50; i++) {
-  bubbles.push(makeBubble());
-}
-
-function drawBubbles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let b of bubbles) {
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    ctx.fillStyle = b.color;
-    ctx.fill();
-
-    b.y -= b.speed;
-    b.x += b.drift;
-
-    if (b.y + b.r < 0) {
-      b.x = Math.random() * canvas.width;
-      b.y = canvas.height + b.r + Math.random() * canvas.height * 0.3;
-      b.r = 5 + Math.random() * 25;
-      b.speed = 0.3 + Math.random() * 1.0;
-      b.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
-      b.drift = (Math.random() - 0.5) * 0.4;
+  // helper to flip status styles
+  function setStatus(ok, msg) {
+    statusEl.textContent = msg;
+    if (ok) {
+      statusEl.classList.add('load-ok');
+      statusEl.classList.remove('load-bad');
+    } else {
+      statusEl.classList.add('load-bad');
+      statusEl.classList.remove('load-ok');
     }
   }
 
-  requestAnimationFrame(drawBubbles);
-}
+  // default starting state = good
+  setStatus(true, "READY");
 
-drawBubbles();
+  buttonEl.addEventListener('click', () => {
+    const newSrc = selectEl.value;
+
+    // optimistic set while loading new source
+    setStatus(true, "LOADING");
+
+    // point the <source> at the new file
+    sourceEl.setAttribute('src', newSrc);
+
+    // tell <video> to reload
+    videoEl.load();
+
+    // try to play (mobile may block autoplay but that's ok)
+    videoEl.play().then(() => {
+      // success load & play
+      setStatus(true, "READY");
+    }).catch(() => {
+      // could be autoplay block, not necessarily missing file
+      setStatus(true, "READY");
+    });
+
+    // if actual file is missing (404, bad name), <video> will fire 'error'
+    videoEl.onerror = () => {
+      setStatus(false, "MISSING");
+    };
+  });
+})();
